@@ -1,0 +1,166 @@
+{
+  "_meta": {
+    "category": "lighting",
+    "styles_represented": [
+      "scandi",
+      "coastal"
+    ],
+    "description": "Bathroom lighting — sconces, vanity bars, flush mounts."
+  },
+  "hits": [
+    {
+      "objectID": "lighting-001",
+      "name": "Brera Sconce Pair",
+      "brand": "Ferm Living",
+      "price": 189,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "scandi",
+      "finish": "brushed-nickel",
+      "tags": [
+        "sconce",
+        "pair",
+        "wall-light",
+        "minimalist"
+      ],
+      "images": [
+        "/images/lighting-001.png"
+      ],
+      "url": "/products/brera-sconce-pair",
+      "inStock": true,
+      "colourHex": "#B8B0A4",
+      "description": "Pair of slim wall sconces in brushed nickel. Mounts either side of mirror.",
+      "imagePrompt": "Brass curved arm wall sconce with frosted glass shade, minimalist design, polished metal finish, paired set"
+    },
+    {
+      "objectID": "lighting-002",
+      "name": "Arc Vanity Bar 24\"",
+      "brand": "Normann",
+      "price": 149,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "scandi",
+      "finish": "matte-black",
+      "tags": [
+        "vanity-bar",
+        "3-light",
+        "matte-black",
+        "modern"
+      ],
+      "images": [
+        "/images/lighting-002.png"
+      ],
+      "url": "/products/arc-vanity-bar-24",
+      "inStock": true,
+      "colourHex": "#2C2C2C",
+      "description": "3-light vanity bar in matte black. 24\" wide.",
+      "imagePrompt": "Matte-black arc vanity bar, 24 inches wide, three cylindrical light fixtures, curved metal frame, minimalist modern design.",
+      "colourFamily": "matte black"
+    },
+    {
+      "objectID": "lighting-003",
+      "name": "Nord Flush Mount",
+      "brand": "Muuto",
+      "price": 129,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "scandi",
+      "finish": "white",
+      "tags": [
+        "flush-mount",
+        "ceiling",
+        "simple",
+        "white"
+      ],
+      "images": [
+        "/images/lighting-003.png"
+      ],
+      "url": "/products/nord-flush-mount",
+      "inStock": true,
+      "colourHex": "#F5F5F3",
+      "description": "Simple flush mount ceiling light in white. Good for low-ceiling powder rooms.",
+      "imagePrompt": "White flush-mount ceiling light with clean geometric form, simple metal housing, minimalist design aesthetic.",
+      "colourFamily": "white"
+    },
+    {
+      "objectID": "lighting-004",
+      "name": "Cove Sconce Pair",
+      "brand": "Feiss",
+      "price": 159,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "coastal",
+      "finish": "brushed-nickel",
+      "tags": [
+        "sconce",
+        "pair",
+        "frosted-glass",
+        "airy"
+      ],
+      "images": [
+        "/images/lighting-004.png"
+      ],
+      "url": "/products/cove-sconce-pair",
+      "inStock": true,
+      "colourHex": "#B8B8B0",
+      "description": "Pair of frosted glass sconces in brushed nickel. Soft, diffused light. Very Beach House.",
+      "imagePrompt": "Pair of frosted glass wall sconces with airy cylindrical shade and brushed metal mounting bracket, soft diffused light aesthetic."
+    },
+    {
+      "objectID": "lighting-005",
+      "name": "Nautical Vanity Bar 24\"",
+      "brand": "Sea Gull Lighting",
+      "price": 139,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "coastal",
+      "finish": "chrome",
+      "tags": [
+        "vanity-bar",
+        "3-light",
+        "chrome",
+        "opal-glass"
+      ],
+      "images": [
+        "/images/lighting-005.png"
+      ],
+      "url": "/products/nautical-vanity-bar-24",
+      "inStock": true,
+      "colourHex": "#DCDCDC",
+      "description": "3-light vanity bar with opal glass shades. Chrome finish. Classic coastal bathroom look.",
+      "imagePrompt": "Chrome vanity bar with three opal glass shades, 24 inches wide, polished metal construction"
+    },
+    {
+      "objectID": "lighting-006",
+      "name": "Rattan Flush Mount",
+      "brand": "Serena & Lily",
+      "price": 179,
+      "currency": "USD",
+      "category": "lighting",
+      "style": "coastal",
+      "finish": "rattan",
+      "tags": [
+        "flush-mount",
+        "ceiling",
+        "rattan",
+        "natural",
+        "statement"
+      ],
+      "images": [
+        "/images/lighting-006.png"
+      ],
+      "url": "/products/rattan-flush-mount",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Natural rattan flush mount ceiling light. Distinctive coastal statement in a small space.",
+      "imagePrompt": "Natural woven rattan dome flush mount ceiling fixture with warm tan wicker construction and recessed hardware.",
+      "colourFamily": "natural"
+    }
+  ],
+  "nbHits": 6,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

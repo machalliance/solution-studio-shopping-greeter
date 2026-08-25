@@ -1,0 +1,53 @@
+{
+  "_meta": {
+    "category": "vanity",
+    "description": "Buying guides and how-tos for bathroom vanities."
+  },
+  "entries": [
+    {
+      "uid": "blt-vanity-001",
+      "title": "Bathroom Vanity Buying Guide",
+      "url": "/guides/bathroom-vanity-buying-guide",
+      "content_type_uid": "buying_guide",
+      "summary": "How to choose the right vanity size, style, and mounting type for your bathroom. Includes size charts for small spaces.",
+      "tags": [
+        "vanity",
+        "bathroom",
+        "buying-guide",
+        "small-spaces"
+      ],
+      "read_time": "6 min",
+      "icon": "book"
+    },
+    {
+      "uid": "blt-vanity-002",
+      "title": "Floating vs Freestanding: Which Vanity Type Is Right for You?",
+      "url": "/guides/floating-vs-freestanding-vanity",
+      "content_type_uid": "how_to",
+      "summary": "A practical comparison of wall-mount and freestanding vanities: installation complexity, storage, and look.",
+      "tags": [
+        "vanity",
+        "bathroom",
+        "installation"
+      ],
+      "read_time": "4 min",
+      "icon": "ruler"
+    },
+    {
+      "uid": "blt-vanity-003",
+      "title": "Powder Room Size Guide",
+      "url": "/guides/powder-room-dimensions",
+      "content_type_uid": "tool",
+      "summary": "Standard dimensions for powder rooms and half-baths. Use this to confirm what sizes will fit before you buy.",
+      "tags": [
+        "vanity",
+        "bathroom",
+        "dimensions",
+        "small-spaces"
+      ],
+      "read_time": "3 min",
+      "icon": "calculator"
+    }
+  ],
+  "count": 3
+}

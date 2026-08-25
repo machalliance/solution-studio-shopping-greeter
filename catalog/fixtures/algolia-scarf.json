@@ -1,0 +1,131 @@
+{
+  "_meta": {
+    "category": "scarf",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "unisex",
+      "womens"
+    ],
+    "description": "Scarves — seasonal. LLM includes this category only when the occasion or weather clearly warrants it."
+  },
+  "hits": [
+    {
+      "objectID": "scarf-001",
+      "name": "Merino Scarf — Oat",
+      "brand": "Acne Studios",
+      "price": 180,
+      "currency": "USD",
+      "category": "scarf",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "oat",
+      "tags": [
+        "merino",
+        "oat",
+        "oversized",
+        "wrap",
+        "layering"
+      ],
+      "images": [
+        "/images/scarf-001.jpg"
+      ],
+      "url": "/products/merino-scarf-oat",
+      "inStock": true,
+      "colourHex": "#EDE8DF",
+      "description": "Oversized merino scarf in oat. Wraps loosely over a coat or blazer.",
+      "imagePrompt": "Oversized oat merino wool scarf, loosely draped, fine knit texture, neutral cream-beige tone, substantial weight.",
+      "colourFamily": "oat"
+    },
+    {
+      "objectID": "scarf-002",
+      "name": "Cashmere Wrap — Camel",
+      "brand": "Loro Piana",
+      "price": 395,
+      "currency": "USD",
+      "category": "scarf",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "camel",
+      "tags": [
+        "cashmere",
+        "camel",
+        "wrap",
+        "luxury",
+        "earthy"
+      ],
+      "images": [
+        "/images/scarf-002.jpg"
+      ],
+      "url": "/products/cashmere-wrap-camel",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Lightweight cashmere wrap in camel.",
+      "imagePrompt": "Draped camel cashmere wrap, soft heavyweight knit, generous cocoon silhouette, natural cream undertones, luxury fiber texture.",
+      "colourFamily": "camel"
+    },
+    {
+      "objectID": "scarf-003",
+      "name": "Linen Scarf — Sage",
+      "brand": "Arket",
+      "price": 55,
+      "currency": "USD",
+      "category": "scarf",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "sage",
+      "tags": [
+        "linen",
+        "sage",
+        "lightweight",
+        "summer"
+      ],
+      "images": [
+        "/images/scarf-003.jpg"
+      ],
+      "url": "/products/linen-scarf-sage",
+      "inStock": true,
+      "colourHex": "#8A9E7E",
+      "description": "Lightweight linen scarf in sage. For cool summer evenings.",
+      "imagePrompt": "Lightweight sage linen scarf with loose, draped weave and soft natural texture, unisex styling.",
+      "colourFamily": "sage"
+    },
+    {
+      "objectID": "scarf-004",
+      "name": "Silk Neck Scarf — Terracotta",
+      "brand": "Hermès",
+      "price": 280,
+      "currency": "USD",
+      "category": "scarf",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "terracotta",
+      "tags": [
+        "silk",
+        "neck-scarf",
+        "terracotta",
+        "earthy",
+        "statement",
+        "square",
+        "lightweight"
+      ],
+      "images": [
+        "/images/scarf-004.jpg"
+      ],
+      "url": "/products/silk-neck-scarf-terracotta",
+      "inStock": true,
+      "colourHex": "#C0633A",
+      "description": "Small silk square in terracotta. Ties at the neck, through a bag, or in hair.",
+      "imagePrompt": "Square terracotta silk neck scarf, lightweight drape, soft fluid fabric, earthy warm tone, delicate construction.",
+      "colourFamily": "terracotta"
+    }
+  ],
+  "nbHits": 4,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

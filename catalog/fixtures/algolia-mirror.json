@@ -1,0 +1,167 @@
+{
+  "_meta": {
+    "category": "mirror",
+    "styles_represented": [
+      "scandi",
+      "coastal"
+    ],
+    "description": "Bathroom mirror products."
+  },
+  "hits": [
+    {
+      "objectID": "mirror-001",
+      "name": "Alvhem Round Mirror 24\"",
+      "brand": "Audo",
+      "price": 129,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "scandi",
+      "finish": "frameless",
+      "width": 24,
+      "tags": [
+        "round",
+        "frameless",
+        "minimalist"
+      ],
+      "images": [
+        "/images/mirror-001.png"
+      ],
+      "url": "/products/alvhem-round-mirror",
+      "inStock": true,
+      "colourHex": "#E0E0E0",
+      "description": "Frameless round mirror with bevelled edge. 24\" diameter.",
+      "imagePrompt": "Frameless round mirror 24 inches, polished glass edge, clean geometric circle, minimalist design."
+    },
+    {
+      "objectID": "mirror-002",
+      "name": "Bolin Oak Frame Mirror",
+      "brand": "Skagerak",
+      "price": 179,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "scandi",
+      "finish": "oak",
+      "width": 20,
+      "tags": [
+        "oak-frame",
+        "rectangular",
+        "natural-wood"
+      ],
+      "images": [
+        "/images/mirror-002.png"
+      ],
+      "url": "/products/bolin-oak-frame-mirror",
+      "inStock": true,
+      "colourHex": "#C9B896",
+      "description": "Solid oak frame mirror. 20\"×28\". Pairs with oak vanities for a cohesive look.",
+      "imagePrompt": "Rectangular oak-framed mirror with natural wood grain, clean modernist lines, solid construction, transparent background and save an PNG.",
+      "colourFamily": "natural wood"
+    },
+    {
+      "objectID": "mirror-003",
+      "name": "Recessed Medicine Cabinet 20\"",
+      "brand": "Robern",
+      "price": 349,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "scandi",
+      "finish": "frameless",
+      "width": 20,
+      "tags": [
+        "medicine-cabinet",
+        "recessed",
+        "storage",
+        "frameless"
+      ],
+      "images": [
+        "/images/mirror-003.png"
+      ],
+      "url": "/products/recessed-medicine-cabinet-20",
+      "inStock": true,
+      "colourHex": "#D8D8D8",
+      "description": "Recessed medicine cabinet with mirrored door. Frameless design. 20\"×26\".",
+      "imagePrompt": "Recessed medicine cabinet, 20 inches wide, frameless stainless steel, white interior shelves, flush-mounted wall installation."
+    },
+    {
+      "objectID": "mirror-004",
+      "name": "Dune Arch Mirror 24\"",
+      "brand": "Serena & Lily",
+      "price": 149,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "coastal",
+      "finish": "rattan",
+      "width": 24,
+      "tags": [
+        "arch",
+        "rattan-frame",
+        "natural",
+        "coastal"
+      ],
+      "images": [
+        "/images/mirror-004.png"
+      ],
+      "url": "/products/dune-arch-mirror",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Arched mirror with natural rattan frame. 24\"×36\". Instantly coastal.",
+      "imagePrompt": "Arched rattan frame mirror, natural woven texture, 24-inch diameter, coastal bohemian style, clean white backdrop.  Make sure there is a mirror in the frame.",
+      "colourFamily": "natural"
+    },
+    {
+      "objectID": "mirror-005",
+      "name": "Shore Round Mirror 22\"",
+      "brand": "West Elm",
+      "price": 119,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "coastal",
+      "finish": "whitewash",
+      "width": 22,
+      "tags": [
+        "round",
+        "whitewashed-wood",
+        "cottage"
+      ],
+      "images": [
+        "/images/mirror-005.png"
+      ],
+      "url": "/products/shore-round-mirror",
+      "inStock": true,
+      "colourHex": "#EDE7DC",
+      "description": "Round mirror in a whitewashed wood frame. 22\" diameter. Cottage-coastal feel.",
+      "imagePrompt": "Whitewashed wooden round mirror, 22 inches, rustic cottage frame, straight-on view white background"
+    },
+    {
+      "objectID": "mirror-006",
+      "name": "Nautical Porthole Mirror",
+      "brand": "Pottery Barn",
+      "price": 189,
+      "currency": "USD",
+      "category": "mirror",
+      "style": "coastal",
+      "finish": "brass",
+      "width": 20,
+      "tags": [
+        "round",
+        "porthole",
+        "brass-frame",
+        "statement"
+      ],
+      "images": [
+        "/images/mirror-006.png"
+      ],
+      "url": "/products/nautical-porthole-mirror",
+      "inStock": true,
+      "colourHex": "#B8963E",
+      "description": "Porthole-style mirror with antique brass rope frame. 20\" diameter. Statement piece.",
+      "imagePrompt": "Round brass-framed mirror with thick metal porthole rim, polished gold finish, deep-set circular glass lens."
+    }
+  ],
+  "nbHits": 6,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

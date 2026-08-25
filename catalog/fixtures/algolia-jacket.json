@@ -1,0 +1,639 @@
+{
+  "_meta": {
+    "category": "jacket",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "mens",
+      "womens",
+      "unisex"
+    ],
+    "description": "Jackets and blazers for the fashion / outfit scenario."
+  },
+  "hits": [
+    {
+      "objectID": "jacket-001",
+      "name": "Linen Blazer",
+      "brand": "Sandro",
+      "price": 285,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "blazer",
+        "linen",
+        "camel",
+        "lightweight",
+        "unstructured"
+      ],
+      "images": [
+        "/images/jacket-001.jpg"
+      ],
+      "url": "/products/linen-blazer",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Relaxed linen blazer in camel. Single-button, unstructured.",
+      "imagePrompt": "Camel linen blazer, unstructured shoulders, relaxed drape, natural wrinkles, single-breasted cut, lightweight weave in linen fabric with typical linen heathering."
+    },
+    {
+      "objectID": "jacket-002",
+      "name": "Cotton Harrington Jacket",
+      "brand": "A.P.C.",
+      "price": 230,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "olive",
+      "colourFamily": "olive",
+      "tags": [
+        "harrington",
+        "cotton-twill",
+        "olive",
+        "versatile",
+        "lightweight"
+      ],
+      "images": [
+        "/images/jacket-002.jpg"
+      ],
+      "url": "/products/cotton-harrington-jacket",
+      "inStock": true,
+      "colourHex": "#6B7B4A",
+      "description": "Cotton twill Harrington in olive. Clean and understated.",
+      "imagePrompt": "Olive cotton-twill Harrington jacket, lightweight construction, classic chest pockets, structured shoulders, relaxed fit."
+    },
+    {
+      "objectID": "jacket-003",
+      "name": "Merino Sport Coat",
+      "brand": "Theory",
+      "price": 395,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "tan",
+      "colourFamily": "tan",
+      "tags": [
+        "sport-coat",
+        "merino",
+        "tan",
+        "tailored",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-003.jpg"
+      ],
+      "url": "/products/merino-sport-coat",
+      "inStock": true,
+      "colourHex": "#B89A6A",
+      "description": "Single-breasted sport coat in merino. Tan.",
+      "imagePrompt": "Tan merino wool sport coat, tailored single-breasted two-button construction, structured shoulders, smooth knit fabric drape."
+    },
+    {
+      "objectID": "jacket-004",
+      "name": "Terracotta Bomber",
+      "brand": "Norse Projects",
+      "price": 310,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "terracotta",
+      "colourFamily": "terracotta",
+      "tags": [
+        "bomber",
+        "terracotta",
+        "earthy",
+        "relaxed"
+      ],
+      "images": [
+        "/images/jacket-004.jpg"
+      ],
+      "url": "/products/terracotta-bomber",
+      "inStock": true,
+      "colourHex": "#C0633A",
+      "description": "Relaxed bomber in terracotta. Pairs with neutrals.",
+      "imagePrompt": "Relaxed mens bomber jacket, terracotta cotton blend, ribbed cuffs in a lighter navy blue colour, structured shoulders, unlined construction."
+    },
+    {
+      "objectID": "jacket-005",
+      "name": "Structured Blazer \u2014 Cream",
+      "brand": "Theory",
+      "price": 395,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "cream",
+      "colourFamily": "cream",
+      "tags": [
+        "blazer",
+        "structured",
+        "cream",
+        "tailored",
+        "elevated"
+      ],
+      "images": [
+        "/images/jacket-005.jpg"
+      ],
+      "url": "/products/structured-blazer-cream",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Structured single-button blazer in cream. Fitted cut, notched lapel.",
+      "imagePrompt": "Cream structured wool blazer, sharp tailored shoulders, crisp single-breasted front, clean seaming, precise fitted waist."
+    },
+    {
+      "objectID": "jacket-006",
+      "name": "Longline Linen Jacket",
+      "brand": "Vince",
+      "price": 345,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "oat",
+      "colourFamily": "linen",
+      "tags": [
+        "longline",
+        "linen",
+        "oat",
+        "relaxed",
+        "earthy",
+        "lightweight"
+      ],
+      "images": [
+        "/images/jacket-006.jpg"
+      ],
+      "url": "/products/longline-linen-jacket",
+      "inStock": true,
+      "colourHex": "#EDE8DF",
+      "description": "Longline linen jacket in oat. Relaxed and effortless.",
+      "imagePrompt": "Oat linen longline jacket, relaxed oversized cut, lightweight crinkled fabric, dropped shoulders, flat-lay overhead view."
+    },
+    {
+      "objectID": "jacket-007",
+      "name": "Cropped Leather Jacket",
+      "brand": "Deadwood",
+      "price": 420,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "cognac",
+      "colourFamily": "earthy",
+      "tags": [
+        "leather",
+        "cropped",
+        "cognac",
+        "edge",
+        "versatile"
+      ],
+      "images": [
+        "/images/jacket-007.jpg"
+      ],
+      "url": "/products/cropped-leather-jacket",
+      "inStock": true,
+      "colourHex": "#9B6B3A",
+      "description": "Cropped leather jacket in cognac. Adds edge to a smart casual look.",
+      "imagePrompt": "Cognac leather cropped jacket, structured shoulders, sharp edges, supple construction, fitted waist, clean seaming."
+    },
+    {
+      "objectID": "jacket-008",
+      "name": "Wrap Blazer \u2014 Camel",
+      "brand": "Tot\u00eame",
+      "price": 465,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "wrap",
+        "blazer",
+        "camel",
+        "belted",
+        "elegant",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-008.jpg"
+      ],
+      "url": "/products/wrap-blazer-camel",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Wrap-style blazer in camel wool-blend. Belted silhouette.",
+      "imagePrompt": "Camel wrap blazer with self-tie belt, sharp lapels, structured shoulders, relaxed drape through waist."
+    },
+    {
+      "objectID": "jacket-009",
+      "name": "Navy Wool Blazer",
+      "brand": "Reiss",
+      "price": 365,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "navy",
+      "colourFamily": "navy",
+      "tags": [
+        "blazer",
+        "wool",
+        "navy",
+        "tailored",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-009.jpg"
+      ],
+      "url": "/products/navy-wool-blazer",
+      "inStock": true,
+      "colourHex": "#2B3A52",
+      "description": "Slim-fit wool blazer in deep navy. A versatile evening layer over a shirt or knit.",
+      "imagePrompt": "Navy wool blazer with notched lapels, structured shoulders, single-breasted button front, tailored fit."
+    },
+    {
+      "objectID": "jacket-010",
+      "name": "Charcoal Sport Coat",
+      "brand": "Club Monaco",
+      "price": 340,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "charcoal",
+      "colourFamily": "charcoal",
+      "tags": [
+        "sport-coat",
+        "charcoal",
+        "tailored",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-010.jpg"
+      ],
+      "url": "/products/charcoal-sport-coat",
+      "inStock": true,
+      "colourHex": "#4A4A4A",
+      "description": "Charcoal wool-blend sport coat. Clean lapel, slim fit. Pairs with navy or forest trousers.",
+      "imagePrompt": "Charcoal wool sport coat, single-breasted two-button, notch lapel, structured shoulder, tailored fit"
+    },
+    {
+      "objectID": "jacket-011",
+      "name": "Forest Green Field Jacket",
+      "brand": "Corridor",
+      "price": 295,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "forest",
+      "colourFamily": "forest green",
+      "tags": [
+        "field-jacket",
+        "forest",
+        "cotton",
+        "utility",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-011.jpg"
+      ],
+      "url": "/products/forest-green-field-jacket",
+      "inStock": true,
+      "colourHex": "#2D4A2D",
+      "description": "Deep forest green cotton field jacket. Four-pocket utility silhouette \u2014 elevated enough for dinner.",
+      "imagePrompt": "Forest green cotton field jacket, relaxed fit, structured shoulders, multiple utility pockets, worn-in canvas weave."
+    },
+    {
+      "objectID": "jacket-012",
+      "name": "Midnight Blue Overshirt Jacket",
+      "brand": "Oliver Spencer",
+      "price": 280,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "midnight",
+      "colourFamily": "midnight blue",
+      "tags": [
+        "overshirt",
+        "midnight",
+        "cotton",
+        "relaxed",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-012.jpg"
+      ],
+      "url": "/products/midnight-blue-overshirt-jacket",
+      "inStock": true,
+      "colourHex": "#1C2B45",
+      "description": "Structured overshirt in midnight blue cotton. Works as a light jacket over a dark tee or mock neck.",
+      "imagePrompt": "Oversized cotton overshirt jacket in midnight blue, relaxed fit, structured shoulders, chest pockets, subtle texture weave."
+    },
+    {
+      "objectID": "jacket-013",
+      "name": "Burgundy Corduroy Blazer",
+      "brand": "Drake's",
+      "price": 420,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "burgundy",
+      "colourFamily": "burgundy",
+      "tags": [
+        "blazer",
+        "corduroy",
+        "burgundy",
+        "rich",
+        "tailored",
+        "layering"
+      ],
+      "images": [
+        "/images/jacket-013.jpg"
+      ],
+      "url": "/products/burgundy-corduroy-blazer",
+      "inStock": true,
+      "colourHex": "#6B2737",
+      "description": "Burgundy corduroy blazer with patch pockets. A rich, textured alternative to navy \u2014 confident without trying.",
+      "imagePrompt": "Burgundy corduroy blazer, tailored single-breasted cut, structured shoulders, ribbed fabric texture, notched lapels, button closure."
+    },
+    {
+      "objectID": "jacket-014",
+      "name": "Structured Flannel Field Jacket",
+      "brand": "Pill",
+      "price": 185,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "casual",
+        "weekend",
+        "outdoor",
+        "structured",
+        "flannel",
+        "layering"
+      ],
+      "colourHex": "#8B4513",
+      "colourFamily": "brown",
+      "images": [
+        "/images/jacket-014.jpg"
+      ],
+      "url": "/products/structured-flannel-field-jacket",
+      "inStock": true,
+      "description": "Un-Structured plaid Flannel Field Jacket in brown with a reinforced cotton canvas exterior that resists wrinkles and holds its shape through seasons of wear. Double-stitched seams and a tailored cut make it work equally well over a t-shirt on weekends or layered under a coat for outdoor work.",
+      "imagePrompt": "Super Casual and unstructured men's flannel jacket in brown flannel, outdoor-ready with reinforced seams and NO pockets"
+    },
+    {
+      "objectID": "jacket-015",
+      "name": "Canvas-Lined Flannel Field Jacket",
+      "brand": "Filson",
+      "price": 310,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "casual",
+        "rugged",
+        "outdoor",
+        "structured",
+        "flannel",
+        "durable"
+      ],
+      "colourHex": "#556B2F",
+      "colourFamily": "olive",
+      "images": [
+        "/images/jacket-015.jpg"
+      ],
+      "url": "/products/canvas-lined-flannel-field-jacket",
+      "inStock": true,
+      "description": "Filson's olive canvas-lined flannel field jacket pairs a rugged wool-cotton shell with reinforced canvas for the kind of durability that improves with wear. Built for serious outdoor work but structured enough for everyday casual wear.",
+      "imagePrompt": "Structured men's flannel field jacket in olive canvas, rugged outdoor design, durable construction, reinforced seams."
+    },
+    {
+      "objectID": "jacket-016",
+      "name": "Heavy-Weight Flannel Field Jacket",
+      "brand": "L.L.Bean",
+      "price": 195,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "casual",
+        "weekend",
+        "outdoor",
+        "structured",
+        "flannel",
+        "heritage",
+        "heavy-weight"
+      ],
+      "colourHex": "#DC143C",
+      "colourFamily": "red",
+      "images": [
+        "/images/jacket-016.jpg"
+      ],
+      "url": "/products/heavy-weight-flannel-field-jacket",
+      "inStock": true,
+      "description": "Heavy-weight red flannel field jacket from L.L.Bean with a structured cotton twill lining that holds its shape through seasons of wear. Durable snap closures and deep patch pockets make it ready for weekend hikes or backyard work.",
+      "imagePrompt": "Structured men's field jacket in red flannel, heritage outdoor styling, robust workwear construction, weathered finish."
+    },
+    {
+      "objectID": "jacket-017",
+      "name": "Performance Flannel Field Jacket",
+      "brand": "Patagonia",
+      "price": 225,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "casual",
+        "outdoor",
+        "structured",
+        "flannel",
+        "weekend",
+        "versatile"
+      ],
+      "colourHex": "#36454F",
+      "colourFamily": "charcoal",
+      "images": [
+        "/images/jacket-017.jpg"
+      ],
+      "url": "/products/performance-flannel-field-jacket",
+      "inStock": true,
+      "description": "Charcoal performance flannel with a structured cut that moves between job sites and mountain trails without wrinkling or sagging. Patagonia's tough weave resists snags while breathable enough for active days.",
+      "imagePrompt": "Structured men's field jacket in charcoal flannel, outdoor-ready with reinforced seams and utility pocket detailing."
+    },
+    {
+      "objectID": "jacket-019",
+      "name": "Patchwork Utility Jacket",
+      "brand": "SDT",
+      "price": 399,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "slim",
+        "rugged",
+        "casual",
+        "weekend"
+      ],
+      "colourHex": "#888888",
+      "colourFamily": "multi",
+      "images": [
+        "/images/jacket-019.jpg"
+      ],
+      "url": "/products/patchwork-utility-jacket",
+      "inStock": true,
+      "description": "This multi-colored patchwork utility jacket combines bold, contrasting panels in an edgy design that brings visual interest to any casual look. Built with a slim, rugged fit and practical details, it's the perfect weekend layer for guys who want style with an attitude.",
+      "imagePrompt": "slim men's patchwork utility jacket in multi-colored fabric, rugged distressed details and mixed textile panels throughout"
+    },
+    {
+      "objectID": "jacket-020",
+      "name": "Alpine Peak Waterproof Jacket",
+      "brand": "Mountain Gear Co",
+      "price": 189.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "outdoor",
+        "waterproof",
+        "hiking",
+        "active",
+        "weekend"
+      ],
+      "colourHex": "#2C3E50",
+      "colourFamily": "navy",
+      "images": [
+        "/images/jacket-020.jpg"
+      ],
+      "url": "/products/alpine-peak-waterproof-jacket",
+      "inStock": true,
+      "description": "Alpine Peak Waterproof Jacket in navy keeps you dry and comfortable on every mountain adventure. This lightweight women's jacket combines durable waterproof protection with breathable fabric, making it perfect for hiking and weekend outdoor activities.",
+      "imagePrompt": "women's waterproof hiking jacket in navy, tapered fit, sealed seams, shown on mountain peak with rain droplets, active outdoor setting"
+    },
+    {
+      "objectID": "jacket-021",
+      "name": "Trail Breeze Lightweight Shell",
+      "brand": "Summit Sport",
+      "price": 149.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "outdoor",
+        "breathable",
+        "casual",
+        "active",
+        "hiking"
+      ],
+      "colourHex": "#D4796D",
+      "colourFamily": "rust",
+      "images": [
+        "/images/jacket-021.jpg"
+      ],
+      "url": "/products/trail-breeze-lightweight-shell",
+      "inStock": true,
+      "description": "Rust lightweight shell jacket designed for outdoor adventures with breathable fabric that keeps you comfortable during active pursuits. Perfect for hiking and casual wear, this Summit Sport style combines protection with a sleek, functional design.",
+      "imagePrompt": "women's lightweight shell jacket in rust, breathable technical fabric, hiking trail active wear, side profile outdoor adventure gear"
+    },
+    {
+      "objectID": "jacket-022",
+      "name": "Nordic Fleece Lined Parka",
+      "brand": "Frostline",
+      "price": 219.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "outdoor",
+        "warm",
+        "winter",
+        "casual",
+        "weekend"
+      ],
+      "colourHex": "#1A472A",
+      "colourFamily": "forest green",
+      "images": [
+        "/images/jacket-022.jpg"
+      ],
+      "url": "/products/nordic-fleece-lined-parka",
+      "inStock": true,
+      "description": "The forest green Nordic Fleece Lined Parka from Frostline combines cozy warmth with casual style for your weekend adventures. Designed with a soft fleece lining and durable outer shell, this women's parka keeps you comfortable during cold-weather outings.",
+      "imagePrompt": "Women's forest green Nordic fleece-lined parka, heavy insulation, oversized fit, winter outdoor gear, professional product photography studio lighting"
+    },
+    {
+      "objectID": "jacket-023",
+      "name": "Venture Wind Resistant Jacket",
+      "brand": "Active Routes",
+      "price": 159.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "outdoor",
+        "windproof",
+        "active",
+        "hiking",
+        "weekend"
+      ],
+      "colourHex": "#E8A537",
+      "colourFamily": "gold",
+      "images": [
+        "/images/jacket-023.jpg"
+      ],
+      "url": "/products/venture-wind-resistant-jacket",
+      "inStock": true,
+      "description": "The Venture Wind Resistant Jacket in gold delivers reliable protection against the elements with a windproof design perfect for hiking and outdoor adventures. Crafted for active women, this lightweight jacket offers the comfort and durability you need for weekend explorations and beyond.",
+      "imagePrompt": "women's windproof hiking jacket in gold technical fabric, active silhouette with reinforced seams, outdoor adventure ready"
+    },
+    {
+      "objectID": "jacket-024",
+      "name": "Evergreen Insulated Quilted Jacket",
+      "brand": "Nature's Edge",
+      "price": 199.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "outdoor",
+        "insulated",
+        "casual",
+        "winter",
+        "weekend"
+      ],
+      "colourHex": "#8B4513",
+      "colourFamily": "brown",
+      "images": [
+        "/images/jacket-024.jpg"
+      ],
+      "url": "/products/evergreen-insulated-quilted-jacket",
+      "inStock": true,
+      "description": "The brown Evergreen Insulated Quilted Jacket from Nature's Edge keeps you warm and comfortable during cold-weather adventures with its reliable insulation and durable quilted construction. Perfect for weekend getaways and casual outdoor activities, this versatile womens jacket pairs easily with your favorite winter outfits.",
+      "imagePrompt": "Brown quilted insulated women's winter jacket with a fitted silhouette, featuring vertical stitching patterns and outdoor functionality details."
+    }
+  ],
+  "nbHits": 23,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

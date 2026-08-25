@@ -1,0 +1,914 @@
+{
+  "_meta": {
+    "category": "top",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "mens",
+      "womens"
+    ],
+    "description": "Tops and shirts for the fashion / outfit scenario."
+  },
+  "hits": [
+    {
+      "objectID": "top-001",
+      "name": "Linen Shirt — Cream",
+      "brand": "Loro Piana",
+      "price": 195,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "cream",
+      "colourFamily": "cream",
+      "tags": [
+        "linen-shirt",
+        "cream",
+        "relaxed",
+        "elevated",
+        "lightweight"
+      ],
+      "images": [
+        "/images/top-001.jpg"
+      ],
+      "url": "/products/linen-shirt-cream",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Lightweight linen shirt in cream. Relaxed collar, tuck or untucked.",
+      "imagePrompt": "Cream linen shirt with relaxed fit, soft natural texture, loose sleeves, casual untucked cut"
+    },
+    {
+      "objectID": "top-002",
+      "name": "Silk-Blend Mock Neck — Oat",
+      "brand": "Totême",
+      "price": 245,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "oat",
+      "colourFamily": "oat",
+      "tags": [
+        "mock-neck",
+        "silk-blend",
+        "oat",
+        "elevated",
+        "minimalist",
+        "lightweight"
+      ],
+      "images": [
+        "/images/top-002.jpg"
+      ],
+      "url": "/products/silk-blend-mock-neck-oat",
+      "inStock": true,
+      "colourHex": "#EDE8DF",
+      "description": "Silk-blend mock neck in oat. Understated but premium.",
+      "imagePrompt": "Oat silk-blend mock-neck sweater, lightweight construction, relaxed mens fit, subtle texture detail."
+    },
+    {
+      "objectID": "top-003",
+      "name": "Fine Knit Crewneck — Sage",
+      "brand": "COS",
+      "price": 95,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "sage",
+      "colourFamily": "sage",
+      "tags": [
+        "crewneck",
+        "knit",
+        "sage",
+        "earthy",
+        "layerable",
+        "layering"
+      ],
+      "images": [
+        "/images/top-003.jpg"
+      ],
+      "url": "/products/fine-knit-crewneck-sage",
+      "inStock": true,
+      "colourHex": "#8A9E7E",
+      "description": "Fine merino crewneck in sage green.",
+      "imagePrompt": "Sage fine-knit crewneck sweater, relaxed fit, smooth ribbed crew collar, flat lay on neutral background."
+    },
+    {
+      "objectID": "top-004",
+      "name": "Rust Linen Shirt",
+      "brand": "Arket",
+      "price": 85,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "rust",
+      "colourFamily": "rust",
+      "tags": [
+        "linen-shirt",
+        "rust",
+        "earthy",
+        "relaxed",
+        "lightweight"
+      ],
+      "images": [
+        "/images/top-004.jpg"
+      ],
+      "url": "/products/rust-linen-shirt",
+      "inStock": true,
+      "colourHex": "#B85C38",
+      "description": "Linen shirt in warm rust. Bold earthy colour, relaxed fit.",
+      "imagePrompt": "Rust-colored linen shirt with relaxed fit, soft crumpled texture, loose sleeves, natural fabric drape"
+    },
+    {
+      "objectID": "top-005",
+      "name": "Silk Cami — Ivory",
+      "brand": "Vince",
+      "price": 165,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "ivory",
+      "colourFamily": "ivory",
+      "tags": [
+        "cami",
+        "silk",
+        "ivory",
+        "minimal",
+        "elevated",
+        "lightweight"
+      ],
+      "images": [
+        "/images/top-005.jpg"
+      ],
+      "url": "/products/silk-cami-ivory",
+      "inStock": true,
+      "colourHex": "#F8F5EE",
+      "description": "Silk cami in ivory. Wears alone for warmer evenings or under a blazer.",
+      "imagePrompt": "Ivory silk camisole with delicate spaghetti straps, relaxed drape, lightweight fluid construction."
+    },
+    {
+      "objectID": "top-006",
+      "name": "Fitted Linen Shirt — White",
+      "brand": "Arket",
+      "price": 75,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "white",
+      "colourFamily": "white",
+      "tags": [
+        "linen-shirt",
+        "white",
+        "fitted",
+        "crisp",
+        "classic",
+        "lightweight"
+      ],
+      "images": [
+        "/images/top-006.jpg"
+      ],
+      "url": "/products/fitted-linen-shirt-white",
+      "inStock": true,
+      "colourHex": "#F5F5F3",
+      "description": "Fitted linen shirt in white. Slightly cropped cut works tucked or half-tucked.",
+      "imagePrompt": "Crisp white linen shirt with tailored fitted bodice, structured collar, and lightweight breathable fabric."
+    },
+    {
+      "objectID": "top-007",
+      "name": "Satin Wrap Top — Caramel",
+      "brand": "Reformation",
+      "price": 128,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "caramel",
+      "colourFamily": "caramel",
+      "tags": [
+        "wrap-top",
+        "satin",
+        "caramel",
+        "earthy",
+        "flattering",
+        "layering"
+      ],
+      "images": [
+        "/images/top-007.jpg"
+      ],
+      "url": "/products/satin-wrap-top-caramel",
+      "inStock": true,
+      "colourHex": "#C49A6C",
+      "description": "Satin wrap top in caramel. Flattering and effortlessly smart.",
+      "imagePrompt": "Caramel satin wrap top with draped front ties, glossy fluid fabric, fitted waist, short sleeves, soft sheen finish."
+    },
+    {
+      "objectID": "top-008",
+      "name": "Fine Knit Tank — Stone",
+      "brand": "COS",
+      "price": 65,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "stone",
+      "colourFamily": "stone",
+      "tags": [
+        "tank",
+        "knit",
+        "stone",
+        "minimalist",
+        "versatile",
+        "layering"
+      ],
+      "images": [
+        "/images/top-008.jpg"
+      ],
+      "url": "/products/fine-knit-tank-stone",
+      "inStock": true,
+      "colourHex": "#C4B89A",
+      "description": "Fine ribbed knit tank in stone. Layer under a blazer or wear with wide-leg trousers.",
+      "imagePrompt": "Fine gauge knit tank top in warm stone, fitted silhouette, delicate ribbed texture throughout"
+    },
+    {
+      "objectID": "top-009",
+      "name": "Navy Oxford Shirt",
+      "brand": "Ralph Lauren",
+      "price": 145,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "navy",
+      "colourFamily": "navy",
+      "tags": [
+        "oxford-shirt",
+        "navy",
+        "button-down",
+        "classic",
+        "layering"
+      ],
+      "images": [
+        "/images/top-009.jpg"
+      ],
+      "url": "/products/navy-oxford-shirt",
+      "inStock": true,
+      "colourHex": "#2B3A52",
+      "description": "Oxford button-down in deep navy. The kind of shirt that works without trying — under a blazer or solo.",
+      "imagePrompt": "Navy oxford cloth button-down shirt, crisp woven cotton, structured collar, straight fit, classic tailoring."
+    },
+    {
+      "objectID": "top-010",
+      "name": "Charcoal Merino Crewneck",
+      "brand": "John Smedley",
+      "price": 175,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "charcoal",
+      "colourFamily": "charcoal",
+      "tags": [
+        "crewneck",
+        "merino",
+        "charcoal",
+        "layering"
+      ],
+      "images": [
+        "/images/top-010.jpg"
+      ],
+      "url": "/products/charcoal-merino-crewneck",
+      "inStock": true,
+      "colourHex": "#3D3D3D",
+      "description": "Fine 30-gauge merino crewneck in charcoal. Slim enough to wear under a blazer, warm enough to stand alone.",
+      "imagePrompt": "Charcoal merino wool crewneck, slim fit, ribbed crew neckline, fine knit texture, lightweight layering piece."
+    },
+    {
+      "objectID": "top-011",
+      "name": "Forest Green Knit — Cotton",
+      "brand": "Sunspel",
+      "price": 120,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "forest",
+      "colourFamily": "forest green",
+      "tags": [
+        "crewneck",
+        "knit",
+        "forest",
+        "cotton",
+        "layering"
+      ],
+      "images": [
+        "/images/top-011.jpg"
+      ],
+      "url": "/products/forest-green-knit",
+      "inStock": true,
+      "colourHex": "#2D4A2D",
+      "description": "Cotton knit crewneck in deep forest green. A rich alternative to navy that earns a second look.",
+      "imagePrompt": "Forest green cotton crew neck knit, relaxed fit, subtle ribbed texture, layering weight."
+    },
+    {
+      "objectID": "top-012",
+      "name": "Slate Merino Mock Neck",
+      "brand": "Theory",
+      "price": 195,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "slate",
+      "colourFamily": "slate",
+      "tags": [
+        "mock-neck",
+        "merino",
+        "slate",
+        "elevated",
+        "layering"
+      ],
+      "images": [
+        "/images/top-012.jpg"
+      ],
+      "url": "/products/slate-merino-mock-neck",
+      "inStock": true,
+      "colourHex": "#4A5568",
+      "description": "Merino mock neck in slate blue-grey. Polished enough for the rooftop, comfortable enough for the bar after.",
+      "imagePrompt": "Slate merino mock neck sweater, fitted silhouette, ribbed texture, clean minimalist construction, men's layering piece"
+    },
+    {
+      "objectID": "top-013",
+      "name": "Burgundy Polo — Fine Knit",
+      "brand": "Sunspel",
+      "price": 135,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "burgundy",
+      "colourFamily": "burgundy",
+      "tags": [
+        "polo",
+        "knit",
+        "burgundy",
+        "rich",
+        "layering",
+        "short-sleeve"
+      ],
+      "images": [
+        "/images/top-013.jpg"
+      ],
+      "url": "/products/burgundy-fine-knit-polo",
+      "inStock": true,
+      "colourHex": "#6B2737",
+      "description": "Fine-knit polo in deep burgundy. A considered choice — richer than navy, more unexpected than black.",
+      "imagePrompt": "Burgundy fine knit polo with ribbed collar, structured shoulders, fitted torso, short sleeves on white background."
+    },
+    {
+      "objectID": "top-014",
+      "name": "Sleeveless Fitted Knit — Camel",
+      "brand": "Totême",
+      "price": 195,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "knit",
+        "sleeveless",
+        "camel",
+        "fitted",
+        "earthy",
+        "layering",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/top-014.jpg"
+      ],
+      "url": "/products/sleeveless-fitted-knit-camel",
+      "inStock": true,
+      "colourHex": "#C4935A",
+      "description": "Sleeveless fitted knit in camel. Works alone for a warm evening or under a blazer when it gets cooler.",
+      "imagePrompt": "Camel sleeveless fitted knit top for women, ribbed texture, scooped neckline, close-fit silhouette, soft earthy tone."
+    },
+    {
+      "objectID": "top-015",
+      "name": "Silk Slip Top — Sage",
+      "brand": "Vince",
+      "price": 185,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "sage",
+      "colourFamily": "sage",
+      "tags": [
+        "silk",
+        "slip",
+        "sage",
+        "earthy",
+        "lightweight",
+        "evening",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/top-015.jpg"
+      ],
+      "url": "/products/silk-slip-top-sage",
+      "inStock": true,
+      "colourHex": "#8A9E88",
+      "description": "Silk slip top in sage. Fluid and lightweight — earthy without being safe.",
+      "imagePrompt": "Sage silk slip top for women, thin adjustable straps, bias-cut fluid drape, subtle sheen, relaxed fitted silhouette."
+    },
+    {
+      "objectID": "top-016",
+      "name": "Classic Oxford Cloth Button-Down",
+      "brand": "Brooks Brothers",
+      "price": 98,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "layering",
+        "oxford cloth"
+      ],
+      "colourHex": "#FFFFFF",
+      "colourFamily": "white",
+      "images": [
+        "/images/top-016.jpg"
+      ],
+      "url": "/products/classic-oxford-cloth-button-down",
+      "inStock": true,
+      "description": "This white Oxford cloth button-down shirt features the timeless construction Brooks Brothers is known for, making it perfect for layering or wearing alone during warmer months. The traditional design and durable fabric ensure this versatile piece will become a staple in any man's wardrobe.",
+      "imagePrompt": "Classic men's oxford cloth button-down shirt in white, traditional fit with visible buttons and crisp collar detail."
+    },
+    {
+      "objectID": "top-017",
+      "name": "Lightweight Linen Shirt",
+      "brand": "J.Crew",
+      "price": 88,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "linen",
+        "breathable"
+      ],
+      "colourHex": "#FFFFFF",
+      "colourFamily": "white",
+      "images": [
+        "/images/top-017.jpg"
+      ],
+      "url": "/products/lightweight-linen-shirt",
+      "inStock": true,
+      "description": "This white linen shirt is a classic summer essential, crafted from breathable fabric for all-day comfort. Perfect for layering or wearing solo, it delivers timeless style that works from office to weekend getaways.",
+      "imagePrompt": "Men's lightweight linen shirt in white, traditional design with breathable fabric, crisp collar and relaxed fit silhouette."
+    },
+    {
+      "objectID": "top-018",
+      "name": "Summer Cotton Poplin Shirt",
+      "brand": "Banana Republic",
+      "price": 79,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "cotton",
+        "lightweight",
+        "short-sleeve"
+      ],
+      "colourHex": "#F5F5F0",
+      "colourFamily": "off-white",
+      "images": [
+        "/images/top-018.jpg"
+      ],
+      "url": "/products/summer-cotton-poplin-shirt",
+      "inStock": true,
+      "description": "This off-white cotton poplin shirt delivers timeless style with a lightweight, breathable construction perfect for summer wear. The traditional tailoring offers a versatile staple that pairs effortlessly with any casual or business casual wardrobe.",
+      "imagePrompt": "Relaxed-fit men's cotton poplin shirt in off-white, traditional cut with short sleeves and classic collar, clean minimalist design."
+    },
+    {
+      "objectID": "top-019",
+      "name": "Performance Mesh Button-Down",
+      "brand": "Bonobos",
+      "price": 108,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "modern",
+        "summer",
+        "moisture-wicking",
+        "layering",
+        "short-sleeve"
+      ],
+      "colourHex": "#FFFFFF",
+      "colourFamily": "white",
+      "images": [
+        "/images/top-019.jpg"
+      ],
+      "url": "/products/performance-mesh-button-down",
+      "inStock": true,
+      "description": "This white performance mesh button-down from Bonobos combines breathable, moisture-wicking fabric with a sleek design perfect for warm weather layering. Ideal for summer adventures, it keeps you cool and dry while maintaining a polished, versatile look.",
+      "imagePrompt": "Athletic men's performance mesh button-down in white, moisture-wicking fabric, modern fit, product shot on neutral background"
+    },
+    {
+      "objectID": "top-020",
+      "name": "Pale Blue Linen Shirt",
+      "brand": "Reiss",
+      "price": 125,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "linen",
+        "layering"
+      ],
+      "colourHex": "#E8F1F8",
+      "colourFamily": "pale blue",
+      "images": [
+        "/images/top-020.jpg"
+      ],
+      "url": "/products/pale-blue-linen-shirt",
+      "inStock": true,
+      "description": "This pale blue linen shirt from Reiss is a lightweight summer essential, perfect for layering or wearing solo on warm days. Crafted from breathable linen, it combines timeless traditional styling with modern versatility for the well-dressed man.",
+      "imagePrompt": "men's pale blue linen shirt, traditional cut, relaxed fit, natural fabric texture, classic collar, front button closure"
+    },
+    {
+      "objectID": "top-021",
+      "name": "Cream Rayon Blend Shirt",
+      "brand": "Club Monaco",
+      "price": 95,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "contemporary",
+        "summer",
+        "rayon blend",
+        "lightweight"
+      ],
+      "colourHex": "#FFFDD0",
+      "colourFamily": "cream",
+      "images": [
+        "/images/top-021.jpg"
+      ],
+      "url": "/products/cream-rayon-blend-shirt",
+      "inStock": true,
+      "description": "This cream rayon blend shirt offers lightweight comfort perfect for summer layering or standalone wear. The breathable fabric and contemporary cut make it an essential versatile piece for any warm-weather wardrobe.",
+      "imagePrompt": "Relaxed fit men's rayon blend shirt in cream, soft drape fabric, contemporary minimalist styling, front view on neutral background."
+    },
+    {
+      "objectID": "top-022",
+      "name": "Light Gray Cotton Voile",
+      "brand": "Uniqlo",
+      "price": 34,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "minimalist",
+        "summer",
+        "cotton",
+        "layering"
+      ],
+      "colourHex": "#E8E8E8",
+      "colourFamily": "light gray",
+      "images": [
+        "/images/top-022.jpg"
+      ],
+      "url": "/products/light-gray-cotton-voile",
+      "inStock": true,
+      "description": "This light gray cotton voile shirt from Uniqlo is a breathable essential perfect for summer layering and warm-weather wear. The lightweight fabric drapes beautifully and works as a standalone piece or layered under heavier styles.",
+      "imagePrompt": "Minimalist men's shirt in light gray cotton voile, clean lines, soft drape, understated elegance, neutral wardrobe staple."
+    },
+    {
+      "objectID": "top-023",
+      "name": "Pale Yellow Seersucker Shirt",
+      "brand": "Southern Tide",
+      "price": 87,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "seersucker",
+        "breathable",
+        "short-sleeve"
+      ],
+      "colourHex": "#FFFACD",
+      "colourFamily": "pale yellow",
+      "images": [
+        "/images/top-023.jpg"
+      ],
+      "url": "/products/pale-yellow-seersucker-shirt",
+      "inStock": true,
+      "description": "Pale yellow seersucker shirt featuring the classic puckered texture and breathable fabric that makes it a summer wardrobe staple. Perfect for a traditional, relaxed look whether you're heading to the golf course or a casual outdoor gathering.",
+      "imagePrompt": "Men's seersucker shirt in pale yellow with traditional crinkled texture, breathable weave, classic fit and short sleeves."
+    },
+    {
+      "objectID": "top-024",
+      "name": "Lightweight Chambray Button-Down",
+      "brand": "Gap",
+      "price": 72,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "chambray",
+        "layering"
+      ],
+      "colourHex": "#D4E6F1",
+      "colourFamily": "light blue",
+      "images": [
+        "/images/top-024.jpg"
+      ],
+      "url": "/products/lightweight-chambray-button-down",
+      "inStock": true,
+      "description": "Light blue chambray button-down with a classic, breathable construction perfect for summer wear and easy layering. Traditional styling from Gap offers versatile warmth without the weight.",
+      "imagePrompt": "Men's lightweight chambray button-down shirt in light blue, traditional fit, crisp fabric texture, classic collar detail"
+    },
+    {
+      "objectID": "top-025",
+      "name": "White Linen-Cotton Blend",
+      "brand": "Suitsupply",
+      "price": 149,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "traditional",
+        "summer",
+        "linen cotton",
+        "layering"
+      ],
+      "colourHex": "#FFFFFF",
+      "colourFamily": "white",
+      "images": [
+        "/images/top-025.jpg"
+      ],
+      "url": "/products/white-linen-cotton-blend",
+      "inStock": true,
+      "description": "This white linen-cotton blend shirt combines breathable comfort with polished sophistication, making it an ideal layering piece for warm-weather styling. The traditional design and quality fabrication from Suitsupply ensure versatile wear across casual and business-casual occasions.",
+      "imagePrompt": "men's shirt in white linen-cotton blend, traditional design, relaxed fit, natural texture, casual elegance"
+    },
+    {
+      "objectID": "top-026",
+      "name": "Heritage Plaid Flannel Shirt",
+      "brand": "Pendleton",
+      "price": 189,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "flannel",
+        "cotton",
+        "plaid",
+        "casual",
+        "weekend",
+        "relaxed",
+        "layering"
+      ],
+      "colourHex": "#8B4513",
+      "colourFamily": "brown",
+      "images": [
+        "/images/top-026.jpg"
+      ],
+      "url": "/products/heritage-plaid-flannel-shirt",
+      "inStock": true,
+      "description": "The Heritage Plaid Flannel Shirt in brown features a timeless plaid pattern woven from soft, durable cotton perfect for weekend wear or layering. Its relaxed fit and classic design make it an essential casual staple for any wardrobe.",
+      "imagePrompt": "Relaxed men's flannel shirt in brown cotton plaid, vintage heritage pattern with chest pockets and rolled sleeves."
+    },
+    {
+      "objectID": "top-027",
+      "name": "Classic Buffalo Check Flannel",
+      "brand": "Filson",
+      "price": 225,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "flannel",
+        "cotton",
+        "check",
+        "casual",
+        "weekend",
+        "rugged",
+        "vintage"
+      ],
+      "colourHex": "#DC143C",
+      "colourFamily": "red",
+      "images": [
+        "/images/top-027.jpg"
+      ],
+      "url": "/products/classic-buffalo-check-flannel",
+      "inStock": true,
+      "description": "This Classic Buffalo Check Flannel in red features a timeless plaid pattern crafted from soft, durable cotton perfect for weekend wear and outdoor adventures. A versatile wardrobe staple that pairs effortlessly with jeans or chinos for that rugged, vintage aesthetic.",
+      "imagePrompt": "men's classic flannel shirt in red buffalo check pattern, vintage rugged cotton, relaxed fit, isolated white background"
+    },
+    {
+      "objectID": "top-028",
+      "name": "Soft Chambray Flannel Shirt",
+      "brand": "L.L.Bean",
+      "price": 165,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "flannel",
+        "cotton",
+        "plaid",
+        "casual",
+        "weekend",
+        "versatile",
+        "comfortable"
+      ],
+      "colourHex": "#4169E1",
+      "colourFamily": "blue",
+      "images": [
+        "/images/top-028.jpg"
+      ],
+      "url": "/products/soft-chambray-flannel-shirt",
+      "inStock": true,
+      "description": "This blue soft chambray flannel shirt from L.L.Bean features a classic plaid weave perfect for casual weekends and everyday comfort. Made from quality cotton, it's a timeless piece that pairs effortlessly with jeans or chinos.",
+      "imagePrompt": "Men's soft chambray flannel shirt in blue cotton, plaid, comfortable fabric, relaxed fit casual wear photography"
+    },
+    {
+      "objectID": "top-029",
+      "name": "Classic Plaid Flannel Shirt",
+      "brand": "L.L.Bean",
+      "price": 79.95,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "plaid",
+        "flannel",
+        "weekend",
+        "layering"
+      ],
+      "colourHex": "#8B4513",
+      "colourFamily": "brown",
+      "images": [
+        "/images/top-029.jpg"
+      ],
+      "url": "/products/classic-plaid-flannel-shirt",
+      "inStock": true,
+      "description": "This brown plaid flannel shirt is the perfect casual staple for weekend wear and layering over t-shirts or under sweaters. Crafted from soft flannel fabric, it's ideal for creating effortlessly relaxed outfits year-round.",
+      "imagePrompt": "women's classic plaid flannel shirt in brown, featuring a traditional plaid pattern with long sleeves and chest pockets"
+    },
+    {
+      "objectID": "top-030",
+      "name": "Red Buffalo Check Flannel",
+      "brand": "Eddie Bauer",
+      "price": 74.5,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "plaid",
+        "flannel",
+        "weekend",
+        "vintage"
+      ],
+      "colourHex": "#C41E3A",
+      "colourFamily": "red",
+      "images": [
+        "/images/top-030.jpg"
+      ],
+      "url": "/products/red-buffalo-check-flannel",
+      "inStock": true,
+      "description": "This Red Buffalo Check Flannel features a classic oversized plaid pattern perfect for casual weekends and vintage-inspired styling. Crafted from soft flannel, it's an effortless layering piece that pairs with everything from jeans to skirts.",
+      "imagePrompt": "women's flannel shirt in red plaid check, vintage style, classic buffalo plaid pattern, relaxed fit"
+    },
+    {
+      "objectID": "top-031",
+      "name": "Oversized Casual Linen Shirt",
+      "brand": "Everlane",
+      "price": 68,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "linen",
+        "weekend",
+        "relaxed",
+        "breathable"
+      ],
+      "colourHex": "#F5DEB3",
+      "colourFamily": "tan",
+      "images": [
+        "/images/top-031.jpg"
+      ],
+      "url": "/products/oversized-casual-linen-shirt",
+      "inStock": true,
+      "description": "Tan linen shirt from Everlane crafted in a relaxed oversized fit, perfect for effortless weekend styling. Made from breathable linen, it's the ideal casual layer for warm-weather dressing.",
+      "imagePrompt": "relaxed oversized women's linen shirt in tan, breathable fabric with loose drape and casual lived-in aesthetic"
+    },
+    {
+      "objectID": "top-032",
+      "name": "Soft Brushed Flannel Tunic",
+      "brand": "Gap",
+      "price": 59.95,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "plaid",
+        "flannel",
+        "weekend",
+        "comfortable"
+      ],
+      "colourHex": "#4B7C59",
+      "colourFamily": "green",
+      "images": [
+        "/images/top-032.jpg"
+      ],
+      "url": "/products/soft-brushed-flannel-tunic",
+      "inStock": true,
+      "description": "This green plaid flannel tunic features a soft brushed fabric that's perfect for casual weekend wear. Relaxed and comfortable, it's an easy layer that works great on its own or styled with your favorite jeans.",
+      "imagePrompt": "women's soft brushed flannel tunic in green plaid, loose comfortable fit, cozy layered design, isolated white background"
+    },
+    {
+      "objectID": "top-033",
+      "name": "Lightweight Cotton Button-Up",
+      "brand": "Banana Republic",
+      "price": 72,
+      "currency": "USD",
+      "category": "top",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "cotton",
+        "weekend",
+        "versatile",
+        "relaxed"
+      ],
+      "colourHex": "#E6E6FA",
+      "colourFamily": "lavender",
+      "images": [
+        "/images/top-033.jpg"
+      ],
+      "url": "/products/lightweight-cotton-button-up",
+      "inStock": true,
+      "description": "This lavender lightweight cotton button-up from Banana Republic is perfect for casual weekends and relaxed days out. Crafted from breathable cotton, it offers easy comfort and timeless style for any laid-back occasion.",
+      "imagePrompt": "Relaxed women's cotton button-up shirt in lavender, soft lightweight fabric with a comfortable oversized fit and classic collar detail."
+    }
+  ],
+  "nbHits": 33,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

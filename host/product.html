@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Product — Agent Solution Studio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --ink:#0F0F0D;--stone:#F5F4F1;--hairline:#E3E1DC;
+  --muted:#767670;--white:#FFFFFF;--radius:4px;
+}
+.skin-project{--accent:#1B4332;--accent-hover:#2D6A4F;--accent-light:#E8F3EC}
+.skin-clothing{--accent:#1E2B4A;--accent-hover:#2A3C6A;--accent-light:#ECEEF5}
+.no-transition,.no-transition *{transition:none !important}
+body{font-family:var(--font);background:var(--stone);color:var(--ink)}
+.site{padding-top:40px;min-height:100vh;display:flex;flex-direction:column;transition:filter .25s ease}
+
+.skin-switcher{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);padding:8px 24px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.switcher-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em}
+.switcher-tabs{display:flex;gap:4px}
+.switcher-tab{font-size:11px;padding:4px 12px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.2);background:none;color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;font-family:var(--font)}
+.switcher-tab.on{background:white;color:#1a1a18;border-color:white;font-weight:500}
+.switcher-note{font-size:10px;color:rgba(255,255,255,0.35);margin-left:auto}
+
+nav{background:var(--white);border-bottom:1px solid var(--hairline);padding:0 48px;display:flex;align-items:center;height:64px;gap:32px}
+.nav-logo{font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-0.03em;text-decoration:none;cursor:pointer}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:24px;flex:1}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav-actions{display:flex;gap:8px;margin-left:auto}
+.nav-btn{font-size:12px;padding:6px 14px;border-radius:var(--radius);cursor:pointer;font-family:var(--font)}
+.nav-btn-ghost{background:none;border:1px solid var(--hairline);color:var(--ink)}
+.nav-btn-solid{background:var(--accent);border:none;color:white;font-weight:500;transition:background 0.15s}
+.nav-btn-solid:hover{background:var(--accent-hover)}
+
+main{flex:1;max-width:1200px;margin:0 auto;padding:32px 48px 56px;width:100%}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);text-decoration:none;margin-bottom:16px;cursor:pointer}
+.back-link:hover{text-decoration:underline}
+
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:32px;flex-wrap:wrap}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb-sep{color:var(--hairline);font-size:10px}
+
+.product-hero{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;margin-bottom:64px}
+
+.image-col{position:sticky;top:72px}
+.image-main{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);overflow:hidden;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.image-main img{width:100%;height:100%;object-fit:contain;display:block}
+.image-placeholder{width:80px;height:80px;background:var(--accent-light);border-radius:var(--radius)}
+
+.info-col{display:flex;flex-direction:column;gap:0}
+.product-brand{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.product-name{font-size:26px;font-weight:600;color:var(--ink);letter-spacing:-0.02em;line-height:1.2;margin-bottom:12px}
+.product-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.product-price{font-size:28px;font-weight:500;color:var(--ink)}
+.stock-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;margin-bottom:20px}
+.stock-badge.in{color:#16a34a}
+.stock-badge.out{color:var(--muted)}
+.stock-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+.tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.ptag{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent)}
+
+.rule{height:1px;background:var(--hairline);margin:4px 0 20px}
+
+.section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px}
+.product-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+
+.actions{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.btn-add{padding:14px 20px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background 0.15s;text-align:center}
+.btn-add:hover{background:var(--accent-hover)}
+.btn-save{padding:13px 20px;background:var(--white);color:var(--ink);border:1px solid var(--hairline);border-radius:var(--radius);font-size:14px;font-family:var(--font);cursor:pointer;transition:border-color 0.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-save:hover{border-color:var(--accent)}
+.demo-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px;opacity:0.6}
+
+.delivery{background:var(--accent-light);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--accent)}
+.delivery i{font-size:16px;flex-shrink:0;margin-top:1px}
+
+.related-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-top:40px;border-top:1px solid var(--hairline)}
+.related-title{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.related-all{font-size:12px;color:var(--accent);text-decoration:none}
+.related-all:hover{text-decoration:underline}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.r-card{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);overflow:hidden;text-decoration:none;color:inherit;display:block;transition:border-color 0.2s,transform 0.15s}
+.r-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.r-img{width:100%;height:170px;object-fit:contain;display:block;background:var(--stone)}
+.r-body{padding:14px}
+.r-name{font-size:13px;font-weight:500;margin-bottom:3px;line-height:1.35}
+.r-brand{font-size:11px;color:var(--muted);margin-bottom:6px}
+.r-price{font-size:14px;font-weight:500}
+
+footer{background:var(--ink);padding:24px 48px;margin-top:auto}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-size:14px;font-weight:600;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none}
+.footer-links a:hover{color:rgba(255,255,255,0.6)}
+
+.not-found{text-align:center;padding:80px 20px}
+.not-found h2{font-size:22px;font-weight:600;margin-bottom:8px}
+.not-found p{font-size:14px;color:var(--muted);margin-bottom:20px}
+.not-found a{color:var(--accent);font-size:13px}
+
+.widget-trigger{position:fixed;bottom:88px;right:28px;z-index:500;display:flex;align-items:center;gap:10px;background:var(--accent);color:white;border:none;border-radius:100px;padding:12px 20px 12px 14px;cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font);box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:background 0.3s,transform 0.2s;animation:triggerPulse 3s ease-in-out infinite}
+.widget-trigger:hover{transform:scale(1.04);animation:none;background:var(--accent-hover)}
+.widget-trigger i{font-size:18px}
+@keyframes triggerPulse{
+  0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.2),0 0 0 0 var(--accent)}
+  50%{box-shadow:0 4px 16px rgba(0,0,0,0.2),0 0 0 8px rgba(0,0,0,0)}
+}
+
+.modal-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;justify-content:flex-end;padding:0 28px 100px;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.entry-modal{background:white;border-radius:16px;padding:20px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.18);transform:translateY(12px);transition:transform 0.25s ease}
+.modal-overlay.open .entry-modal{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.modal-title{font-size:13px;font-weight:500;color:#1a1a18;display:flex;align-items:center;gap:6px}
+.modal-close{background:none;border:none;cursor:pointer;color:#888780;font-size:16px;padding:2px;display:flex}
+.modal-prompt{font-size:13px;color:#5f5e5a;margin-bottom:14px;line-height:1.5}
+.modal-input-wrap{display:flex;gap:8px}
+.modal-input{flex:1;font-size:13px;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--hairline);font-family:var(--font);color:var(--ink);outline:none}
+.modal-input:focus{border-color:var(--accent)}
+.modal-submit{background:var(--accent);color:white;border:none;border-radius:var(--radius);padding:9px 14px;cursor:pointer;font-size:13px;white-space:nowrap;transition:background 0.2s;font-family:var(--font)}
+.modal-submit:hover{background:var(--accent-hover)}
+.modal-examples{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px}
+.modal-example{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid var(--hairline);background:none;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.modal-example:hover{border-color:var(--accent);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="skin-switcher">
+  <span class="switcher-label">Demo skin</span>
+  <div class="switcher-tabs">
+    <button class="switcher-tab" id="tabProject" onclick="setSkin('project')">The Project Store</button>
+    <button class="switcher-tab" id="tabClothing" onclick="setSkin('clothing')">The Clothing Store</button>
+  </div>
+  <span class="switcher-note">Agent Solution Studio · MACH Alliance prototype</span>
+</div>
+
+<div class="site skin-project" id="site">
+  <nav>
+    <a class="nav-logo" id="navLogo" href="/" onclick="location.href='/?skin='+currentSkin; return false;">The Project <span>Store</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#">Bathroom</a><a href="#">Kitchen</a><a href="#">Flooring</a><a href="#">Lighting</a><a href="#">Tools</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn nav-btn-ghost">Sign in</button>
+      <button class="nav-btn nav-btn-solid" id="navCta">Pro account</button>
+    </div>
+  </nav>
+
+  <main id="mainContent"></main>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="entry-modal">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-sparkles" style="font-size:15px;color:var(--brand-highlight)" aria-hidden="true"></i> <span id="modalTitle">Project assistant</span></div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-prompt" id="modalPrompt">What are you working on today?</div>
+      <div class="modal-input-wrap">
+        <input type="text" class="modal-input" id="modalInput" placeholder="e.g. redoing a powder room…" />
+        <button class="modal-submit" onclick="submitModal()">Go</button>
+      </div>
+      <div class="modal-examples" id="modalExamples"></div>
+    </div>
+  </div>
+
+  <button class="widget-trigger" onclick="openModal()" id="widgetTrigger">
+    <i class="ti ti-sparkles" aria-hidden="true"></i>
+    <span id="widgetLabel">What are you building today?</span>
+  </button>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo" id="footerLogo">The Project Store</div>
+      <div class="footer-links">
+        <a href="#">About</a><a href="#">Careers</a><a href="#">Privacy</a><a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+const PROJECT_CATS = ['vanity','faucet','tile','mirror','lighting','hardware'];
+const SKIN_CONFIG = {
+  project:{
+    logo:'The Project <span>Store</span>',
+    navLinks:['Bathroom','Kitchen','Flooring','Lighting','Tools'],
+    footerLogo:'The Project Store', cta:'Pro account'
+  },
+  clothing:{
+    logo:'The Clothing <span>Store</span>',
+    navLinks:['New arrivals','Men','Women','Sale','Brands'],
+    footerLogo:'The Clothing Store', cta:'Account'
+  }
+};
+
+const slug = location.pathname.split('/').filter(Boolean).pop() || '';
+const urlParams = new URLSearchParams(location.search);
+const urlSkin = urlParams.get('skin');
+let currentSkin = urlSkin || 'project';
+
+// Same-origin with the Greeter's own /panel route, so this can read its saved-session
+// key directly — no postMessage round-trip needed to know whether one exists.
+function hasGreeterSession() {
+  try { return !!localStorage.getItem('greeter-session'); } catch { return false; }
+}
+
+function setSkin(key) {
+  currentSkin = key;
+  const site = document.getElementById('site');
+  site.className = 'site no-transition skin-' + key;
+  document.querySelectorAll('.switcher-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(key === 'project' ? 'tabProject' : 'tabClothing').classList.add('on');
+  const s = SKIN_CONFIG[key];
+  document.getElementById('navLogo').innerHTML = s.logo;
+  document.getElementById('navLinks').innerHTML = s.navLinks.map(l => `<a href="#">${l}</a>`).join('');
+  document.getElementById('footerLogo').textContent = s.footerLogo;
+  document.getElementById('navCta').textContent = s.cta;
+  if (typeof applyWidgetCopy === 'function') {
+    try { applyWidgetCopy(key); } catch(e) {}
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() => site.classList.remove('no-transition')));
+}
+
+function formatPrice(p, cat) {
+  const perSqFt = ['tile'];
+  return '$' + p.toLocaleString() + (perSqFt.includes(cat) ? ' / sq ft' : '');
+}
+
+function renderProduct(p) {
+  const catLabel = p.category ? (p.category.charAt(0).toUpperCase() + p.category.slice(1)) : 'Products';
+  const searchUrl = `/search?q=${p.category}&skin=${currentSkin}`;
+  const homeUrl = `/?skin=${currentSkin}`;
+
+  const tagsHtml = (p.tags || []).map(t =>
+    `<span class="ptag">${t.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</span>`
+  ).join('');
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="breadcrumb">
+      <a href="${homeUrl}">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="${searchUrl}">${catLabel}</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>${p.name}</span>
+    </div>
+
+    <div class="product-hero">
+      <div class="image-col">
+        <div class="image-main">
+          ${p.images && p.images[0]
+            ? `<img src="${p.images[0]}" alt="${p.name}" id="mainImg">`
+            : `<div class="image-placeholder"></div>`}
+        </div>
+      </div>
+
+      <div class="info-col">
+        ${p.brand ? `<div class="product-brand">${p.brand}</div>` : ''}
+        <h1 class="product-name">${p.name}</h1>
+        <div class="product-price-row">
+          <span class="product-price">${formatPrice(p.price, p.category)}</span>
+        </div>
+        <div class="stock-badge ${p.inStock ? 'in' : 'out'}">
+          <span class="stock-dot"></span>
+          ${p.inStock ? 'In stock — ships in 3–5 days' : 'Currently out of stock'}
+        </div>
+
+        ${tagsHtml ? `<div class="tags-row">${tagsHtml}</div>` : ''}
+        <div class="rule"></div>
+
+        ${p.description ? `<div class="section-label">Description</div><p class="product-desc">${p.description}</p>` : ''}
+
+        <div class="actions">
+          ${p.inStock
+            ? `<button class="btn-add" onclick="alert('Demo prototype — no cart implemented')">Add to basket</button>`
+            : `<button class="btn-add" style="opacity:0.4;cursor:default" disabled>Out of stock</button>`}
+          <button class="btn-save" onclick="alert('Demo prototype — no wishlist implemented')">
+            <i class="ti ti-heart"></i> Save to wishlist
+          </button>
+        </div>
+        <p class="demo-note">Demo prototype — no real cart or checkout</p>
+
+        <div class="delivery">
+          <i class="ti ti-truck"></i>
+          <div>Free delivery on orders over $99. Free returns within 30 days. Pro account members get priority shipping.</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('pageTitle').textContent = `${p.name}${p.brand ? ' — ' + p.brand : ''}`;
+}
+
+function renderNotFound() {
+  const homeUrl = `/?skin=${currentSkin}`;
+  document.getElementById('mainContent').innerHTML = `
+    <div class="not-found">
+      <h2>Product not found</h2>
+      <p>We couldn't find a product matching "${slug}".</p>
+      <a href="${homeUrl}">← Back to home</a>
+    </div>`;
+}
+
+setSkin(currentSkin);
+
+// Fetch product from API — works for all fixture products
+fetch('/api/product/' + encodeURIComponent(slug))
+  .then(r => r.ok ? r.json() : null)
+  .then(product => {
+    if (product && !product.error) {
+      // Infer skin from category if not set by URL param
+      if (!urlSkin) {
+        currentSkin = PROJECT_CATS.includes(product.category) ? 'project' : 'clothing';
+        setSkin(currentSkin);
+      }
+      renderProduct(product);
+    } else {
+      renderNotFound();
+    }
+  })
+  .catch(() => renderNotFound());
+
+// Widget copy by skin
+const widgetCopy = {
+  project: {
+    label: 'What are you building today?',
+    title: 'Project assistant',
+    prompt: 'What are you working on today?',
+    placeholder: 'e.g. redoing a powder room…',
+    examples: ['Powder room refresh','Deck refinishing','Kitchen backsplash','New flooring'],
+  },
+  clothing: {
+    label: 'Get inspired — find your look',
+    title: 'Style assistant',
+    prompt: 'What are you putting together today?',
+    placeholder: 'e.g. rooftop dinner, smart casual…',
+    examples: ['Rooftop dinner outfit','Weekend look','Work from office','Wedding guest'],
+  }
+};
+
+function applyWidgetCopy(skin) {
+  const c = widgetCopy[skin] || widgetCopy.project;
+  const trigger = document.getElementById('widgetTrigger');
+  if (hasGreeterSession()) {
+    // A session already exists — the trigger becomes the way back in, not a fresh entry.
+    document.getElementById('widgetLabel').textContent = 'View my shopping list';
+    trigger.onclick = viewShoppingList;
+  } else {
+    document.getElementById('widgetLabel').textContent = c.label;
+    trigger.onclick = openModal;
+  }
+  // Modal copy stays populated either way — "View my shopping list" only replaces the
+  // trigger's own behavior; starting fresh from the modal is still reachable via Start Over.
+  document.getElementById('modalTitle').textContent = c.title;
+  document.getElementById('modalPrompt').textContent = c.prompt;
+  document.getElementById('modalInput').placeholder = c.placeholder;
+  document.getElementById('modalExamples').innerHTML = c.examples
+    .map(e => `<button class="modal-example" onclick="fillExample('${e}')">${e}</button>`).join('');
+}
+applyWidgetCopy(currentSkin);
+
+function openModal() {
+  document.getElementById('modalInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('modalInput').focus(), 250);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function fillExample(text) {
+  document.getElementById('modalInput').value = text;
+  submitModal();
+}
+function submitModal() {
+  const val = document.getElementById('modalInput').value.trim();
+  if (!val) return;
+  closeModal();
+  openGreeterPanel(val);
+}
+function viewShoppingList() {
+  openGreeterPanel(null, true);
+}
+function openGreeterPanel(goal, resume) {
+  const existing = document.getElementById('greeter-panel-wrap');
+  if (existing) existing.remove();
+  const p = new URLSearchParams({ skin: currentSkin });
+  if (goal) p.set('goal', goal);
+  if (resume) p.set('resume', '1');
+  const url = `/panel?${p}`;
+  const wrap = document.createElement('div');
+  wrap.id = 'greeter-panel-wrap';
+  // No background/padding/centering here — the app's own backdrop covers the WHOLE
+  // page via the full-bleed iframe below, so a smaller host-side box + dim would just
+  // create a second, differently-sized rectangle showing through at the edges.
+  wrap.style.cssText = 'position:fixed;inset:0;z-index:1100;display:flex';
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  // Full-bleed, edge-to-edge, transparent — the app owns 100% of its own visual chrome
+  // (backdrop tint/blur, card, panel background) across the entire viewport.
+  iframe.style.cssText = 'flex:1;width:100%;height:100%;border:none;background:transparent';
+  iframe.setAttribute('allowtransparency','true');
+  wrap.appendChild(iframe);
+  wrap.addEventListener('click', e => { if (e.target === wrap) closeGreeterPanel(); });
+  document.body.appendChild(wrap);
+  // Real backdrop blur, applied to the actual page content — backdrop-filter set on
+  // something INSIDE the iframe can't reach through the iframe boundary to blur this
+  // parent document, so the blur has to happen here instead.
+  document.getElementById('site').style.filter = 'blur(4px)';
+}
+function closeGreeterPanel() {
+  document.getElementById('greeter-panel-wrap')?.remove();
+  document.getElementById('site').style.filter = '';
+  // Re-check: "Start over" inside the panel clears the saved session, which should
+  // revert the trigger back to a normal entry CTA rather than still offering to "view"
+  // a shopping list that no longer exists.
+  applyWidgetCopy(currentSkin);
+}
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'greeter-close') closeGreeterPanel();
+});
+document.getElementById('modalInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitModal();
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

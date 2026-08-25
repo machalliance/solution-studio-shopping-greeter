@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Results — Agent Solution Studio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --ink:#0F0F0D;--stone:#F5F4F1;--hairline:#E3E1DC;
+  --muted:#767670;--white:#FFFFFF;--radius:4px;
+}
+.skin-project{--accent:#1B4332;--accent-hover:#2D6A4F;--accent-light:#E8F3EC}
+.skin-clothing{--accent:#1E2B4A;--accent-hover:#2A3C6A;--accent-light:#ECEEF5}
+
+body{font-family:var(--font);background:var(--stone);color:var(--ink)}
+.site{padding-top:40px;min-height:100vh;display:flex;flex-direction:column;transition:filter .25s ease}
+
+.widget-trigger{position:fixed;bottom:88px;right:28px;z-index:500;display:flex;align-items:center;gap:10px;background:var(--accent);color:white;border:none;border-radius:100px;padding:12px 20px 12px 14px;cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font);box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:background 0.3s,transform 0.2s;animation:triggerPulse 3s ease-in-out infinite}
+.widget-trigger:hover{transform:scale(1.04);animation:none;background:var(--accent-hover)}
+.widget-trigger i{font-size:18px}
+@keyframes triggerPulse{
+  0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.2),0 0 0 0 var(--accent)}
+  50%{box-shadow:0 4px 16px rgba(0,0,0,0.2),0 0 0 8px rgba(0,0,0,0)}
+}
+
+.modal-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;justify-content:flex-end;padding:0 28px 100px;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.entry-modal{background:white;border-radius:16px;padding:20px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.18);transform:translateY(12px);transition:transform 0.25s ease}
+.modal-overlay.open .entry-modal{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.modal-title{font-size:13px;font-weight:500;color:#1a1a18;display:flex;align-items:center;gap:6px}
+.modal-close{background:none;border:none;cursor:pointer;color:#888780;font-size:16px;padding:2px;display:flex}
+.modal-prompt{font-size:13px;color:#5f5e5a;margin-bottom:14px;line-height:1.5}
+.modal-input-wrap{display:flex;gap:8px}
+.modal-input{flex:1;font-size:13px;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--hairline);font-family:var(--font);color:var(--ink);outline:none}
+.modal-input:focus{border-color:var(--accent)}
+.modal-submit{background:var(--accent);color:white;border:none;border-radius:var(--radius);padding:9px 14px;cursor:pointer;font-size:13px;white-space:nowrap;transition:background 0.2s;font-family:var(--font)}
+.modal-submit:hover{background:var(--accent-hover)}
+.modal-examples{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px}
+.modal-example{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid var(--hairline);background:none;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.modal-example:hover{border-color:var(--accent);color:var(--ink)}
+
+.skin-switcher{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);padding:8px 24px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.switcher-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em}
+.switcher-tabs{display:flex;gap:4px}
+.switcher-tab{font-size:11px;padding:4px 12px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.2);background:none;color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;font-family:var(--font)}
+.switcher-tab.on{background:white;color:#1a1a18;border-color:white;font-weight:500}
+.switcher-note{font-size:10px;color:rgba(255,255,255,0.35);margin-left:auto}
+
+nav{background:var(--white);border-bottom:1px solid var(--hairline);padding:0 48px;display:flex;align-items:center;height:64px;gap:32px}
+.nav-logo{font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-0.03em;text-decoration:none;cursor:pointer}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:24px;flex:1}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav-actions{display:flex;gap:8px;margin-left:auto}
+.nav-btn{font-size:12px;padding:6px 14px;border-radius:var(--radius);cursor:pointer;font-family:var(--font)}
+.nav-btn-ghost{background:none;border:1px solid var(--hairline);color:var(--ink)}
+.nav-btn-solid{background:var(--accent);border:none;color:white;font-weight:500}
+.nav-btn-solid:hover{background:var(--accent-hover)}
+
+main{flex:1;max-width:1200px;margin:0 auto;padding:32px 48px 40px;width:100%}
+
+.search-header{margin-bottom:28px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);text-decoration:none;margin-bottom:16px;cursor:pointer}
+.back-link:hover{text-decoration:underline}
+.search-title{font-size:24px;font-weight:600;color:var(--ink);letter-spacing:-0.02em;margin-bottom:6px}
+.search-meta{font-size:13px;color:var(--muted)}
+
+.search-layout{display:flex;gap:32px}
+
+.filters{width:200px;flex-shrink:0}
+.filter-group{margin-bottom:24px}
+.filter-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:10px}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+.filter-chip{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--hairline);background:var(--white);color:var(--ink);cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.filter-chip:hover,.filter-chip.on{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.filter-range{display:flex;flex-direction:column;gap:6px}
+.filter-range-item{font-size:12px;color:var(--muted);cursor:pointer;padding:3px 0;display:flex;align-items:center;gap:6px;font-family:var(--font)}
+.filter-range-item input{accent-color:var(--accent)}
+
+.results-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-content:start}
+.result-card{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s}
+.result-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.result-card.out-of-stock{opacity:0.6}
+.result-img{width:100%;aspect-ratio:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--stone)}
+.result-body{padding:14px}
+.result-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--accent-light);color:var(--accent);display:inline-block;margin-bottom:8px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.result-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;line-height:1.35}
+.result-brand{font-size:12px;color:var(--muted);margin-bottom:8px}
+.result-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.result-footer{display:flex;align-items:center;justify-content:space-between}
+.result-price{font-size:15px;font-weight:500;color:var(--ink)}
+.result-view{font-size:12px;font-weight:500;color:var(--accent);text-decoration:none;padding:6px 14px;border:1px solid var(--accent);border-radius:var(--radius);transition:background 0.15s;font-family:var(--font)}
+.result-view:hover{background:var(--accent-light)}
+.out-of-stock-badge{font-size:11px;color:var(--muted);font-style:italic}
+
+.no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.no-results-icon{font-size:36px;margin-bottom:12px}
+.no-results h3{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:6px}
+
+footer{background:var(--ink);padding:24px 48px;margin-top:auto}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-size:14px;font-weight:600;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none}
+.footer-links a:hover{color:rgba(255,255,255,0.6)}
+
+.active-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.active-pill{display:flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;background:var(--accent-light);color:var(--accent);border-radius:20px;border:1px solid var(--accent)}
+.active-pill button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0}
+</style>
+</head>
+<body>
+
+<div class="skin-switcher">
+  <span class="switcher-label">Demo skin</span>
+  <div class="switcher-tabs">
+    <button class="switcher-tab on" id="tabProject" onclick="setSkin('project')">The Project Store</button>
+    <button class="switcher-tab" id="tabClothing" onclick="setSkin('clothing')">The Clothing Store</button>
+  </div>
+  <span class="switcher-note">Agent Solution Studio · MACH Alliance prototype</span>
+</div>
+
+<div class="site skin-project" id="site">
+  <nav>
+    <a class="nav-logo" id="navLogo" href="/" onclick="location.href='/?skin='+currentSkin; return false;">The Project <span>Store</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#">Bathroom</a><a href="#">Kitchen</a><a href="#">Flooring</a><a href="#">Lighting</a><a href="#">Tools</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn nav-btn-ghost">Sign in</button>
+      <button class="nav-btn nav-btn-solid">Pro account</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="search-header">
+      <a class="back-link" href="/"><i class="ti ti-arrow-left"></i> Back to home</a>
+      <h1 class="search-title" id="searchTitle">Search results</h1>
+      <div class="search-meta" id="searchMeta"></div>
+      <div id="styleNotice" style="display:none;margin-top:8px;font-size:12px;color:#8a7060;background:#fdf6ee;border:1px solid #e8d9c4;border-radius:4px;padding:6px 12px;"></div>
+      <div class="active-filters" id="activeFilters"></div>
+    </div>
+    <div class="search-layout">
+      <aside class="filters" id="filtersPanel"></aside>
+      <div class="results-grid" id="resultsGrid"></div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="entry-modal">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-sparkles" aria-hidden="true"></i> <span id="modalTitle">Project assistant</span></div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-prompt" id="modalPrompt">What are you working on today?</div>
+      <div class="modal-input-wrap">
+        <input type="text" class="modal-input" id="modalInput" placeholder="e.g. redoing a powder room…" />
+        <button class="modal-submit" onclick="submitModal()">Go</button>
+      </div>
+      <div class="modal-examples" id="modalExamples"></div>
+    </div>
+  </div>
+
+  <button class="widget-trigger" onclick="openModal()" id="widgetTrigger">
+    <i class="ti ti-sparkles" aria-hidden="true"></i>
+    <span id="widgetLabel">What are you building today?</span>
+  </button>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo" id="footerLogo">The Project Store</div>
+      <div class="footer-links">
+        <a href="#">About</a><a href="#">Careers</a><a href="#">Privacy</a><a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+const CATEGORY_LABELS = {
+  vanity:'Vanity', faucet:'Faucet', tile:'Tile', mirror:'Mirror',
+  lighting:'Lighting', hardware:'Hardware',
+  jacket:'Jackets', top:'Tops', pants:'Pants', shoes:'Shoes', trousers:'Trousers', jeans:'Jeans', belt:'Belts', dress:'Dresses', scarf:'Scarves', socks:'Socks'
+};
+
+const SKIN_CATS = {
+  project: ['vanity','faucet','tile','mirror','lighting','hardware'],
+  clothing: ['jacket','top','jeans','trousers','shoes']
+};
+
+const SKIN_CONFIG = {
+  project: {
+    logo: 'The Project <span>Store</span>',
+    navLinks: ['Bathroom','Kitchen','Flooring','Lighting','Tools'],
+    footerLogo: 'The Project Store',
+  },
+  clothing: {
+    logo: 'The Clothing <span>Store</span>',
+    navLinks: ['New arrivals','Men','Women','Sale','Brands'],
+    footerLogo: 'The Clothing Store',
+  }
+};
+
+const urlParams = new URLSearchParams(location.search);
+let activeCategory = urlParams.get('q') || '';
+let activeStyle    = urlParams.get('style') || '';
+let activeBudget   = urlParams.get('maxPrice') || urlParams.get('budget') || '';
+let activeFit      = urlParams.get('fit') || '';
+let currentSkin    = urlParams.get('skin') || 'project';
+let currentProducts = [];
+let currentStyleRelaxed = false;
+
+async function loadAndRender() {
+  document.getElementById('resultsGrid').innerHTML =
+    '<div class="no-results" style="opacity:0.5"><p>Loading…</p></div>';
+
+  const url = new URL('/api/search', location.origin);
+  url.searchParams.set('q', activeCategory);
+  if (activeStyle)  url.searchParams.set('style', activeStyle);
+  if (activeBudget) url.searchParams.set('maxPrice', activeBudget);
+  if (activeFit)    url.searchParams.set('fit', activeFit);
+
+  let requestedStyle = null;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    currentProducts = data.hits || [];
+    currentStyleRelaxed = data.styleRelaxed || false;
+    requestedStyle = data.requestedStyle || null;
+  } catch {
+    currentProducts = [];
+    currentStyleRelaxed = false;
+  }
+  render(currentStyleRelaxed, requestedStyle);
+}
+
+function buildTitle() {
+  const label = CATEGORY_LABELS[activeCategory] || activeCategory;
+  const fitLabel = activeFit === 'mens' ? "Men's" : activeFit === 'womens' ? "Women's" : '';
+  const styleLabel = activeStyle
+    ? activeStyle.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+    : '';
+  return [fitLabel, styleLabel, label].filter(Boolean).join(' ') || 'All products';
+}
+
+function render(styleRelaxed, requestedStyle) {
+  document.getElementById('searchTitle').textContent = buildTitle();
+  document.getElementById('searchMeta').textContent =
+    `${currentProducts.length} result${currentProducts.length !== 1 ? 's' : ''}`;
+  const notice = document.getElementById('styleNotice');
+  if (styleRelaxed && requestedStyle) {
+    const styleLabel = requestedStyle.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    notice.textContent = `No "${styleLabel}" items in catalog — showing all ${CATEGORY_LABELS[activeCategory] || activeCategory}.`;
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+  renderActivePills();
+  renderFilters();
+  renderGrid();
+}
+
+function renderActivePills() {
+  const fitLabel = activeFit === 'mens' ? "Men's" : activeFit === 'womens' ? "Women's" : activeFit;
+  const styleLabel = activeStyle ? activeStyle.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
+  const pills = [];
+  if (activeCategory) pills.push({ label: CATEGORY_LABELS[activeCategory] || activeCategory, key: 'category' });
+  if (activeFit)      pills.push({ label: fitLabel, key: 'fit' });
+  if (activeStyle && !currentStyleRelaxed) pills.push({ label: styleLabel, key: 'style' });
+  if (activeBudget)   pills.push({ label: `Under $${parseInt(activeBudget).toLocaleString()}`, key: 'budget' });
+  document.getElementById('activeFilters').innerHTML = pills.map(p =>
+    `<span class="active-pill">${p.label} <button onclick="clearFilter('${p.key}')">×</button></span>`
+  ).join('');
+}
+
+function renderFilters() {
+  const allCategories = SKIN_CATS[currentSkin] || [];
+  const genderGroup = currentSkin === 'clothing' ? `
+    <div class="filter-group">
+      <div class="filter-label">Gender</div>
+      <div class="filter-chips">
+        <button class="filter-chip ${activeFit === '' ? 'on' : ''}" onclick="setFilter('fit','')">All</button>
+        <button class="filter-chip ${activeFit === 'mens' ? 'on' : ''}" onclick="setFilter('fit','mens')">Men's</button>
+        <button class="filter-chip ${activeFit === 'womens' ? 'on' : ''}" onclick="setFilter('fit','womens')">Women's</button>
+      </div>
+    </div>` : '';
+  document.getElementById('filtersPanel').innerHTML = `
+    <div class="filter-group">
+      <div class="filter-label">Category</div>
+      <div class="filter-chips">
+        ${allCategories.map(cat => `
+          <button class="filter-chip ${activeCategory === cat ? 'on' : ''}"
+            onclick="setFilter('category','${cat}')">${CATEGORY_LABELS[cat] || cat}</button>
+        `).join('')}
+      </div>
+    </div>
+    ${genderGroup}
+    <div class="filter-group">
+      <div class="filter-label">Budget</div>
+      <div class="filter-range">
+        ${[['','Any budget'],['500','Under $500'],['1000','Under $1,000'],['2000','Under $2,000'],['5000','Under $5,000']].map(([val, label]) => `
+          <label class="filter-range-item">
+            <input type="radio" name="budget" value="${val}" ${activeBudget === val ? 'checked' : ''}
+              onchange="setFilter('budget','${val}')"> ${label}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderGrid() {
+  if (!currentProducts.length) {
+    const catLabel = CATEGORY_LABELS[activeCategory] || activeCategory;
+    const styleLabel = activeStyle
+      ? activeStyle.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+      : '';
+    const what = [styleLabel, catLabel].filter(Boolean).join(' ');
+    const suggestion = activeStyle
+      ? `We don't carry <strong>${what}</strong> yet. Try removing the style filter to browse all ${catLabel.toLowerCase()}.`
+      : `No ${catLabel.toLowerCase()} match your current filters. Try broadening your search.`;
+    document.getElementById('resultsGrid').innerHTML = `
+      <div class="no-results">
+        <div class="no-results-icon">🔍</div>
+        <h3>No results found</h3>
+        <p>${suggestion}</p>
+        ${activeStyle ? `<button onclick="activeStyle=''; loadAndRender()" style="margin-top:14px;padding:8px 18px;background:var(--ink);color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">Show all ${catLabel.toLowerCase()}</button>` : ''}
+      </div>`;
+    return;
+  }
+  document.getElementById('resultsGrid').innerHTML = currentProducts.map(p => {
+    const imgSrc = p.images?.[0] || '';
+    const url    = (p.url || '') + '?skin=' + currentSkin;
+    return `
+    <div class="result-card ${p.inStock ? '' : 'out-of-stock'}">
+      <div class="result-img">
+        <img src="${imgSrc}" alt="${p.name}" loading="lazy"
+          style="width:100%;height:100%;object-fit:contain;display:block"
+          onerror="this.style.display='none'">
+      </div>
+      <div class="result-body">
+        <span class="result-tag">${CATEGORY_LABELS[p.category] || p.category}</span>
+        <div class="result-name">${p.name}</div>
+        <div class="result-brand">${p.brand || ''}</div>
+        <div class="result-desc">${p.description || ''}</div>
+        <div class="result-footer">
+          <span class="result-price">$${(p.price || 0).toLocaleString()}</span>
+          ${p.inStock
+            ? `<a href="${url}" class="result-view">View</a>`
+            : `<span class="out-of-stock-badge">Out of stock</span>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(key, val) {
+  if (key === 'category') activeCategory = activeCategory === val ? '' : val;
+  else if (key === 'style')  activeStyle  = activeStyle  === val ? '' : val;
+  else if (key === 'budget') activeBudget = val;
+  else if (key === 'fit')    activeFit    = activeFit    === val ? '' : val;
+  loadAndRender();
+}
+
+function clearFilter(key) {
+  if (key === 'category') activeCategory = '';
+  else if (key === 'style')  activeStyle  = '';
+  else if (key === 'budget') activeBudget = '';
+  else if (key === 'fit')    activeFit    = '';
+  loadAndRender();
+}
+
+function setSkin(key) {
+  currentSkin = key;
+  document.getElementById('site').className = 'site skin-' + key;
+  document.querySelectorAll('.switcher-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(key === 'project' ? 'tabProject' : 'tabClothing').classList.add('on');
+  const s = SKIN_CONFIG[key];
+  document.getElementById('navLogo').innerHTML = s.logo;
+  document.getElementById('navLinks').innerHTML = s.navLinks.map(l => `<a href="#">${l}</a>`).join('');
+  document.getElementById('footerLogo').textContent = s.footerLogo;
+  renderFilters();
+  if (typeof applyWidgetCopy === 'function') {
+    try { applyWidgetCopy(key); } catch(e) {}
+  }
+}
+
+// Same-origin with the Greeter's own /panel route, so this can read its saved-session
+// key directly — no postMessage round-trip needed to know whether one exists.
+function hasGreeterSession() {
+  try { return !!localStorage.getItem('greeter-session'); } catch { return false; }
+}
+
+const widgetCopy = {
+  project: {
+    label: 'What are you building today?',
+    title: 'Project assistant',
+    prompt: 'What are you working on today?',
+    placeholder: 'e.g. redoing a powder room…',
+    examples: ['Powder room refresh','Deck refinishing','Kitchen backsplash','New flooring'],
+  },
+  clothing: {
+    label: 'Get inspired — find your look',
+    title: 'Style assistant',
+    prompt: 'What are you putting together today?',
+    placeholder: 'e.g. rooftop dinner, smart casual…',
+    examples: ['Rooftop dinner outfit','Weekend look','Work from office','Wedding guest'],
+  }
+};
+
+function applyWidgetCopy(skin) {
+  const c = widgetCopy[skin] || widgetCopy.project;
+  const trigger = document.getElementById('widgetTrigger');
+  if (hasGreeterSession()) {
+    // A session already exists — the trigger becomes the way back in, not a fresh entry.
+    document.getElementById('widgetLabel').textContent = 'View my shopping list';
+    trigger.onclick = viewShoppingList;
+  } else {
+    document.getElementById('widgetLabel').textContent = c.label;
+    trigger.onclick = openModal;
+  }
+  document.getElementById('modalTitle').textContent = c.title;
+  document.getElementById('modalPrompt').textContent = c.prompt;
+  document.getElementById('modalInput').placeholder = c.placeholder;
+  document.getElementById('modalExamples').innerHTML = c.examples
+    .map(e => `<button class="modal-example" onclick="fillExample('${e}')">${e}</button>`).join('');
+}
+
+function openModal() {
+  document.getElementById('modalInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('modalInput').focus(), 250);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function fillExample(text) {
+  document.getElementById('modalInput').value = text;
+  submitModal();
+}
+function submitModal() {
+  const val = document.getElementById('modalInput').value.trim();
+  if (!val) return;
+  closeModal();
+  openGreeterPanel(val);
+}
+function viewShoppingList() {
+  openGreeterPanel(null, true);
+}
+function openGreeterPanel(goal, resume) {
+  const existing = document.getElementById('greeter-panel-wrap');
+  if (existing) existing.remove();
+  const p = new URLSearchParams({ skin: currentSkin });
+  if (goal) p.set('goal', goal);
+  if (resume) p.set('resume', '1');
+  const url = `/panel?${p}`;
+  const wrap = document.createElement('div');
+  wrap.id = 'greeter-panel-wrap';
+  // No background/padding/centering here — the app's own backdrop covers the WHOLE
+  // page via the full-bleed iframe below, so a smaller host-side box + dim would just
+  // create a second, differently-sized rectangle showing through at the edges.
+  wrap.style.cssText = 'position:fixed;inset:0;z-index:1100;display:flex';
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  // Full-bleed, edge-to-edge, transparent — the app owns 100% of its own visual chrome
+  // (backdrop tint/blur, card, panel background) across the entire viewport.
+  iframe.style.cssText = 'flex:1;width:100%;height:100%;border:none;background:transparent';
+  iframe.setAttribute('allowtransparency','true');
+  wrap.appendChild(iframe);
+  wrap.addEventListener('click', e => { if (e.target === wrap) closeGreeterPanel(); });
+  document.body.appendChild(wrap);
+  // Real backdrop blur, applied to the actual page content — backdrop-filter set on
+  // something INSIDE the iframe can't reach through the iframe boundary to blur this
+  // parent document, so the blur has to happen here instead.
+  document.getElementById('site').style.filter = 'blur(4px)';
+}
+function closeGreeterPanel() {
+  document.getElementById('greeter-panel-wrap')?.remove();
+  document.getElementById('site').style.filter = '';
+  // Re-check: "Start over" inside the panel clears the saved session, which should
+  // revert the trigger back to a normal entry CTA rather than still offering to "view"
+  // a shopping list that no longer exists.
+  applyWidgetCopy(currentSkin);
+}
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'greeter-close') closeGreeterPanel();
+});
+document.getElementById('modalInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitModal();
+  if (e.key === 'Escape') closeModal();
+});
+
+setSkin(currentSkin);
+loadAndRender();
+</script>
+</body>
+</html>

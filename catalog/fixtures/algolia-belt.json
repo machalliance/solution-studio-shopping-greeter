@@ -1,0 +1,208 @@
+{
+  "_meta": {
+    "category": "belt",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "mens",
+      "womens",
+      "unisex"
+    ],
+    "description": "Belts for the fashion / outfit scenario."
+  },
+  "hits": [
+    {
+      "objectID": "belt-001",
+      "name": "Tan Leather Belt",
+      "brand": "Anderson's",
+      "price": 85,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "tan",
+      "colourFamily": "tan",
+      "tags": [
+        "leather",
+        "tan",
+        "35mm",
+        "classic"
+      ],
+      "images": [
+        "/images/belt-001.jpg"
+      ],
+      "url": "/products/tan-leather-belt",
+      "inStock": true,
+      "colourHex": "#A0724A",
+      "description": "Full-grain leather belt in tan. 35mm width. Suits chinos and slim trousers.",
+      "imagePrompt": "Tan leather belt with 35mm width, simple buckle, supple construction, laid flat showing grain texture."
+    },
+    {
+      "objectID": "belt-002",
+      "name": "Cognac Suede Belt",
+      "brand": "Magnanni",
+      "price": 110,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "cognac",
+      "colourFamily": "cognac",
+      "tags": [
+        "suede",
+        "cognac",
+        "earthy",
+        "dressy"
+      ],
+      "images": [
+        "/images/belt-002.jpg"
+      ],
+      "url": "/products/cognac-suede-belt",
+      "inStock": true,
+      "colourHex": "#9B6B3A",
+      "description": "Suede belt in cognac with a gunmetal buckle.",
+      "imagePrompt": "Cognac suede belt with polished silver buckle, supple leather construction, structured yet flexible drape on neutral background."
+    },
+    {
+      "objectID": "belt-003",
+      "name": "Braided Leather Belt",
+      "brand": "Orciani",
+      "price": 95,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "brown",
+      "colourFamily": "brown",
+      "tags": [
+        "braided",
+        "brown",
+        "casual",
+        "woven"
+      ],
+      "images": [
+        "/images/belt-003.jpg"
+      ],
+      "url": "/products/braided-leather-belt",
+      "inStock": true,
+      "colourHex": "#7A4F2E",
+      "description": "Woven leather belt in brown. Relaxed texture, unisex sizing.",
+      "imagePrompt": "Braided tan leather belt with woven construction, metal buckle, coiled flat lay against white background."
+    },
+    {
+      "objectID": "belt-004",
+      "name": "Thin Leather Belt — Cognac",
+      "brand": "Clare V.",
+      "price": 98,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "cognac",
+      "colourFamily": "cognac",
+      "tags": [
+        "thin",
+        "leather",
+        "cognac",
+        "minimal",
+        "20mm"
+      ],
+      "images": [
+        "/images/belt-004.jpg"
+      ],
+      "url": "/products/thin-leather-belt-cognac",
+      "inStock": true,
+      "colourHex": "#9B6B3A",
+      "description": "Slim 20mm leather belt in cognac. Sits high on wide-leg trousers or over a blazer.",
+      "imagePrompt": "Cognac leather belt, thin 20mm width, minimal buckle, clean edge stitching, supple worn-in finish."
+    },
+    {
+      "objectID": "belt-005",
+      "name": "Woven Fabric Belt — Sand",
+      "brand": "Loro Piana",
+      "price": 145,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "sand",
+      "colourFamily": "sand",
+      "tags": [
+        "fabric",
+        "woven",
+        "sand",
+        "earthy",
+        "summer",
+        "lightweight"
+      ],
+      "images": [
+        "/images/belt-005.jpg"
+      ],
+      "url": "/products/woven-fabric-belt-sand",
+      "inStock": true,
+      "colourHex": "#D4C4A8",
+      "description": "Woven fabric belt in sand. Relaxed and earthy — pairs with linen trousers.",
+      "imagePrompt": "Woven fabric belt in sand beige, lightweight construction, structured woven texture, adjustable fit, earthy neutral tone."
+    },
+    {
+      "objectID": "belt-006",
+      "name": "Dark Brown Leather Belt",
+      "brand": "Anderson's",
+      "price": 90,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-brown",
+      "colourFamily": "dark brown",
+      "tags": [
+        "leather",
+        "dark-brown",
+        "35mm",
+        "classic"
+      ],
+      "images": [
+        "/images/belt-006.jpg"
+      ],
+      "url": "/products/dark-brown-leather-belt",
+      "inStock": true,
+      "colourHex": "#3A2214",
+      "description": "Full-grain leather belt in dark brown. The right match for espresso or dark brown shoes.",
+      "imagePrompt": "Dark brown leather belt, 35mm width, structured construction, polished buckle, men's sizing."
+    },
+    {
+      "objectID": "belt-007",
+      "name": "Black Leather Belt",
+      "brand": "Magnanni",
+      "price": 95,
+      "currency": "USD",
+      "category": "belt",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "black",
+      "colourFamily": "black",
+      "tags": [
+        "leather",
+        "black",
+        "30mm",
+        "minimal"
+      ],
+      "images": [
+        "/images/belt-007.jpg"
+      ],
+      "url": "/products/black-leather-belt",
+      "inStock": true,
+      "colourHex": "#1A1A1A",
+      "description": "Slim black leather belt with a brushed silver buckle. Pairs with charcoal, navy or black trousers.",
+      "imagePrompt": "Black leather belt, 30mm wide, structured construction, polished finish, classic rectangular buckle, mens fit."
+    }
+  ],
+  "nbHits": 7,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

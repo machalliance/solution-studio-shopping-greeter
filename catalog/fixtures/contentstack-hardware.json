@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "category": "hardware",
+    "description": "Guides for bathroom hardware selection and installation."
+  },
+  "entries": [
+    {
+      "uid": "blt-hardware-001",
+      "title": "Coordinating Bathroom Hardware",
+      "url": "/guides/coordinating-bathroom-hardware",
+      "content_type_uid": "buying_guide",
+      "summary": "How to coordinate towel bars, robe hooks, toilet paper holders, and cabinet pulls into a cohesive look. Finish mixing rules included.",
+      "tags": [
+        "hardware",
+        "bathroom",
+        "buying-guide",
+        "finish"
+      ],
+      "read_time": "5 min",
+      "icon": "book"
+    }
+  ],
+  "count": 1
+}

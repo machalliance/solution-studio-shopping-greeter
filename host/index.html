@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Solution Studio — Greeter Demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --ink: #0F0F0D;
+  --stone: #F5F4F1;
+  --hairline: #E3E1DC;
+  --muted: #767670;
+  --white: #FFFFFF;
+  --radius: 4px;
+}
+
+/* PROJECT STORE — deep botanical green */
+.skin-project {
+  --accent: #1B4332;
+  --accent-hover: #2D6A4F;
+  --accent-light: #E8F3EC;
+}
+
+/* CLOTHING STORE — deep navy */
+.skin-clothing {
+  --accent: #1E2B4A;
+  --accent-hover: #2A3C6A;
+  --accent-light: #ECEEF5;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--stone);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── SKIN SWITCHER — dev tool overlay ── */
+.skin-switcher {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(8px);
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.switcher-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.switcher-tabs { display: flex; gap: 4px; }
+.switcher-tab {
+  font-size: 11px;
+  font-family: var(--font);
+  padding: 3px 11px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.switcher-tab:hover { color: white; border-color: rgba(255,255,255,0.4); }
+.switcher-tab.on { background: white; color: #0F0F0D; border-color: white; font-weight: 500; }
+.switcher-note {
+  font-size: 10px;
+  color: rgba(255,255,255,0.24);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── DEBUG PANEL ── */
+.debug-panel {
+  position: fixed; top: 36px; left: 0; right: 0; z-index: 999;
+  background: #0d0d0d;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: 'SF Mono', ui-monospace, monospace;
+  font-size: 11px; color: #ccc;
+  max-height: 340px; overflow: hidden;
+  display: none; flex-direction: column;
+}
+.debug-panel.open { display: flex; }
+.debug-toolbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.debug-toolbar-label { font-size: 10px; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: 0.08em; }
+.debug-tab {
+  font-size: 10px; padding: 2px 10px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12); background: none;
+  color: rgba(255,255,255,0.45); cursor: pointer;
+}
+.debug-tab.on { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.28); }
+.debug-close {
+  margin-left: auto; font-size: 13px; background: none; border: none;
+  color: rgba(255,255,255,0.38); cursor: pointer; line-height: 1; padding: 2px 6px;
+}
+.debug-close:hover { color: white; }
+.debug-body {
+  overflow-y: auto; padding: 12px 16px; flex: 1;
+  white-space: pre-wrap; line-height: 1.6; color: #999;
+}
+.debug-body .err { color: #f87171; }
+.debug-body .ok { color: #86efac; }
+.debug-body .dim { color: #444; }
+
+/* ── SITE WRAPPER ── */
+.site {
+  padding-top: 36px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: filter .25s ease;
+}
+
+/* ── NAV — white, clean ── */
+nav {
+  background: var(--white);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  gap: 32px;
+  border-bottom: 1px solid var(--hairline);
+}
+.nav-logo {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 28px;
+  flex: 1;
+}
+.nav-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-actions { display: flex; gap: 8px; margin-left: auto; }
+.nav-btn {
+  font-size: 12px;
+  font-family: var(--font);
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.nav-btn-ghost {
+  background: none;
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.nav-btn-ghost:hover { border-color: var(--muted); }
+.nav-btn-solid {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: white;
+}
+.nav-btn-solid:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+/* ── HERO — typographic, white ── */
+.hero {
+  padding: 80px 48px 72px;
+  background: var(--white);
+  border-bottom: 1px solid var(--hairline);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Large outlined background word — signature element */
+.hero::before {
+  position: absolute;
+  right: -20px;
+  bottom: -24px;
+  font-family: var(--font-serif);
+  font-size: 220px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--hairline);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+.skin-project .hero::before { content: 'Build'; }
+.skin-clothing .hero::before { content: 'Style'; }
+
+.hero > * { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 56px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  max-width: 560px;
+  letter-spacing: -0.02em;
+}
+.hero p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 460px;
+  line-height: 1.65;
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.hero-cta {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font);
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.hero-cta:hover { background: var(--accent-hover); }
+.hero-secondary {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 400;
+  transition: color 0.15s;
+}
+.hero-secondary:hover { color: var(--ink); }
+
+/* ── PROMO STRIP ── */
+.promo-strip {
+  background: var(--stone);
+  padding: 11px 48px;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  border-bottom: 1px solid var(--hairline);
+}
+.promo-item {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+}
+.promo-item i { color: var(--accent); font-size: 14px; }
+
+/* ── MAIN CONTENT ── */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 48px 0;
+  flex: 1;
+  width: 100%;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+.section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.section-link {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: color 0.15s;
+}
+.section-link:hover { color: var(--accent); }
+
+/* ── CATEGORY GRID ── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 48px;
+}
+.cat-card {
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cat-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.cat-swatch-color {
+  width: 100%;
+  height: 72px;
+  display: block;
+}
+.cat-body { padding: 12px 14px; }
+.cat-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.cat-count { font-size: 11px; color: var(--muted); font-weight: 300; }
+
+/* ── PRODUCT GRID ── */
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.prod-card {
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.prod-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.prod-img-color {
+  width: 100%;
+  height: 128px;
+  display: block;
+}
+.prod-body { padding: 12px 14px; }
+.prod-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  display: block;
+}
+.prod-name {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+.prod-price {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ── BANNER ── */
+.banner {
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 36px 44px;
+  margin-bottom: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.banner-text h2 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.banner-text p {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 400px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.banner-btn {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.banner-btn:hover { background: var(--accent-hover); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 24px 48px;
+  margin-top: auto;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: -0.02em;
+}
+.footer-links { display: flex; gap: 20px; }
+.footer-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: rgba(255,255,255,0.6); }
+
+/* ── WIDGET TRIGGER ── */
+.widget-trigger {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 20px 12px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  transition: background 0.15s, transform 0.15s;
+  animation: triggerPulse 3.5s ease-in-out infinite;
+}
+.widget-trigger:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  animation: none;
+}
+.widget-trigger i { font-size: 16px; }
+
+@keyframes triggerPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.18), 0 0 0 0 rgba(0,0,0,0.15); }
+  50% { box-shadow: 0 4px 20px rgba(0,0,0,0.18), 0 0 0 10px rgba(0,0,0,0); }
+}
+
+/* ── ENTRY MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(0,0,0,0.32);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 28px 104px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.entry-modal {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.14), 0 0 0 1px var(--hairline);
+  transform: translateY(8px);
+  transition: transform 0.22s ease;
+}
+.modal-overlay.open .entry-modal { transform: translateY(0); }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-title i { color: var(--accent); font-size: 14px; }
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 16px;
+  padding: 2px;
+  display: flex;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--ink); }
+.modal-prompt {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.modal-input-wrap { display: flex; gap: 8px; }
+.modal-input {
+  flex: 1;
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
+  font-family: var(--font);
+  color: var(--ink);
+  outline: none;
+  background: white;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-submit {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.modal-submit:hover { background: var(--accent-hover); }
+.modal-examples {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.modal-example {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--hairline);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.12s;
+}
+.modal-example:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+</style>
+</head>
+<body>
+
+<div class="skin-switcher">
+  <span class="switcher-label">Demo skin</span>
+  <div class="switcher-tabs" id="skinTabs">
+    <button class="switcher-tab on" onclick="setSkin('project')">The Project Store</button>
+    <button class="switcher-tab" onclick="setSkin('clothing')">The Clothing Store</button>
+  </div>
+  <span style="width:1px;height:14px;background:rgba(255,255,255,0.12);flex-shrink:0"></span>
+  <span class="switcher-label">AI model</span>
+  <div class="switcher-tabs" id="providerTabs">
+    <button class="switcher-tab" onclick="setProvider('claude')">Claude</button>
+    <button class="switcher-tab" onclick="setProvider('openai')">ChatGPT</button>
+  </div>
+  <span style="width:1px;height:14px;background:rgba(255,255,255,0.12);flex-shrink:0"></span>
+  <button class="switcher-tab" id="clearBtn" onclick="clearSession()" style="color:rgba(255,180,180,0.75);border-color:rgba(255,120,120,0.25)">↺ Clear session</button>
+  <button class="switcher-tab" id="debugBtn" onclick="toggleDebug()" style="color:rgba(180,220,255,0.75);border-color:rgba(100,180,255,0.25)">⬡ Debug</button>
+  <a href="/settings" class="switcher-tab" style="text-decoration:none;color:rgba(255,255,255,0.55);border-color:rgba(255,255,255,0.18)">⚙ Settings</a>
+  <span class="switcher-note">Agent Solution Studio · MACH Alliance prototype</span>
+</div>
+
+<div class="debug-panel" id="debugPanel">
+  <div class="debug-toolbar">
+    <span class="debug-toolbar-label">Debug</span>
+    <button class="debug-tab on" id="dtab-requests" onclick="switchDebugTab('requests')">Requests</button>
+    <button class="debug-tab" id="dtab-events" onclick="switchDebugTab('events')">Last events</button>
+    <button class="debug-tab" id="dtab-raw" onclick="switchDebugTab('raw')">Raw output</button>
+    <button class="debug-tab" id="dtab-health" onclick="switchDebugTab('health')">Health</button>
+    <button class="debug-close" onclick="toggleDebug()" title="Close">✕</button>
+  </div>
+  <div class="debug-body" id="debugBody">Loading…</div>
+</div>
+
+<div class="site skin-project" id="site">
+
+  <nav>
+    <div class="nav-logo" id="navLogo">The Project <span>Store</span></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#">Bathroom</a>
+      <a href="#">Kitchen</a>
+      <a href="#">Flooring</a>
+      <a href="#">Lighting</a>
+      <a href="#">Tools</a>
+    </div>
+    <div class="nav-actions" id="navActions">
+      <button class="nav-btn nav-btn-ghost">Sign in</button>
+      <button class="nav-btn nav-btn-solid">Pro account</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow" id="heroEyebrow">Project-led shopping</div>
+    <h1 id="heroH1">Tell us what you're building.<br>We'll handle the rest.</h1>
+    <p id="heroP">Describe your project and our AI will assemble a curated shopping list — the right products, the right guides, matched to your space and style.</p>
+    <div class="hero-actions">
+      <button class="hero-cta" onclick="openModal()" id="heroCta">Start a project</button>
+      <a href="#" class="hero-secondary">Browse all categories <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <div class="promo-strip" id="promoStrip">
+    <div class="promo-item"><i class="ti ti-truck" aria-hidden="true"></i> Free delivery on orders over $79</div>
+    <div class="promo-item"><i class="ti ti-tool" aria-hidden="true"></i> Free installation guides on every product</div>
+    <div class="promo-item"><i class="ti ti-shield-check" aria-hidden="true"></i> Price match guarantee</div>
+    <div class="promo-item"><i class="ti ti-phone" aria-hidden="true"></i> Expert advice 7 days a week</div>
+  </div>
+
+  <main>
+    <div class="section-header">
+      <div class="section-title" id="catTitle">Shop by project</div>
+      <a href="#" class="section-link">All categories <i class="ti ti-arrow-right" style="font-size:10px" aria-hidden="true"></i></a>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+
+    <div class="section-header">
+      <div class="section-title" id="prodTitle">Featured products</div>
+      <a href="#" class="section-link">View all <i class="ti ti-arrow-right" style="font-size:10px" aria-hidden="true"></i></a>
+    </div>
+    <div class="prod-grid" id="prodGrid"></div>
+
+    <div class="banner">
+      <div class="banner-text">
+        <h2 id="bannerH2">Not sure where to start?</h2>
+        <p id="bannerP">Describe your project and our AI assistant will build you a complete shopping list — products, guides, and tips matched to your space.</p>
+      </div>
+      <button class="banner-btn" onclick="openModal()" id="bannerBtn">Start with AI</button>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo" id="footerLogo">The Project Store</div>
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="entry-modal">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-sparkles" aria-hidden="true"></i> <span id="modalTitle">Project assistant</span></div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-prompt" id="modalPrompt">What are you working on today?</div>
+      <div class="modal-input-wrap">
+        <input type="text" class="modal-input" id="modalInput" placeholder="e.g. redoing a powder room…" />
+        <button class="modal-submit" onclick="submitModal()">Go</button>
+      </div>
+      <div class="modal-examples" id="modalExamples"></div>
+    </div>
+  </div>
+
+  <button class="widget-trigger" onclick="widgetClick()" id="widgetTrigger">
+    <i class="ti ti-sparkles" aria-hidden="true"></i>
+    <span id="widgetLabel">What are you building today?</span>
+  </button>
+
+</div>
+
+<script>
+const skins = {
+  project: {
+    logo: 'The Project <span style="color:var(--accent)">Store</span>',
+    navLinks: ['Bathroom','Kitchen','Flooring','Lighting','Tools'],
+    navActions: '<button class="nav-btn nav-btn-ghost">Sign in</button><button class="nav-btn nav-btn-solid">Pro account</button>',
+    heroEyebrow: 'Project-led shopping',
+    heroH1: 'Tell us what you\'re building.<br>We\'ll handle the rest.',
+    heroP: 'Describe your project and our AI will assemble a curated shopping list — the right products, the right guides, matched to your space and style.',
+    heroCta: 'Start a project',
+    promoItems: [
+      {icon:'ti-truck',text:'Free delivery on orders over $79'},
+      {icon:'ti-tool',text:'Free installation guides on every product'},
+      {icon:'ti-shield-check',text:'Price match guarantee'},
+      {icon:'ti-phone',text:'Expert advice 7 days a week'},
+    ],
+    catTitle: 'Shop by project',
+    cats: [
+      {color:'#D4E8DC',name:'Bathroom',count:'1,240 products'},
+      {color:'#C8D8E8',name:'Kitchen',count:'2,180 products'},
+      {color:'#E8E0D4',name:'Flooring',count:'890 products'},
+      {color:'#E4E0C8',name:'Lighting',count:'640 products'},
+    ],
+    prodTitle: 'Featured products',
+    products: [
+      {color:'#D4E0DC',tag:'Vanity',name:'Birch 22" wall-mount, white oak',price:'$649'},
+      {color:'#C8D4DC',tag:'Faucet',name:'Norden single-hole, brushed nickel',price:'$189'},
+      {color:'#E0D8CC',tag:'Mirror',name:'Alvhem round, natural ash frame',price:'$145'},
+      {color:'#DCD8C0',tag:'Lighting',name:'Asa 3-light bar, brushed nickel',price:'$179'},
+    ],
+    bannerH2: 'Not sure where to start?',
+    bannerP: 'Describe your project and our AI assistant will build you a complete shopping list — products, guides, and tips matched to your space.',
+    bannerBtn: "Let's plan it",
+    footerLogo: 'The Project Store',
+    widgetLabel: 'What are you building today?',
+    modalTitle: 'Project assistant',
+    modalPrompt: 'What are you working on today?',
+    modalPlaceholder: 'e.g. redoing a powder room…',
+    examples: ['Powder room refresh','Deck refinishing','Kitchen backsplash','New flooring'],
+  },
+  clothing: {
+    logo: 'The Clothing <span style="color:var(--accent)">Store</span>',
+    navLinks: ['New arrivals','Men','Women','Sale','Brands'],
+    navActions: '<button class="nav-btn nav-btn-ghost">Sign in</button>',
+    heroEyebrow: 'Styled for you',
+    heroH1: 'Describe the look.<br>We\'ll put it together.',
+    heroP: 'Tell us the occasion, what you own, and the vibe you\'re going for. Our AI will curate a complete look — pieces that work together, matched to your style.',
+    heroCta: 'Get inspired',
+    promoItems: [
+      {icon:'ti-truck',text:'Free shipping on orders over $100'},
+      {icon:'ti-refresh',text:'Free returns within 30 days'},
+      {icon:'ti-shield-check',text:'Ethically sourced materials'},
+      {icon:'ti-sparkles',text:'AI-powered styling advice'},
+    ],
+    catTitle: 'Shop by occasion',
+    cats: [
+      {color:'#D4DAE8',name:'Smart casual',count:'420 pieces'},
+      {color:'#E8D8D4',name:'Weekend',count:'380 pieces'},
+      {color:'#D8D4E8',name:'Evening',count:'210 pieces'},
+      {color:'#D4E8E0',name:'Workwear',count:'295 pieces'},
+    ],
+    prodTitle: 'New arrivals',
+    products: [
+      {color:'#C8D4C8',tag:'Jacket',name:'Harrington jacket, olive',price:'$129'},
+      {color:'#E8D8D0',tag:'Top',name:'Linen shirt, terracotta',price:'$89'},
+      {color:'#D8CCC0',tag:'Shoes',name:'Suede loafer, tan',price:'$145'},
+      {color:'#CCCCC0',tag:'Trousers',name:'Chino slim, stone',price:'$95'},
+    ],
+    bannerH2: 'Building an outfit?',
+    bannerP: 'Tell us the occasion, your style direction, and anything you already own. Our AI will curate a look that works together.',
+    bannerBtn: 'Style me',
+    footerLogo: 'The Clothing Store',
+    widgetLabel: 'Get inspired — find your look',
+    modalTitle: 'Style assistant',
+    modalPrompt: 'What are you putting together today?',
+    modalPlaceholder: 'e.g. rooftop dinner, smart casual…',
+    examples: ['Rooftop dinner outfit','Weekend look','Work from office','Wedding guest'],
+  }
+};
+
+let currentSkin = 'project';
+
+function clearSession() {
+  localStorage.removeItem('greeter-session');
+  const iframe = document.getElementById('greeter-iframe');
+  if (iframe) iframe.src = iframe.src;
+  const btn = document.getElementById('clearBtn');
+  btn.textContent = '✓ Cleared';
+  setTimeout(() => { btn.textContent = '↺ Clear session'; }, 1500);
+}
+
+function setSkin(key) {
+  currentSkin = key;
+  localStorage.setItem('greeter-skin', key);
+  const url = new URL(location.href);
+  url.searchParams.set('skin', key);
+  history.replaceState(null, '', url.toString());
+  const s = skins[key];
+  const site = document.getElementById('site');
+  site.className = 'site skin-' + key;
+
+  document.querySelectorAll('#skinTabs .switcher-tab').forEach(t => t.classList.remove('on'));
+  document.querySelector(`#skinTabs .switcher-tab:${key==='project'?'first':'last'}-child`).classList.add('on');
+
+  document.getElementById('navLogo').innerHTML = s.logo;
+  document.getElementById('navLinks').innerHTML = s.navLinks.map(l => `<a href="#">${l}</a>`).join('');
+  document.getElementById('navActions').innerHTML = s.navActions;
+  document.getElementById('heroEyebrow').textContent = s.heroEyebrow;
+  document.getElementById('heroH1').innerHTML = s.heroH1;
+  document.getElementById('heroP').textContent = s.heroP;
+  document.getElementById('heroCta').textContent = s.heroCta;
+
+  document.getElementById('promoStrip').innerHTML = s.promoItems.map(p =>
+    `<div class="promo-item"><i class="ti ${p.icon}" aria-hidden="true"></i> ${p.text}</div>`
+  ).join('');
+
+  document.getElementById('catTitle').textContent = s.catTitle;
+  document.getElementById('catGrid').innerHTML = s.cats.map(c => `
+    <div class="cat-card">
+      <div class="cat-swatch-color" style="background:${c.color}"></div>
+      <div class="cat-body">
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-count">${c.count}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('prodTitle').textContent = s.prodTitle;
+  document.getElementById('prodGrid').innerHTML = s.products.map(p => `
+    <div class="prod-card">
+      <div class="prod-img-color" style="background:${p.color}"></div>
+      <div class="prod-body">
+        <span class="prod-tag">${p.tag}</span>
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-price">${p.price}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('bannerH2').textContent = s.bannerH2;
+  document.getElementById('bannerP').textContent = s.bannerP;
+  document.getElementById('bannerBtn').textContent = s.bannerBtn;
+  document.getElementById('footerLogo').textContent = s.footerLogo;
+  document.getElementById('widgetLabel').textContent = s.widgetLabel;
+  document.getElementById('modalTitle').textContent = s.modalTitle;
+  document.getElementById('modalPrompt').textContent = s.modalPrompt;
+  document.getElementById('modalInput').placeholder = s.modalPlaceholder;
+  document.getElementById('modalInput').value = '';
+  document.getElementById('modalExamples').innerHTML = s.examples.map(e =>
+    `<button class="modal-example" onclick="fillExample('${e}')">${e}</button>`
+  ).join('');
+}
+
+function openModal() {
+  document.getElementById('modalInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('modalInput').focus(), 250);
+}
+
+function widgetClick() {
+  try {
+    const saved = localStorage.getItem('greeter-session');
+    if (saved && JSON.parse(saved)) {
+      openGreeterPanel(null);
+      return;
+    }
+  } catch {}
+  openModal();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function fillExample(text) {
+  document.getElementById('modalInput').value = text;
+  submitModal();
+}
+
+function submitModal() {
+  const val = document.getElementById('modalInput').value.trim();
+  if (!val) return;
+  closeModal();
+  openGreeterPanel(val);
+}
+
+function openGreeterPanel(goal) {
+  const existing = document.getElementById('greeter-panel-wrap');
+  if (existing) existing.remove();
+
+  const params = new URLSearchParams({ skin: currentSkin });
+  if (goal) params.set('goal', goal);
+  const url = `/panel?${params}`;
+  const wrap = document.createElement('div');
+  wrap.id = 'greeter-panel-wrap';
+  // No background, no padding, no centering here — the app's own backdrop covers the
+  // WHOLE page (see iframe below), so a smaller host-side box + its own dim would just
+  // create a second, differently-sized rectangle showing through at the edges.
+  wrap.style.cssText = 'position:fixed;inset:0;z-index:1100;display:flex';
+
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  // Full-bleed, edge-to-edge, transparent — the app itself owns 100% of the visual
+  // chrome (backdrop tint/blur, card, panel background) across the ENTIRE viewport now,
+  // not just a capped host-sized box. That's what makes the backdrop read as one
+  // continuous tint with no second rectangle's edge visible anywhere.
+  iframe.style.cssText = 'flex:1;width:100%;height:100%;border:none;background:transparent';
+  iframe.setAttribute('allowtransparency','true');
+
+  wrap.appendChild(iframe);
+  wrap.addEventListener('click', e => { if (e.target === wrap) closeGreeterPanel(); });
+  document.body.appendChild(wrap);
+  // Real backdrop blur, applied to the actual page content — backdrop-filter set on
+  // something INSIDE the iframe can't reach through the iframe boundary to blur this
+  // parent document, so the blur has to happen here instead.
+  document.getElementById('site').style.filter = 'blur(4px)';
+}
+
+function closeGreeterPanel() {
+  document.getElementById('greeter-panel-wrap')?.remove();
+  document.getElementById('site').style.filter = '';
+}
+
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'greeter-close') closeGreeterPanel();
+});
+
+document.getElementById('modalInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitModal();
+  if (e.key === 'Escape') closeModal();
+});
+
+const _initSkin = new URLSearchParams(location.search).get('skin') || localStorage.getItem('greeter-skin') || 'project';
+setSkin(_initSkin);
+
+const PROVIDERS = ['claude', 'openai'];
+
+async function setProvider(key) {
+  await fetch('/api/provider', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider: key }),
+  }).catch(() => {});
+  document.querySelectorAll('#providerTabs .switcher-tab').forEach((tab, i) => {
+    tab.classList.toggle('on', PROVIDERS[i] === key);
+  });
+}
+
+fetch('/api/provider').then(r => r.json()).then(({ provider }) => {
+  document.querySelectorAll('#providerTabs .switcher-tab').forEach((tab, i) => {
+    tab.classList.toggle('on', PROVIDERS[i] === provider);
+  });
+}).catch(() => {});
+
+// ── Debug panel ──────────────────────────────────────────────────────────────
+let debugOpen = false;
+let debugTab = 'requests';
+let debugTimer = null;
+
+function toggleDebug() {
+  debugOpen = !debugOpen;
+  const panel = document.getElementById('debugPanel');
+  const btn = document.getElementById('debugBtn');
+  panel.classList.toggle('open', debugOpen);
+  btn.classList.toggle('on', debugOpen);
+  if (debugOpen) {
+    refreshDebug();
+    debugTimer = setInterval(refreshDebug, 3000);
+    document.getElementById('site').style.paddingTop = (36 + panel.offsetHeight) + 'px';
+  } else {
+    clearInterval(debugTimer);
+    debugTimer = null;
+    document.getElementById('site').style.paddingTop = '36px';
+  }
+}
+
+function switchDebugTab(tab) {
+  debugTab = tab;
+  document.querySelectorAll('.debug-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('dtab-' + tab).classList.add('on');
+  refreshDebug();
+}
+
+async function refreshDebug() {
+  const body = document.getElementById('debugBody');
+  try {
+    let url = '/debug/requests';
+    if (debugTab === 'events') url = '/debug/events';
+    if (debugTab === 'raw') url = '/debug/raw';
+    if (debugTab === 'health') url = '/health';
+    const data = await fetch(url).then(r => r.json());
+    body.innerHTML = formatDebug(data);
+  } catch (e) {
+    body.innerHTML = `<span class="err">Fetch failed: ${e.message}</span>`;
+  }
+}
+
+function formatDebug(data) {
+  const json = JSON.stringify(data, null, 2);
+  const safe = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return safe
+    .replace(/"error"/g, '<span class="err">"error"</span>')
+    .replace(/"ok":\s*true/g, m => `<span class="ok">${m}</span>`)
+    .replace(/^(\s*"[^"]+":)/gm, m => `<span class="dim">${m}</span>`);
+}
+
+function positionWidget() {
+  const footer = document.querySelector('footer');
+  const trigger = document.getElementById('widgetTrigger');
+  if (!footer || !trigger) return;
+  const gap = window.innerHeight - footer.getBoundingClientRect().top;
+  trigger.style.bottom = Math.max(gap + 16, 28) + 'px';
+}
+positionWidget();
+window.addEventListener('scroll', positionWidget, { passive: true });
+</script>
+</body>
+</html>

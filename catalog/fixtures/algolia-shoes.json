@@ -1,0 +1,484 @@
+{
+  "_meta": {
+    "category": "shoes",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "mens",
+      "womens",
+      "unisex"
+    ],
+    "description": "Shoes for the fashion / outfit scenario."
+  },
+  "hits": [
+    {
+      "objectID": "shoes-001",
+      "name": "Tan Leather Derby",
+      "brand": "Grenson",
+      "price": 295,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "tan",
+      "colourFamily": "tan",
+      "tags": [
+        "derby",
+        "leather",
+        "tan",
+        "earthy"
+      ],
+      "images": [
+        "/images/shoes-001.jpg"
+      ],
+      "url": "/products/tan-leather-derby",
+      "inStock": true,
+      "colourHex": "#A0724A",
+      "description": "Full-grain leather derby in tan.",
+      "imagePrompt": "Tan leather derby with structured toe cap, visible stitching detail, and polished leather upper on crepe sole."
+    },
+    {
+      "objectID": "shoes-002",
+      "name": "Tan Suede Penny Loafer",
+      "brand": "Tod's",
+      "price": 420,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "cognac",
+      "colourFamily": "tan",
+      "tags": [
+        "loafer",
+        "suede",
+        "tan",
+        "penny-loafer",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-002.jpg"
+      ],
+      "url": "/products/tan-suede-penny-loafer",
+      "inStock": true,
+      "colourHex": "#B8864E",
+      "description": "Cognac-tan suede penny loafer. Clean silhouette, rubber sole.",
+      "imagePrompt": "Tan suede penny loafer with leather sole, structured toe box, brass hardware slot, polished finish."
+    },
+    {
+      "objectID": "shoes-003",
+      "name": "Tan Leather Chelsea Boot",
+      "brand": "R.M. Williams",
+      "price": 380,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-tan",
+      "colourFamily": "tan",
+      "tags": [
+        "chelsea",
+        "leather",
+        "tan",
+        "boot",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-003.jpg"
+      ],
+      "url": "/products/tan-leather-chelsea-boot",
+      "inStock": true,
+      "colourHex": "#C4935A",
+      "description": "Natural tan leather Chelsea boot. Versatile enough for rooftop or office.",
+      "imagePrompt": "Tan leather Chelsea boot, elastic-sided construction, sleek pointed toe, polished finish, structured heel."
+    },
+    {
+      "objectID": "shoes-004",
+      "name": "Tan Block-Heel Sandal",
+      "brand": "Sam Edelman",
+      "price": 145,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "tan",
+      "colourFamily": "tan",
+      "tags": [
+        "sandal",
+        "block-heel",
+        "tan",
+        "strappy",
+        "ankle-strap",
+        "smart-casual",
+        "lightweight"
+      ],
+      "images": [
+        "/images/shoes-004.jpg"
+      ],
+      "url": "/products/tan-block-heel-sandal",
+      "inStock": true,
+      "colourHex": "#C4895A",
+      "description": "Strappy ankle-strap sandal in tan. Block heel keeps it comfortable for a long evening.",
+      "imagePrompt": "Tan leather block-heel sandal with thin strappy upper and adjustable ankle strap, flat lay on white background"
+    },
+    {
+      "objectID": "shoes-005",
+      "name": "Ivory Kitten-Heel Slingback",
+      "brand": "Reformation",
+      "price": 218,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "ivory",
+      "colourFamily": "ivory",
+      "tags": [
+        "slingback",
+        "kitten-heel",
+        "ivory",
+        "pointed-toe",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-005.jpg"
+      ],
+      "url": "/products/ivory-kitten-heel-slingback",
+      "inStock": true,
+      "colourHex": "#F5F0E8",
+      "description": "Cream leather kitten-heel slingback. Understated and elegant.",
+      "imagePrompt": "Ivory pointed-toe slingback with delicate kitten heel, sleek minimalist silhouette, glossy leather finish."
+    },
+    {
+      "objectID": "shoes-006",
+      "name": "Cognac Pointed-Toe Flat",
+      "brand": "Gianvito Rossi",
+      "price": 495,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "cognac",
+      "colourFamily": "cognac",
+      "tags": [
+        "flat",
+        "ballet",
+        "cognac",
+        "pointed-toe",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-006.jpg"
+      ],
+      "url": "/products/cognac-pointed-toe-flat",
+      "inStock": true,
+      "colourHex": "#9B5E3A",
+      "description": "Pointed-toe ballet flat in cognac leather.",
+      "imagePrompt": "Cognac leather pointed-toe ballet flat with sleek minimalist silhouette and soft suede interior."
+    },
+    {
+      "objectID": "shoes-007",
+      "name": "Caramel Cap-Toe Oxford",
+      "brand": "Bode",
+      "price": 340,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "caramel",
+      "colourFamily": "caramel",
+      "tags": [
+        "oxford",
+        "cap-toe",
+        "caramel",
+        "leather",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-007.jpg"
+      ],
+      "url": "/products/caramel-cap-toe-oxford",
+      "inStock": true,
+      "colourHex": "#C49A6C",
+      "description": "Clean cap-toe oxford in caramel leather.",
+      "imagePrompt": "Caramel leather oxford with structured cap-toe, polished finish, clean stitching, unisex fit."
+    },
+    {
+      "objectID": "shoes-008",
+      "name": "Dark Brown Leather Chelsea Boot",
+      "brand": "Grenson",
+      "price": 345,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-brown",
+      "colourFamily": "dark brown",
+      "tags": [
+        "chelsea",
+        "leather",
+        "dark-brown",
+        "boot",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-008.jpg"
+      ],
+      "url": "/products/dark-brown-leather-chelsea-boot",
+      "inStock": true,
+      "colourHex": "#3A2214",
+      "description": "Dark brown leather Chelsea boot. Richer and more evening-ready than tan — pairs with charcoal, navy or forest.",
+      "imagePrompt": "Dark brown leather Chelsea boot with elastic side gussets, stacked heel, sleek silhouette, polished finish."
+    },
+    {
+      "objectID": "shoes-009",
+      "name": "Black Suede Tassel Loafer",
+      "brand": "Loake",
+      "price": 310,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "black",
+      "colourFamily": "black",
+      "tags": [
+        "loafer",
+        "suede",
+        "black",
+        "tassel",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-009.jpg"
+      ],
+      "url": "/products/black-suede-tassel-loafer",
+      "inStock": true,
+      "colourHex": "#1A1A1A",
+      "description": "Black suede tassel loafer. A classic evening shoe — works with charcoal or dark navy trousers.",
+      "imagePrompt": "Black suede loafer with brass tassel detail, structured leather sole, relaxed slip-on silhouette."
+    },
+    {
+      "objectID": "shoes-010",
+      "name": "Espresso Leather Derby",
+      "brand": "Tricker's",
+      "price": 390,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "espresso",
+      "colourFamily": "dark brown",
+      "tags": [
+        "derby",
+        "leather",
+        "espresso",
+        "dark-brown",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-010.jpg"
+      ],
+      "url": "/products/espresso-leather-derby",
+      "inStock": true,
+      "colourHex": "#2A1A0E",
+      "description": "Full-brogue derby in espresso leather. Deep, rich brown — versatile across dark palettes.",
+      "imagePrompt": "Dark brown leather derby shoe with burnished finish, structured toe box, visible stitching detail, glossy patina."
+    },
+    {
+      "objectID": "shoes-011",
+      "name": "Strappy Heeled Sandal — Nude",
+      "brand": "Stuart Weitzman",
+      "price": 398,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "nude",
+      "colourFamily": "nude",
+      "tags": [
+        "sandal",
+        "strappy",
+        "heeled",
+        "nude",
+        "ankle-strap",
+        "evening",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-011.jpg"
+      ],
+      "url": "/products/strappy-heeled-sandal-nude",
+      "inStock": true,
+      "colourHex": "#D4AA85",
+      "description": "Strappy heeled sandal in nude. Thin ankle strap with a slender mid-heel — the warm evening shoe.",
+      "imagePrompt": "Nude leather strappy heeled sandal for women, thin ankle strap, slender 7cm heel, minimalist open-toe silhouette, flat lay."
+    },
+    {
+      "objectID": "shoes-012",
+      "name": "Ankle Boot — Black Suede",
+      "brand": "Ganni",
+      "price": 280,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "black",
+      "colourFamily": "black suede",
+      "tags": [
+        "ankle-boot",
+        "suede",
+        "black",
+        "block-heel",
+        "smart-casual",
+        "evening"
+      ],
+      "images": [
+        "/images/shoes-012.jpg"
+      ],
+      "url": "/products/ankle-boot-black-suede",
+      "inStock": true,
+      "colourHex": "#1A1A1A",
+      "description": "Black suede ankle boot with a low block heel. Goes with wide-leg trousers or slim jeans — great for a cooler evening.",
+      "imagePrompt": "Black suede ankle boot for women, low block heel, round toe, side zip, slightly slouchy upper, flat lay."
+    },
+    {
+      "objectID": "shoes-013",
+      "name": "Pointed Mule — Camel",
+      "brand": "Mansur Gavriel",
+      "price": 345,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "mule",
+        "pointed-toe",
+        "camel",
+        "leather",
+        "earthy",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/shoes-013.jpg"
+      ],
+      "url": "/products/pointed-mule-camel",
+      "inStock": true,
+      "colourHex": "#C4935A",
+      "description": "Pointed-toe mule in camel leather. Minimal slip-on silhouette — pairs with trousers or wide-leg jeans.",
+      "imagePrompt": "Camel leather pointed-toe mule, open back, low kitten heel, structured smooth leather upper, clean minimal silhouette."
+    },
+    {
+      "objectID": "shoes-014",
+      "name": "Classic Canvas Low-Top Sneaker",
+      "brand": "Vans",
+      "price": 65,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "date night",
+        "versatile",
+        "canvas construction",
+        "low-top",
+        "minimalist"
+      ],
+      "colourHex": "#1a1a1a",
+      "colourFamily": "black",
+      "images": [
+        "/images/shoes-014.jpg"
+      ],
+      "url": "/products/classic-canvas-low-top-sneaker",
+      "inStock": true,
+      "description": "Classic black canvas low-top sneaker with a timeless silhouette that pairs seamlessly with everything from jeans to chinos. Durable vulcanized rubber sole keeps you comfortable whether you're heading out for dinner or casual weekend plans.",
+      "imagePrompt": "Low-top men's canvas sneaker in black, minimalist design, sleek silhouette, ideal for date night sophistication."
+    },
+    {
+      "objectID": "shoes-015",
+      "name": "Leather Retro Court Sneaker",
+      "brand": "Adidas",
+      "price": 95,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "date night",
+        "refined",
+        "leather upper",
+        "court-style",
+        "timeless"
+      ],
+      "colourHex": "#f5f5f5",
+      "colourFamily": "white",
+      "images": [
+        "/images/shoes-015.jpg"
+      ],
+      "url": "/products/leather-retro-court-sneaker",
+      "inStock": true,
+      "description": "Adidas Leather Retro Court Sneaker in white features a classic court-style silhouette with a premium leather upper that works for both casual wear and dressed-up occasions. Clean lines and a timeless design make this a versatile staple that pairs with everything from jeans to chinos.",
+      "imagePrompt": "Court-style men's leather sneaker in white, refined retro silhouette, timeless date night aesthetic, polished upper."
+    },
+    {
+      "objectID": "shoes-016",
+      "name": "Suede High-Top Sneaker",
+      "brand": "Converse",
+      "price": 85,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "smart-casual",
+        "date night",
+        "elevated",
+        "suede material",
+        "high-top",
+        "sophisticated"
+      ],
+      "colourHex": "#2c3e50",
+      "colourFamily": "navy",
+      "images": [
+        "/images/shoes-016.jpg"
+      ],
+      "url": "/products/suede-high-top-sneaker",
+      "inStock": true,
+      "description": "Navy suede high-top sneaker from Converse with a soft, velvety finish that elevates casual wear into date-night territory. The structured ankle support and premium material make it a sophisticated alternative to standard canvas.",
+      "imagePrompt": "High-top men's sneaker in navy suede, sophisticated silhouette, date night ready, premium craftsmanship, sleek ankle collar."
+    },
+    {
+      "objectID": "shoes-017",
+      "name": "Converse Low Top White",
+      "brand": "Converse All-Star",
+      "price": 60,
+      "currency": "USD",
+      "category": "shoes",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "tags": [
+        "cotton",
+        "smart-casual",
+        "casual"
+      ],
+      "colourHex": "#888888",
+      "colourFamily": "White",
+      "images": [
+        "/images/shoes-017.jpg"
+      ],
+      "url": "/products/converse-low-top-white",
+      "inStock": true,
+      "description": "The Converse All-Star Low Top in White is a timeless canvas sneaker with a reinforced toe cap that outlasts everyday wear. Lightweight and versatile, it pairs with virtually any casual outfit.",
+      "imagePrompt": "Low-top canvas sneaker in white cotton, classic rubber toe cap, clean minimalist design, iconic ankle patch detail."
+    }
+  ],
+  "nbHits": 17,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

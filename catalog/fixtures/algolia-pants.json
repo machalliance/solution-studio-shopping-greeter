@@ -1,0 +1,1005 @@
+{
+  "_meta": {
+    "category": "pants",
+    "styles_represented": [
+      "smart-casual"
+    ],
+    "fits_represented": [
+      "mens",
+      "womens"
+    ],
+    "description": "Casual bottoms for the fashion / outfit scenario — denim jeans, chinos, linen trousers. LLM includes this for smart casual and relaxed occasions. For formal/evening, use the trousers category instead."
+  },
+  "hits": [
+    {
+      "objectID": "pants-001",
+      "name": "Dark Slim Selvedge Jean",
+      "brand": "Nudie Jeans",
+      "price": 195,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-indigo",
+      "colourFamily": "dark indigo",
+      "tags": [
+        "slim",
+        "selvedge",
+        "dark-indigo",
+        "smart-casual",
+        "jeans",
+        "denim",
+        "premium"
+      ],
+      "images": [
+        "/images/pants-001.jpg"
+      ],
+      "url": "/products/dark-slim-selvedge-jean",
+      "inStock": true,
+      "colourHex": "#1C2A4A",
+      "description": "Slim-cut selvedge denim in dark indigo. Dresses up easily — the rooftop dinner jean.",
+      "imagePrompt": "Dark indigo selvedge denim jeans, slim tapered cut, raw hem edge visible, crisp structured fabric, clean stitching detail."
+    },
+    {
+      "objectID": "pants-002",
+      "name": "Straight Leg Jean — Washed Black",
+      "brand": "A.P.C.",
+      "price": 210,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "washed-black",
+      "colourFamily": "washed black",
+      "tags": [
+        "straight",
+        "washed-black",
+        "clean",
+        "versatile",
+        "smart-casual",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-002.jpg"
+      ],
+      "url": "/products/straight-leg-jean-washed-black",
+      "inStock": true,
+      "colourHex": "#2C2C2C",
+      "description": "Straight-leg jean in washed black. Cleaner than blue denim for smart casual occasions.",
+      "imagePrompt": "Straight-leg black jeans, dark indigo washed fabric, flat-front waistband, five-pocket construction, clean hem."
+    },
+    {
+      "objectID": "pants-003",
+      "name": "Slim Taper Jean — Raw Indigo",
+      "brand": "Levi's Made in Japan",
+      "price": 228,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "raw-indigo",
+      "colourFamily": "raw indigo",
+      "tags": [
+        "slim",
+        "slim-taper",
+        "raw-indigo",
+        "japanese-denim",
+        "premium",
+        "smart-casual",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-003.jpg"
+      ],
+      "url": "/products/slim-taper-jean-raw-indigo",
+      "inStock": true,
+      "colourHex": "#2A3F6F",
+      "description": "Slim taper in raw Japanese indigo. Stiff and structured — softens beautifully with wear.",
+      "imagePrompt": "Raw indigo Japanese denim slim taper jeans, crisp unwashed selvedge fabric, tapered leg opening, structured heavy-weight cotton twill."
+    },
+    {
+      "objectID": "pants-004",
+      "name": "Tapered Jean — Rinse Wash",
+      "brand": "Norse Projects",
+      "price": 175,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "rinse-wash",
+      "colourFamily": "rinse wash",
+      "tags": [
+        "tapered",
+        "rinse-wash",
+        "clean",
+        "danish",
+        "relaxed-smart",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-004.jpg"
+      ],
+      "url": "/products/tapered-jean-rinse-wash",
+      "inStock": true,
+      "colourHex": "#3A4E6A",
+      "description": "Tapered jean in a clean rinse wash. Not too dark, not too light — hits the smart casual mark.",
+      "imagePrompt": "Men's tapered jeans, rinse-washed light denim, slim leg taper, structured five-pocket construction, mid-rise fit."
+    },
+    {
+      "objectID": "pants-005",
+      "name": "Relaxed Straight Jean — Dark Navy",
+      "brand": "Kenzo",
+      "price": 245,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-navy",
+      "colourFamily": "dark navy",
+      "tags": [
+        "relaxed-straight",
+        "relaxed",
+        "dark-navy",
+        "roomy",
+        "elevated",
+        "statement",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-005.jpg"
+      ],
+      "url": "/products/relaxed-straight-jean-dark-navy",
+      "inStock": true,
+      "colourHex": "#1A2A42",
+      "description": "Relaxed straight cut in dark navy denim. Roomier silhouette, still very polished.",
+      "imagePrompt": "Dark navy cotton denim, relaxed straight leg, roomy through thigh and hip, flat front, structured waistband, visible stitching."
+    },
+    {
+      "objectID": "pants-006",
+      "name": "High-Rise Straight Jean — Dark Wash",
+      "brand": "Agolde",
+      "price": 228,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "dark-wash",
+      "colourFamily": "dark wash",
+      "tags": [
+        "high-rise",
+        "straight",
+        "dark-wash",
+        "versatile",
+        "smart-casual",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-006.jpg"
+      ],
+      "url": "/products/high-rise-straight-jean-dark-wash",
+      "inStock": true,
+      "colourHex": "#2A3A52",
+      "description": "High-rise straight in dark wash. The go-to jean for smart casual — works with almost anything on top.",
+      "imagePrompt": "Dark wash high-rise straight-leg jeans, rigid denim, structured fit, clean five-pocket construction, flat front."
+    },
+    {
+      "objectID": "pants-007",
+      "name": "Wide-Leg Jean — Indigo",
+      "brand": "Totême",
+      "price": 295,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "indigo",
+      "colourFamily": "indigo",
+      "tags": [
+        "wide-leg",
+        "indigo",
+        "elevated",
+        "structured",
+        "statement",
+        "lightweight",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-007.jpg"
+      ],
+      "url": "/products/wide-leg-jean-indigo",
+      "inStock": true,
+      "colourHex": "#2C3E6A",
+      "description": "Structured wide-leg in indigo. Very current silhouette — pairs with a fitted top or cami.",
+      "imagePrompt": "Indigo wide-leg jeans with structured denim, lightweight weave, high-rise waist, clean stitching, relaxed thigh to ankle."
+    },
+    {
+      "objectID": "pants-008",
+      "name": "Slim Straight Jean — Washed Black",
+      "brand": "Frame",
+      "price": 215,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "washed-black",
+      "colourFamily": "washed black",
+      "tags": [
+        "slim",
+        "slim-straight",
+        "washed-black",
+        "clean",
+        "classic",
+        "versatile",
+        "jeans",
+        "denim"
+      ],
+      "images": [
+        "/images/pants-008.jpg"
+      ],
+      "url": "/products/slim-straight-jean-washed-black",
+      "inStock": true,
+      "colourHex": "#2C2C2C",
+      "description": "Slim straight in washed black. Clean and versatile — the most dressed-up denim cut.",
+      "imagePrompt": "Slim straight black jeans, washed denim, high-rise waistband, tapered leg, clean stitching."
+    },
+    {
+      "objectID": "pants-009",
+      "name": "Slim Chino — Stone",
+      "brand": "Club Monaco",
+      "price": 125,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "stone",
+      "colourFamily": "stone",
+      "tags": [
+        "chino",
+        "slim",
+        "stone",
+        "neutral",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-009.jpg"
+      ],
+      "url": "/products/slim-chino-stone",
+      "inStock": true,
+      "colourHex": "#C4B89A",
+      "description": "Slim-fit chino in stone. The right kind of smart casual.",
+      "imagePrompt": "Slim-fit stone chino pants with crisp cotton twill weave, tapered legs, flat front closure, neutral beige tone."
+    },
+    {
+      "objectID": "pants-010",
+      "name": "Relaxed Chino — Cream",
+      "brand": "COS",
+      "price": 89,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "cream",
+      "colourFamily": "cream",
+      "tags": [
+        "chino",
+        "cream",
+        "relaxed",
+        "roomy",
+        "versatile",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-010.jpg"
+      ],
+      "url": "/products/relaxed-chino-cream",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Relaxed-fit chino in cream. Wider leg than the slim chino — a more current silhouette.",
+      "imagePrompt": "Cream relaxed-fit chino with roomy cut, natural cotton twill weave, slouchy silhouette"
+    },
+    {
+      "objectID": "pants-011",
+      "name": "Dark Navy Chino",
+      "brand": "Incotex",
+      "price": 210,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "dark-navy",
+      "colourFamily": "dark navy",
+      "tags": [
+        "chino",
+        "dark-navy",
+        "slim",
+        "premium",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-011.jpg"
+      ],
+      "url": "/products/dark-navy-chino",
+      "inStock": true,
+      "colourHex": "#1C2B45",
+      "description": "Slim chino in dark navy. The same silhouette as the stone chino — a noticeably richer colour.",
+      "imagePrompt": "Dark navy slim-fit chino with structured cotton twill, tapered legs, precise stitching details."
+    },
+    {
+      "objectID": "pants-012",
+      "name": "Linen Trousers — Sand",
+      "brand": "Arket",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "sand",
+      "colourFamily": "sand",
+      "tags": [
+        "linen",
+        "sand",
+        "relaxed",
+        "summer",
+        "earthy",
+        "lightweight",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-012.jpg"
+      ],
+      "url": "/products/linen-trousers-sand",
+      "inStock": true,
+      "colourHex": "#D4C4A8",
+      "description": "Linen trousers in sand. Relaxed cut with a slight taper.",
+      "imagePrompt": "Relaxed linen trousers in sand, crumpled texture, loose straight leg, lightweight summer construction, neutral earthy tone."
+    },
+    {
+      "objectID": "pants-013",
+      "name": "Linen Barrel-Leg Pant — Sand",
+      "brand": "Vince",
+      "price": 225,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "sand",
+      "colourFamily": "sand",
+      "tags": [
+        "barrel-leg",
+        "linen",
+        "sand",
+        "relaxed",
+        "summer",
+        "lightweight",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-013.jpg"
+      ],
+      "url": "/products/linen-barrel-leg-pant-sand",
+      "inStock": true,
+      "colourHex": "#D4C4A8",
+      "description": "Linen barrel-leg pant in sand. Relaxed volume, very current.",
+      "imagePrompt": "Relaxed sand linen barrel-leg pant, lightweight structured fabric, high-waisted generous hip, tapered calf, flat lay."
+    },
+    {
+      "objectID": "pants-014",
+      "name": "Wide-Leg Tailored Pant — Black",
+      "brand": "Anine Bing",
+      "price": 279,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "black",
+      "colourFamily": "black",
+      "tags": [
+        "wide-leg",
+        "tailored",
+        "black",
+        "high-rise",
+        "smart-casual",
+        "evening"
+      ],
+      "images": [
+        "/images/pants-014.jpg"
+      ],
+      "url": "/products/wide-leg-tailored-pant-black",
+      "inStock": true,
+      "colourHex": "#1A1A1A",
+      "description": "Wide-leg tailored pant in black. High-rise with clean front crease — rooftop-ready.",
+      "imagePrompt": "Black wide-leg tailored trousers for women, high-rise waist, sharp front crease, fluid drape, structured woven fabric."
+    },
+    {
+      "objectID": "pants-015",
+      "name": "Slim Cigarette Pant — Ivory",
+      "brand": "Theory",
+      "price": 245,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "ivory",
+      "colourFamily": "ivory",
+      "tags": [
+        "cigarette",
+        "slim",
+        "ivory",
+        "tailored",
+        "high-rise",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-015.jpg"
+      ],
+      "url": "/products/slim-cigarette-pant-ivory",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Slim cigarette pant in ivory stretch-wool. Clean and elevated without being formal.",
+      "imagePrompt": "Ivory slim cigarette-cut trousers for women, high-waist, narrow straight leg, tailored smooth fabric, front dart construction."
+    },
+    {
+      "objectID": "pants-016",
+      "name": "High-Waist Wide-Leg Trouser — Camel",
+      "brand": "Max Mara",
+      "price": 395,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "wide-leg",
+        "camel",
+        "high-rise",
+        "earthy",
+        "tailored",
+        "statement",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-016.jpg"
+      ],
+      "url": "/products/high-waist-wide-leg-trouser-camel",
+      "inStock": true,
+      "colourHex": "#C4935A",
+      "description": "Wide-leg trouser in camel. Warm earthy tone with an elegant drape — the statement bottom.",
+      "imagePrompt": "Camel wide-leg tailored trousers for women, high-rise waist, generous flowing leg, fluid woven fabric, soft drape."
+    },
+    {
+      "objectID": "pants-017",
+      "name": "Satin Wide-Leg Pant — Champagne",
+      "brand": "Raey",
+      "price": 195,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "champagne",
+      "colourFamily": "champagne",
+      "tags": [
+        "satin",
+        "wide-leg",
+        "champagne",
+        "evening",
+        "flowy",
+        "lightweight",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/pants-017.jpg"
+      ],
+      "url": "/products/satin-wide-leg-pant-champagne",
+      "inStock": true,
+      "colourHex": "#E8DFC0",
+      "description": "Satin wide-leg pant in champagne. Lightweight and slightly lustrous — perfect for a warm rooftop evening.",
+      "imagePrompt": "Champagne satin wide-leg trousers for women, fluid drape, subtle sheen, elasticated waist, flowing lightweight fabric."
+    },
+    {
+      "objectID": "pants-018",
+      "name": "Tailored Straight-Leg Pant — Sage",
+      "brand": "COS",
+      "price": 135,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "sage",
+      "colourFamily": "sage",
+      "tags": [
+        "straight-leg",
+        "tailored",
+        "sage",
+        "earthy",
+        "smart-casual",
+        "relaxed"
+      ],
+      "images": [
+        "/images/pants-018.jpg"
+      ],
+      "url": "/products/tailored-straight-leg-pant-sage",
+      "inStock": true,
+      "colourHex": "#8A9E88",
+      "description": "Tailored straight-leg pant in sage. Relaxed through the hip with a clean straight fall.",
+      "imagePrompt": "Sage green tailored straight-leg trousers for women, relaxed through hip, clean straight leg, structured woven fabric, flat front."
+    },
+    {
+      "objectID": "pants-020",
+      "name": "Tailored Trouser — Navy",
+      "brand": "Reiss",
+      "price": 175,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "navy",
+      "colourFamily": "navy",
+      "tags": [
+        "tailored",
+        "navy",
+        "slim",
+        "premium"
+      ],
+      "images": [
+        "/images/pants-020.jpg"
+      ],
+      "url": "/products/tailored-trouser-navy",
+      "inStock": true,
+      "colourHex": "#2B3A52",
+      "description": "Slim tailored trouser in navy.",
+      "imagePrompt": "Navy wool tailored trousers, slim fit, crisp pressed creases, flat-front construction, clean hemline"
+    },
+    {
+      "objectID": "pants-021",
+      "name": "Wide-Leg Trouser — Cream",
+      "brand": "Theory",
+      "price": 265,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "cream",
+      "colourFamily": "cream",
+      "tags": [
+        "wide-leg",
+        "cream",
+        "tailored",
+        "elegant",
+        "elevated",
+        "lightweight"
+      ],
+      "images": [
+        "/images/pants-021.jpg"
+      ],
+      "url": "/products/wide-leg-trouser-cream",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Wide-leg trouser in cream. Fluid and tailored.",
+      "imagePrompt": "Cream wide-leg trouser, high-waisted tailored cut, lightweight fabric with crisp structured drape, flat-front construction."
+    },
+    {
+      "objectID": "pants-022",
+      "name": "Cigarette Trouser — Camel",
+      "brand": "Anine Bing",
+      "price": 195,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "cigarette",
+        "camel",
+        "tailored",
+        "slim",
+        "earthy"
+      ],
+      "images": [
+        "/images/pants-022.jpg"
+      ],
+      "url": "/products/cigarette-trouser-camel",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Cigarette-cut trouser in camel. Slim, slightly cropped.",
+      "imagePrompt": "Camel wool cigarette trousers, high-waisted, slim tapered leg, crisp structured fabric, flat front, sharp creases."
+    },
+    {
+      "objectID": "pants-023",
+      "name": "Wool-Blend Trouser — Olive",
+      "brand": "Club Monaco",
+      "price": 185,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "olive",
+      "colourFamily": "olive",
+      "tags": [
+        "wool-blend",
+        "olive",
+        "slim",
+        "earthy",
+        "smart"
+      ],
+      "images": [
+        "/images/pants-023.jpg"
+      ],
+      "url": "/products/wool-blend-trouser-olive",
+      "inStock": true,
+      "colourHex": "#6B7B4A",
+      "description": "Slim wool-blend trouser in olive. Pairs with a linen shirt or light blazer.",
+      "imagePrompt": "Olive wool-blend trousers, slim fit, flat-front, crisp press, tailored silhouette, earthy matte finish."
+    },
+    {
+      "objectID": "pants-024",
+      "name": "Slim Trouser — Charcoal",
+      "brand": "Reiss",
+      "price": 195,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "charcoal",
+      "colourFamily": "charcoal",
+      "tags": [
+        "slim",
+        "tailored",
+        "charcoal",
+        "versatile"
+      ],
+      "images": [
+        "/images/pants-024.jpg"
+      ],
+      "url": "/products/slim-trouser-charcoal",
+      "inStock": true,
+      "colourHex": "#4A4A4A",
+      "description": "Slim tailored trouser in charcoal. Works with a navy blazer or forest jacket equally well.",
+      "imagePrompt": "Charcoal wool-blend slim trousers, tapered leg, pressed crease, flat-front cut, structured drape."
+    },
+    {
+      "objectID": "pants-025",
+      "name": "Forest Green Trouser",
+      "brand": "Corridor",
+      "price": 175,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "finish": "forest",
+      "colourFamily": "forest green",
+      "tags": [
+        "tailored",
+        "forest",
+        "slim",
+        "earthy",
+        "smart"
+      ],
+      "images": [
+        "/images/pants-025.jpg"
+      ],
+      "url": "/products/forest-green-trouser",
+      "inStock": true,
+      "colourHex": "#2D4A2D",
+      "description": "Slim trouser in deep forest green. A strong earthy alternative to olive — darker, more evening-ready.",
+      "imagePrompt": "Forest green wool-blend tailored trousers, slim fit, crisp pressed creases, structured waistband, clean finished seams."
+    },
+    {
+      "objectID": "pants-026",
+      "name": "Super Skinny Chino Pants",
+      "brand": "Banana Republic",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "skinny fit",
+        "business-casual",
+        "smart-casual",
+        "cotton blend",
+        "versatile"
+      ],
+      "colourHex": "#2c2c2c",
+      "colourFamily": "charcoal",
+      "images": [
+        "/images/pants-026.jpg"
+      ],
+      "url": "/products/super-skinny-chino-pants",
+      "inStock": true,
+      "description": "Charcoal super skinny chinos with a cotton blend that moves with you without wrinkles. Perfect for business-casual that actually fits like you mean it.",
+      "imagePrompt": "Super-skinny tapered-leg men's chino pants in charcoal cotton blend, crisp flat-front, slim ankle opening."
+    },
+    {
+      "objectID": "pants-027",
+      "name": "Super Skinny Chino Pants",
+      "brand": "Banana Republic",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "skinny fit",
+        "casual",
+        "smart-casual",
+        "cotton blend",
+        "everyday"
+      ],
+      "colourHex": "#8b7355",
+      "colourFamily": "khaki",
+      "images": [
+        "/images/pants-027.jpg"
+      ],
+      "url": "/products/super-skinny-chino-pants",
+      "inStock": true,
+      "description": "Super Skinny Chino Pants in khaki with a crisp cotton blend that holds its shape through daily wear. Tapered cut sits close to the leg without restricting movement.",
+      "imagePrompt": "Super-skinny tapered-leg men's chino in khaki cotton blend, crisp flat-front, slim ankle opening, everyday wear."
+    },
+    {
+      "objectID": "pants-028",
+      "name": "Super Skinny Chino Pants",
+      "brand": "Banana Republic",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "skinny fit",
+        "business-casual",
+        "smart-casual",
+        "cotton blend",
+        "neutral"
+      ],
+      "colourHex": "#1a1a1a",
+      "colourFamily": "black",
+      "images": [
+        "/images/pants-028.jpg"
+      ],
+      "url": "/products/super-skinny-chino-pants",
+      "inStock": true,
+      "description": "Black super skinny chino pants with a streamlined tapered leg that works for both office and weekend wear. Made from a comfortable cotton blend that moves with you without losing its crisp structure.",
+      "imagePrompt": "Super-skinny tapered-leg men's chino in black cotton blend, crisp flat-front, slim ankle opening."
+    },
+    {
+      "objectID": "pants-029",
+      "name": "Super Skinny Chino Pants",
+      "brand": "Banana Republic",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "skinny fit",
+        "casual",
+        "smart-casual",
+        "cotton blend",
+        "seasonal"
+      ],
+      "colourHex": "#d4a574",
+      "colourFamily": "stone",
+      "images": [
+        "/images/pants-029.jpg"
+      ],
+      "url": "/products/super-skinny-chino-pants",
+      "inStock": true,
+      "description": "Stone super skinny chinos crafted from a breathable cotton blend that moves with you through casual days and weekend plans. Streamlined cut hugs your frame without restriction, making these a versatile staple for any season.",
+      "imagePrompt": "Super-skinny tapered-leg men's chino in stone cotton blend, crisp flat-front, slim ankle opening, seasonal weight fabric."
+    },
+    {
+      "objectID": "pants-030",
+      "name": "Super Skinny Chino Pants",
+      "brand": "Banana Republic",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "skinny fit",
+        "casual",
+        "weekend",
+        "cotton blend",
+        "contemporary"
+      ],
+      "colourHex": "#4a5859",
+      "colourFamily": "slate",
+      "images": [
+        "/images/pants-030.jpg"
+      ],
+      "url": "/products/super-skinny-chino-pants",
+      "inStock": true,
+      "description": "Slate super skinny chinos from Banana Republic with a sharp contemporary taper that works equally well dressed up or down. Cotton blend fabric keeps them comfortable for all-day weekend wear.",
+      "imagePrompt": "Super-skinny tapered-leg men's chino in slate cotton blend, contemporary flat-front, slim ankle opening."
+    },
+    {
+      "objectID": "pants-031",
+      "name": "Classic A-Line Midi Skirt",
+      "brand": "Everly",
+      "price": 129.99,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "smart-casual",
+        "casual",
+        "midi",
+        "versatile"
+      ],
+      "colourHex": "#2C3E50",
+      "colourFamily": "navy",
+      "images": [
+        "/images/pants-031.jpg"
+      ],
+      "url": "/products/classic-a-line-midi-skirt",
+      "inStock": true,
+      "description": "The navy Classic A-Line Midi Skirt offers timeless style with a flattering silhouette perfect for casual everyday wear. Its midi length and versatile color make it an easy staple to pair with any wardrobe.",
+      "imagePrompt": "Midi women's A-line skirt in navy blue cotton, classic silhouette with clean lines and elegant drape, studio product photography"
+    },
+    {
+      "objectID": "pants-032",
+      "name": "Pleated Mini Skirt",
+      "brand": "Zara",
+      "price": 95,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "playful",
+        "mini",
+        "contemporary"
+      ],
+      "colourHex": "#E74C3C",
+      "colourFamily": "red",
+      "images": [
+        "/images/pants-032.jpg"
+      ],
+      "url": "/products/pleated-mini-skirt",
+      "inStock": true,
+      "description": "This red pleated mini skirt from Zara features sharp, structured pleats that create a playful silhouette perfect for casual, contemporary styling. The crisp fabric and timeless design make it an easy everyday piece that transitions from day to night.",
+      "imagePrompt": "women's mini pleated skirt in red, contemporary playful design with crisp knife pleats, high-waisted silhouette, modern styling."
+    },
+    {
+      "objectID": "pants-033",
+      "name": "High-Waist Pencil Skirt",
+      "brand": "Banana Republic",
+      "price": 159.99,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "smart-casual",
+        "professional",
+        "midi",
+        "tailored"
+      ],
+      "colourHex": "#34495E",
+      "colourFamily": "charcoal",
+      "images": [
+        "/images/pants-033.jpg"
+      ],
+      "url": "/products/high-waist-pencil-skirt",
+      "inStock": true,
+      "description": "This charcoal high-waist pencil skirt from Banana Republic delivers polished, professional style with a flattering midi length and tailored silhouette. Perfect for the office or elevated everyday wear, it pairs seamlessly with blazers and blouses.",
+      "imagePrompt": "Tailored women's pencil skirt in charcoal, high-waist midi length with crisp professional seaming and sleek finish."
+    },
+    {
+      "objectID": "pants-034",
+      "name": "Maxi Linen Skirt",
+      "brand": "Anthropologie",
+      "price": 178,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "bohemian",
+        "maxi",
+        "relaxed"
+      ],
+      "colourHex": "#F4E4C1",
+      "colourFamily": "cream",
+      "images": [
+        "/images/pants-034.jpg"
+      ],
+      "url": "/products/maxi-linen-skirt",
+      "inStock": true,
+      "description": "Cream linen maxi skirt with a relaxed, flowing silhouette perfect for effortless bohemian style. Features a comfortable fit ideal for casual everyday wear or weekend adventures.",
+      "imagePrompt": "Relaxed maxi women's skirt in cream linen, bohemian style with flowing fabric and earthy aesthetic."
+    },
+    {
+      "objectID": "pants-035",
+      "name": "Denim Wrap Skirt",
+      "brand": "Madewell",
+      "price": 139.5,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "smart-casual",
+        "knee-length",
+        "timeless"
+      ],
+      "colourHex": "#4A5B7D",
+      "colourFamily": "denim",
+      "images": [
+        "/images/pants-035.jpg"
+      ],
+      "url": "/products/denim-wrap-skirt",
+      "inStock": true,
+      "description": "This classic denim wrap skirt features a rich indigo denim fabric with a timeless silhouette that wraps elegantly at the waist. Perfect for casual styling, the knee-length cut offers versatile everyday wear that pairs seamlessly with everything from t-shirts to sweaters.",
+      "imagePrompt": "women's knee-length denim wrap skirt in classic blue denim, timeless silhouette with elegant draped waistband detail, modern casual styling"
+    },
+    {
+      "objectID": "pants-036",
+      "name": "Classic Chino Shorts",
+      "brand": "Dockers",
+      "price": 55,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "weekend",
+        "casual",
+        "chino",
+        "shorts"
+      ],
+      "colourHex": "#8B7355",
+      "colourFamily": "tan",
+      "images": [
+        "/images/pants-036.jpg"
+      ],
+      "url": "/products/classic-chino-shorts",
+      "inStock": true,
+      "description": "Tan Classic Chino Shorts offer timeless weekend style in a versatile neutral shade perfect for casual outings. These Dockers shorts feature a comfortable fit that pairs effortlessly with t-shirts, polos, or casual button-ups.",
+      "imagePrompt": "Classic men's chino shorts in tan, flat-front design with clean lines and versatile casual styling"
+    },
+    {
+      "objectID": "pants-040",
+      "name": "Lightweight Beach Shorts",
+      "brand": "Vans",
+      "price": 50,
+      "currency": "USD",
+      "category": "pants",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "weekend",
+        "coastal",
+        "swim",
+        "shorts"
+      ],
+      "colourHex": "#FF6B35",
+      "colourFamily": "coral",
+      "images": [
+        "/images/pants-040.jpg"
+      ],
+      "url": "/products/lightweight-beach-shorts",
+      "inStock": true,
+      "description": "Coral Vans Lightweight Beach Shorts offer quick-drying comfort perfect for weekend coastal getaways and water activities. Designed with a relaxed mens fit, these versatile shorts transition seamlessly from beach to boardwalk.",
+      "imagePrompt": "men's lightweight beach shorts in coral, displayed flat lay with subtle texture detail and tropical styling aesthetic"
+    }
+  ],
+  "nbHits": 36,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

@@ -1,0 +1,20 @@
+node_modules/
+dist/
+
+# Real secrets — never commit. .env.example documents the keys with no real values.
+.env
+
+# Internal AI-agent instructions and in-progress design notes — not for the public repo.
+CLAUDE.md
+docs/vercel-gateway-schema-plan.md
+docs/implementation-guide.md
+docs/business-case-template.md
+docs/production-considerations.md
+
+# Local editor/tool config and scratch files.
+.claude/
+scratch/
+
+# OS/editor cruft
+.DS_Store
+*.log

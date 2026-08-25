@@ -1,0 +1,227 @@
+{
+  "_meta": {
+    "category": "tile",
+    "styles_represented": [
+      "scandi",
+      "coastal"
+    ],
+    "description": "Bathroom tile products. Price is per square foot."
+  },
+  "hits": [
+    {
+      "objectID": "tile-001",
+      "name": "Bone White Subway Tile 3×6\"",
+      "brand": "Fireclay",
+      "price": 4.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "scandi",
+      "finish": "matte",
+      "tags": [
+        "subway",
+        "wall",
+        "matte",
+        "white",
+        "classic"
+      ],
+      "images": [
+        "/images/tile-001.png"
+      ],
+      "url": "/products/bone-white-subway-tile",
+      "inStock": true,
+      "colourHex": "#F2EFEA",
+      "description": "Handcrafted matte white subway tile 3×6\". Each tile has slight variation — very Scandi.",
+      "imagePrompt": "Bone white matte subway tile, 3x6 inches, rectangular glazed ceramic with subtle surface texture and clean grout lines.",
+      "colourFamily": "white"
+    },
+    {
+      "objectID": "tile-002",
+      "name": "Light Grey Large Format 12×24\"",
+      "brand": "Porcelain Plus",
+      "price": 6.49,
+      "currency": "USD",
+      "category": "tile",
+      "style": "scandi",
+      "finish": "matte",
+      "tags": [
+        "large-format",
+        "floor",
+        "grey",
+        "minimalist",
+        "porcelain"
+      ],
+      "images": [
+        "/images/tile-002.png"
+      ],
+      "url": "/products/light-grey-large-format",
+      "inStock": true,
+      "colourHex": "#DCDCD8",
+      "description": "Light grey porcelain tile 12×24\". Minimal grout lines create a clean, expansive floor.",
+      "imagePrompt": "Light grey porcelain floor tile, matte finish, rectangular 12x24 inch format, clean edges, uniform surface texture",
+      "colourFamily": "grey"
+    },
+    {
+      "objectID": "tile-003",
+      "name": "White Hexagon Mosaic",
+      "brand": "Ann Sacks",
+      "price": 9.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "scandi",
+      "finish": "matte",
+      "tags": [
+        "hexagon",
+        "mosaic",
+        "floor",
+        "white",
+        "geometric"
+      ],
+      "images": [
+        "/images/tile-003.png"
+      ],
+      "url": "/products/white-hexagon-mosaic",
+      "inStock": true,
+      "colourHex": "#F5F5F3",
+      "description": "Matte white 1\" hexagon mosaic. Timeless floor tile, scaled for small bathrooms.",
+      "imagePrompt": "White ceramic hexagon tiles arranged in interlocking mosaic pattern, glossy finish, geometric floor installation view.",
+      "colourFamily": "white"
+    },
+    {
+      "objectID": "tile-004",
+      "name": "Zellige Gloss White 4×4\"",
+      "brand": "Mosaic House",
+      "price": 14.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "scandi",
+      "finish": "gloss",
+      "tags": [
+        "zellige",
+        "wall",
+        "gloss",
+        "artisan",
+        "premium"
+      ],
+      "images": [
+        "/images/tile-004.png"
+      ],
+      "url": "/products/zellige-gloss-white",
+      "inStock": true,
+      "colourHex": "#F8F6F2",
+      "description": "Handmade Moroccan zellige tile in white gloss. Slight ripple adds texture without pattern.",
+      "imagePrompt": "Glossy white zellige tile, 4x4 inches, hand-pressed clay with irregular surface texture and subtle dimensional bumps.",
+      "colourFamily": "white"
+    },
+    {
+      "objectID": "tile-005",
+      "name": "Seafoam Gloss Subway 3×6\"",
+      "brand": "Fireclay",
+      "price": 5.49,
+      "currency": "USD",
+      "category": "tile",
+      "style": "coastal",
+      "finish": "gloss",
+      "tags": [
+        "subway",
+        "wall",
+        "gloss",
+        "seafoam",
+        "colour",
+        "aqua"
+      ],
+      "images": [
+        "/images/tile-005.png"
+      ],
+      "url": "/products/seafoam-gloss-subway",
+      "inStock": true,
+      "colourHex": "#A8C8C0",
+      "description": "Gloss subway tile in soft seafoam. A classic coastal colour — works with white vanities and brass.",
+      "imagePrompt": "Seafoam glossy subway tile, 3x6 inches, smooth polished surface, bright aqua-green ceramic finish, rectangular beveled edges, clean modernist aesthetic.",
+      "colourFamily": "seafoam"
+    },
+    {
+      "objectID": "tile-006",
+      "name": "Pebble Shore Mosaic",
+      "brand": "Tile Bar",
+      "price": 12.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "coastal",
+      "finish": "natural",
+      "tags": [
+        "pebble",
+        "mosaic",
+        "floor",
+        "natural-stone",
+        "grey-white"
+      ],
+      "images": [
+        "/images/tile-006.png"
+      ],
+      "url": "/products/pebble-shore-mosaic",
+      "inStock": true,
+      "colourHex": "#C8C8C0",
+      "description": "Natural river pebble mosaic in grey and white. Outdoor shower feel brought indoors.",
+      "imagePrompt": "Tumbled natural stone mosaic floor tile with irregular pebble pattern in grey and white tones.",
+      "colourFamily": "natural stone"
+    },
+    {
+      "objectID": "tile-007",
+      "name": "Sandy Beige Limestone 12×12\"",
+      "brand": "Stone Source",
+      "price": 8.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "coastal",
+      "finish": "honed",
+      "tags": [
+        "limestone",
+        "floor",
+        "honed",
+        "beige",
+        "natural-stone"
+      ],
+      "images": [
+        "/images/tile-007.png"
+      ],
+      "url": "/products/sandy-beige-limestone",
+      "inStock": true,
+      "colourHex": "#D4C4A8",
+      "description": "Honed limestone tile in sandy beige. Warm and natural — classic Beach House floor.",
+      "imagePrompt": "Honed beige limestone floor tile, 12x12 inch square, matte finish, natural stone texture with subtle veining.",
+      "colourFamily": "natural stone"
+    },
+    {
+      "objectID": "tile-008",
+      "name": "Driftwood Plank Tile 4×24\"",
+      "brand": "Marazzi",
+      "price": 3.99,
+      "currency": "USD",
+      "category": "tile",
+      "style": "coastal",
+      "finish": "matte",
+      "tags": [
+        "wood-look",
+        "plank",
+        "floor",
+        "whitewashed",
+        "porcelain"
+      ],
+      "images": [
+        "/images/tile-008.png"
+      ],
+      "url": "/products/driftwood-plank-tile",
+      "inStock": true,
+      "colourHex": "#E0D8CC",
+      "description": "Wood-look porcelain plank in whitewashed oak finish. Water-resistant warmth.",
+      "imagePrompt": "Whitewashed porcelain plank tile, four-by-twenty-four inch format, wood grain texture, light cream surface with subtle gray undertones.",
+      "colourFamily": "driftwood"
+    }
+  ],
+  "nbHits": 8,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

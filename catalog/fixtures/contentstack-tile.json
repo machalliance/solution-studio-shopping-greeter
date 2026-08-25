@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "category": "tile",
+    "description": "Tile guides, calculators, and installation how-tos."
+  },
+  "entries": [
+    {
+      "uid": "blt-tile-001",
+      "title": "Bathroom Tile Calculator",
+      "url": "/tools/tile-calculator",
+      "content_type_uid": "tool",
+      "summary": "Calculate exactly how many tiles you need for your bathroom floor and walls. Accounts for cuts and waste.",
+      "tags": [
+        "tile",
+        "calculator",
+        "tool",
+        "bathroom"
+      ],
+      "read_time": "2 min",
+      "icon": "calculator"
+    },
+    {
+      "uid": "blt-tile-002",
+      "title": "How to Tile a Small Bathroom Floor",
+      "url": "/how-to/tile-small-bathroom-floor",
+      "content_type_uid": "how_to",
+      "summary": "Layout, cutting, and grouting techniques for small bathroom floors. Includes tips for keeping grout lines even in tight spaces.",
+      "tags": [
+        "tile",
+        "floor",
+        "installation",
+        "how-to",
+        "small-spaces"
+      ],
+      "read_time": "10 min",
+      "icon": "tool"
+    },
+    {
+      "uid": "blt-tile-003",
+      "title": "Subway Tile vs Large Format: Which Works in a Powder Room?",
+      "url": "/guides/subway-vs-large-format-tile",
+      "content_type_uid": "buying_guide",
+      "summary": "A style and practical comparison of tile sizes for small bathrooms. Includes scale diagrams.",
+      "tags": [
+        "tile",
+        "bathroom",
+        "buying-guide",
+        "style"
+      ],
+      "read_time": "5 min",
+      "icon": "book"
+    }
+  ],
+  "count": 3
+}

@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "category": "faucet",
+    "description": "Guides for choosing and installing bathroom faucets."
+  },
+  "entries": [
+    {
+      "uid": "blt-faucet-001",
+      "title": "Faucet Finish Guide: Which Lasts Longest?",
+      "url": "/guides/faucet-finishes",
+      "content_type_uid": "buying_guide",
+      "summary": "Comparing brushed nickel, matte black, chrome, and brushed brass \u2014 durability, cleaning, and style longevity.",
+      "tags": [
+        "faucet",
+        "finish",
+        "buying-guide",
+        "bathroom"
+      ],
+      "read_time": "4 min",
+      "icon": "book"
+    },
+    {
+      "uid": "blt-faucet-002",
+      "title": "How to Install a Single-Hole Faucet",
+      "url": "/how-to/install-single-hole-faucet",
+      "content_type_uid": "how_to",
+      "summary": "Step-by-step installation guide for single-hole and centerset faucets. Includes shutoff valve and supply line instructions.",
+      "tags": [
+        "faucet",
+        "installation",
+        "how-to",
+        "plumbing"
+      ],
+      "read_time": "8 min",
+      "icon": "tool"
+    }
+  ],
+  "count": 2
+}

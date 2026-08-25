@@ -1,0 +1,206 @@
+{
+  "_meta": {
+    "category": "faucet",
+    "styles_represented": [
+      "scandi",
+      "coastal"
+    ],
+    "description": "Bathroom faucet products. Finish field drives filtering."
+  },
+  "hits": [
+    {
+      "objectID": "faucet-001",
+      "name": "Strand Single-Hole Faucet",
+      "brand": "Vola",
+      "price": 189,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "scandi",
+      "finish": "chrome",
+      "tags": [
+        "single-hole",
+        "minimalist",
+        "cold-touch"
+      ],
+      "images": [
+        "/images/faucet-001.png"
+      ],
+      "url": "/products/strand-single-hole-faucet",
+      "inStock": true,
+      "colourHex": "#D6D6D6",
+      "description": "Slim single-hole faucet with cold-touch spout. Polished chrome.",
+      "imagePrompt": "Polished chrome single-hole faucet with curved spout, minimalist handle, cold-touch technology, modern kitchen sink fixture."
+    },
+    {
+      "objectID": "faucet-002",
+      "name": "Norm Single-Hole Faucet",
+      "brand": "Arne Jacobsen",
+      "price": 249,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "scandi",
+      "finish": "matte-black",
+      "tags": [
+        "single-hole",
+        "matte-black",
+        "premium",
+        "designer"
+      ],
+      "images": [
+        "/images/faucet-002.png"
+      ],
+      "url": "/products/norm-single-hole-faucet",
+      "inStock": true,
+      "colourHex": "#2C2C2C",
+      "description": "Iconic cylindrical faucet in matte black.",
+      "imagePrompt": "Matte black single-hole faucet, sleek cylindrical spout, minimalist designer form, polished metal trim, contemporary kitchen fixture.",
+      "colourFamily": "matte black"
+    },
+    {
+      "objectID": "faucet-003",
+      "name": "Kili Wall-Mount Faucet",
+      "brand": "Grohe",
+      "price": 319,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "scandi",
+      "finish": "brushed-nickel",
+      "tags": [
+        "wall-mount",
+        "brushed-nickel",
+        "modern"
+      ],
+      "images": [
+        "/images/faucet-003.png"
+      ],
+      "url": "/products/kili-wall-mount-faucet",
+      "inStock": true,
+      "colourHex": "#B8B0A4",
+      "description": "Wall-mount faucet. Brushed nickel.",
+      "imagePrompt": "Brushed nickel wall-mount faucet with curved spout, minimalist geometric design, polished metal finish."
+    },
+    {
+      "objectID": "faucet-004",
+      "name": "Arc Widespread Faucet",
+      "brand": "Hansgrohe",
+      "price": 289,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "scandi",
+      "finish": "chrome",
+      "tags": [
+        "widespread",
+        "chrome",
+        "high-arc"
+      ],
+      "images": [
+        "/images/faucet-004.png"
+      ],
+      "url": "/products/arc-widespread-faucet",
+      "inStock": true,
+      "colourHex": "#D0D0D0",
+      "description": "High-arc widespread faucet in polished chrome.",
+      "imagePrompt": "Polished chrome widespread bathroom faucet with high arcing spout and dual handles, clean modern design."
+    },
+    {
+      "objectID": "faucet-005",
+      "name": "Harbour Single-Hole Faucet",
+      "brand": "Delta",
+      "price": 219,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "coastal",
+      "finish": "brushed-nickel",
+      "tags": [
+        "single-hole",
+        "brushed-nickel",
+        "waterfall"
+      ],
+      "images": [
+        "/images/faucet-005.png"
+      ],
+      "url": "/products/harbour-single-hole-faucet",
+      "inStock": true,
+      "colourHex": "#B5AFA8",
+      "description": "Waterfall spout in brushed nickel. Suits the relaxed Beach House aesthetic.",
+      "imagePrompt": "Brushed nickel single-hole faucet with wide waterfall spout, polished curved body, minimalist modern design."
+    },
+    {
+      "objectID": "faucet-006",
+      "name": "Shoreline Widespread Faucet",
+      "brand": "Moen",
+      "price": 289,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "coastal",
+      "finish": "brass",
+      "tags": [
+        "widespread",
+        "brushed-brass",
+        "warm"
+      ],
+      "images": [
+        "/images/faucet-006.png"
+      ],
+      "url": "/products/shoreline-widespread-faucet",
+      "inStock": true,
+      "colourHex": "#C8A96E",
+      "description": "Widespread faucet in brushed brass. Warm tone pairs with natural wood and white vanities.",
+      "imagePrompt": "Brushed brass widespread bathroom faucet with curved spout, polished handles, chrome accents, clean modern design."
+    },
+    {
+      "objectID": "faucet-007",
+      "name": "Cove Cross-Handle Faucet",
+      "brand": "Pfister",
+      "price": 169,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "coastal",
+      "finish": "chrome",
+      "tags": [
+        "single-hole",
+        "chrome",
+        "vintage-inspired",
+        "cross-handle"
+      ],
+      "images": [
+        "/images/faucet-007.png"
+      ],
+      "url": "/products/cove-cross-handle-faucet",
+      "inStock": true,
+      "colourHex": "#D2D2D2",
+      "description": "Cross-handle faucet with coastal character. Polished chrome.",
+      "imagePrompt": "Chrome single-hole faucet with cross handles, vintage-inspired design, polished finish, white background."
+    },
+    {
+      "objectID": "faucet-008",
+      "name": "brushed brass lavatory single faucet",
+      "brand": "",
+      "price": 159,
+      "currency": "USD",
+      "category": "faucet",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "tags": [
+        "brushed brass",
+        "single handle",
+        "sleek"
+      ],
+      "colourHex": "#888888",
+      "colourFamily": "brushed brass",
+      "images": [
+        "/images/faucet-008.png"
+      ],
+      "url": "/products/brushed-brass-lavatory-single-faucet",
+      "inStock": true,
+      "description": "This brushed brass lavatory faucet features a single handle design that combines timeless elegance with modern functionality. Its sleek profile and warm metallic finish make it a sophisticated addition to any bathroom vanity.",
+      "imagePrompt": "Single handle brushed brass lavatory faucet with sleek modern design, minimalist contemporary style, polished matte brass finish, bathroom sink fixture"
+    }
+  ],
+  "nbHits": 8,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

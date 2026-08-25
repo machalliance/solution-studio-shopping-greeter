@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Greeter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --ink: #0F0F0D;
+  --stone: #F5F4F1;
+  --hairline: #E3E1DC;
+  --muted: #767670;
+  --white: #FFFFFF;
+  --radius: 4px;
+  --accent: #1E2B4A;
+  --accent-hover: #2A3C6A;
+  --green: #16a34a;
+  --red: #dc2626;
+  --yellow: #d97706;
+}
+body { font-family: var(--font); background: var(--stone); color: var(--ink); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+nav {
+  background: rgba(10,10,10,0.94);
+  backdrop-filter: blur(8px);
+  padding: 0 32px;
+  display: flex; align-items: center; height: 48px; gap: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo { font-size: 14px; font-weight: 600; color: white; letter-spacing: -0.02em; }
+.nav-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
+.nav-back {
+  margin-left: auto;
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 4px 12px; border-radius: 20px;
+  transition: all 0.15s;
+}
+.nav-back:hover { color: white; border-color: rgba(255,255,255,0.4); }
+
+.page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 4px; }
+.subtitle { color: var(--muted); font-size: 14px; margin-bottom: 36px; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 24px;
+}
+.card-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+
+.model-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.model-tab {
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid var(--hairline); background: none;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.model-tab:hover { color: var(--ink); border-color: var(--muted); }
+.model-tab.on { background: var(--accent); color: white; border-color: var(--accent); }
+
+.status-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.status-row:last-child { margin-bottom: 0; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot.green { background: var(--green); }
+.dot.red { background: var(--red); }
+.dot.yellow { background: var(--yellow); }
+.status-label { font-size: 13px; color: var(--ink); }
+.status-sub { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+.stat-row { display: flex; gap: 24px; margin-top: 4px; }
+.stat { }
+.stat-big { font-size: 26px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.mono { font-family: monospace; font-size: 11px; color: var(--muted); background: var(--stone); padding: 2px 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">Greeter <span>/ Settings</span></span>
+  <a href="/" class="nav-back">← Back to demo</a>
+</nav>
+
+<div class="page">
+  <h1>Settings</h1>
+  <p class="subtitle">Runtime configuration for the Greeter prototype</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">LLM Provider</div>
+      <div class="field">
+        <label>Active provider</label>
+        <div class="model-tabs" id="providerTabs">
+          <button class="model-tab" data-p="claude" onclick="setProvider('claude')">Claude</button>
+          <button class="model-tab" data-p="openai" onclick="setProvider('openai')">OpenAI</button>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>API keys</label>
+        <div id="keyStatus">
+          <div class="status-row"><div class="dot yellow"></div><span class="status-label">Loading…</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Data</div>
+      <div class="field">
+        <label>Mode</label>
+        <div id="fixtureMode" class="status-row">
+          <div class="dot yellow"></div><span class="status-label">Loading…</span>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Catalog</label>
+        <div id="catalogStats" class="stat-row">
+          <div class="stat">
+            <div class="stat-big" id="statCats">—</div>
+            <div class="stat-label">categories</div>
+          </div>
+          <div class="stat">
+            <div class="stat-big" id="statSessions">—</div>
+            <div class="stat-label">active sessions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+async function load() {
+  const [health, env] = await Promise.all([
+    fetch('/health').then(r => r.json()),
+    fetch('/api/env-status').then(r => r.json()),
+  ])
+
+  // Provider tabs
+  document.querySelectorAll('.model-tab[data-p]').forEach(t => {
+    t.classList.toggle('on', t.dataset.p === health.provider)
+  })
+
+  // API key status
+  const keys = [
+    { label: 'Anthropic', ok: env.anthropicKey },
+    { label: 'OpenAI', ok: env.openaiKey },
+  ]
+  document.getElementById('keyStatus').innerHTML = keys.map(k => `
+    <div class="status-row">
+      <div class="dot ${k.ok ? 'green' : 'red'}"></div>
+      <span class="status-label">${k.label}</span>
+      <span class="status-sub">${k.ok ? 'configured' : 'not set'}</span>
+    </div>
+  `).join('')
+
+  // Fixture mode
+  document.getElementById('fixtureMode').innerHTML = `
+    <div class="dot ${health.fixtures ? 'green' : 'yellow'}"></div>
+    <span class="status-label">${health.fixtures ? 'Fixtures (dev mode)' : 'Live APIs'}</span>
+  `
+
+  // Catalog stats
+  document.getElementById('statCats').textContent = health.catalogCategories ?? '—'
+  document.getElementById('statSessions').textContent = health.intents ?? '—'
+}
+
+async function setProvider(p) {
+  await fetch('/api/provider', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ provider: p }) })
+  document.querySelectorAll('.model-tab[data-p]').forEach(t => t.classList.toggle('on', t.dataset.p === p))
+}
+
+load()
+</script>
+</body>
+</html>

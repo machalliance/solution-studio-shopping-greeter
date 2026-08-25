@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "category": "lighting",
+    "description": "Bathroom lighting guides and buying advice."
+  },
+  "entries": [
+    {
+      "uid": "blt-lighting-001",
+      "title": "Bathroom Lighting Guide",
+      "url": "/guides/bathroom-lighting",
+      "content_type_uid": "buying_guide",
+      "summary": "How to layer bathroom lighting for task, ambient, and accent. Includes wiring basics and bulb temperature guide.",
+      "tags": [
+        "lighting",
+        "bathroom",
+        "buying-guide",
+        "electrical"
+      ],
+      "read_time": "5 min",
+      "icon": "lightbulb"
+    },
+    {
+      "uid": "blt-lighting-002",
+      "title": "Vanity Lighting Placement Guide",
+      "url": "/guides/vanity-lighting-placement",
+      "content_type_uid": "how_to",
+      "summary": "The best positions for mirror-side sconces and overhead vanity bars. Includes measurements for shadow-free task lighting.",
+      "tags": [
+        "lighting",
+        "vanity",
+        "placement",
+        "bathroom"
+      ],
+      "read_time": "4 min",
+      "icon": "ruler"
+    }
+  ],
+  "count": 2
+}

@@ -1,0 +1,258 @@
+{
+  "_meta": {
+    "category": "socks",
+    "styles_represented": [
+      "smart-casual"
+    ],
+    "fits_represented": [
+      "unisex",
+      "womens"
+    ],
+    "description": "Socks for the fashion / outfit scenario."
+  },
+  "hits": [
+    {
+      "objectID": "socks-001",
+      "name": "Merino Ankle Socks — Stone",
+      "brand": "Falke",
+      "price": 24,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "stone",
+      "tags": [
+        "merino",
+        "ankle",
+        "stone",
+        "neutral",
+        "layering"
+      ],
+      "images": [
+        "/images/socks-001.jpg"
+      ],
+      "url": "/products/merino-ankle-socks-stone",
+      "inStock": true,
+      "colourHex": "#C4B89A",
+      "description": "Merino ankle socks in stone. Suits loafers or derbies.",
+      "imagePrompt": "Stone merino ankle socks, unisex fit, ribbed knit construction, neutral gray colorway, flat lay styling.",
+      "colourFamily": "stone"
+    },
+    {
+      "objectID": "socks-002",
+      "name": "Cotton Rib Socks — Sage",
+      "brand": "Pantherella",
+      "price": 18,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "sage",
+      "tags": [
+        "cotton",
+        "ribbed",
+        "sage",
+        "earthy",
+        "lightweight"
+      ],
+      "images": [
+        "/images/socks-002.jpg"
+      ],
+      "url": "/products/cotton-rib-socks-sage",
+      "inStock": true,
+      "colourHex": "#8A9E7E",
+      "description": "Ribbed cotton socks in sage green.",
+      "imagePrompt": "Sage green cotton ribbed socks, lightweight unisex crew height, fine vertical rib texture, soft matte finish.",
+      "colourFamily": "sage"
+    },
+    {
+      "objectID": "socks-003",
+      "name": "No-Show Liner Socks (3pk)",
+      "brand": "Bombas",
+      "price": 29,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "unisex",
+      "finish": "neutral",
+      "tags": [
+        "no-show",
+        "liner",
+        "loafer-friendly",
+        "lightweight"
+      ],
+      "images": [
+        "/images/socks-003.jpg"
+      ],
+      "url": "/products/no-show-liner-socks",
+      "inStock": true,
+      "colourHex": "#E0D8CC",
+      "description": "No-show liners — for when the look says no sock but comfort disagrees.",
+      "imagePrompt": "Three lightweight no-show liner socks in neutral tones, ultra-thin cotton blend, minimal arch support, loafer-friendly cut with shallow heel pocket."
+    },
+    {
+      "objectID": "socks-004",
+      "name": "Sheer Ankle Sock — Ivory",
+      "brand": "Falke",
+      "price": 19,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "ivory",
+      "tags": [
+        "sheer",
+        "ankle",
+        "ivory",
+        "delicate",
+        "feminine",
+        "lightweight"
+      ],
+      "images": [
+        "/images/socks-004.jpg"
+      ],
+      "url": "/products/sheer-ankle-sock-ivory",
+      "inStock": true,
+      "colourHex": "#F8F5EE",
+      "description": "Sheer ankle sock in ivory. Subtle detail with flats or loafers.",
+      "imagePrompt": "Delicate ivory sheer ankle sock with lightweight mesh knit, feminine silhouette, subtle ribbed cuff detail.",
+      "colourFamily": "ivory"
+    },
+    {
+      "objectID": "socks-005",
+      "name": "Organic Cotton Argyle Socks - Navy & Cream",
+      "brand": "Smartwool",
+      "price": 35,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "argyle pattern",
+        "organic cotton",
+        "casual",
+        "business-casual",
+        "everyday wear"
+      ],
+      "colourHex": "#001f3f",
+      "colourFamily": "navy",
+      "images": [
+        "/images/socks-005.jpg"
+      ],
+      "url": "/products/organic-cotton-argyle-socks-navy-cream",
+      "inStock": true,
+      "description": "Smartwool Organic Cotton Argyle Socks in navy with cream accents feature a classic diamond pattern that works for both the office and weekend. Made from organic cotton, they're breathable enough for everyday wear without sacrificing durability.",
+      "imagePrompt": "Crew-cut men's socks in navy organic cotton, classic argyle pattern with cream accents, comfortable everyday wear."
+    },
+    {
+      "objectID": "socks-006",
+      "name": "Organic Cotton Argyle Socks - Charcoal & Gray",
+      "brand": "Darn Tough",
+      "price": 35,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "argyle pattern",
+        "organic cotton",
+        "casual",
+        "business-casual",
+        "everyday wear"
+      ],
+      "colourHex": "#36454f",
+      "colourFamily": "charcoal",
+      "images": [
+        "/images/socks-006.jpg"
+      ],
+      "url": "/products/organic-cotton-argyle-socks-charcoal-gray",
+      "inStock": true,
+      "description": "Charcoal argyle socks with organic cotton construction that won't pill or wear thin after months of daily wear. The classic diamond pattern transitions seamlessly from casual to business-casual outfits.",
+      "imagePrompt": "Crew-cut men's socks in charcoal organic cotton, argyle pattern weave, everyday comfort wear."
+    },
+    {
+      "objectID": "socks-007",
+      "name": "Organic Cotton Argyle Socks - Burgundy & Tan",
+      "brand": "Bombas",
+      "price": 35,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "argyle pattern",
+        "organic cotton",
+        "casual",
+        "business-casual",
+        "everyday wear"
+      ],
+      "colourHex": "#800020",
+      "colourFamily": "burgundy",
+      "images": [
+        "/images/socks-007.jpg"
+      ],
+      "url": "/products/organic-cotton-argyle-socks-burgundy-tan",
+      "inStock": true,
+      "description": "Burgundy argyle socks in soft organic cotton with a classic tan contrast pattern. Naturally breathable and durable enough for everyday rotation, whether you're dressing them down or pairing them with business casual.",
+      "imagePrompt": "Crew-cut men's socks in burgundy organic cotton, argyle pattern throughout, everyday wear styling."
+    },
+    {
+      "objectID": "socks-008",
+      "name": "Organic Cotton Argyle Socks - Forest Green & Cream",
+      "brand": "Patagonia",
+      "price": 35,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "argyle pattern",
+        "organic cotton",
+        "casual",
+        "business-casual",
+        "everyday wear"
+      ],
+      "colourHex": "#228b22",
+      "colourFamily": "forest green",
+      "images": [
+        "/images/socks-008.jpg"
+      ],
+      "url": "/products/organic-cotton-argyle-socks-forest-green-cream",
+      "inStock": true,
+      "description": "Organic Cotton Argyle Socks in forest green and cream with a classic diamond pattern that works equally well under dress pants or sneakers. Made from certified organic cotton for breathability and durability through countless washes.",
+      "imagePrompt": "Crew-cut men's socks in forest green organic cotton, argyle pattern with cream accents, everyday wear."
+    },
+    {
+      "objectID": "socks-009",
+      "name": "Organic Cotton Argyle Socks - Black & White",
+      "brand": "Allbirds",
+      "price": 35,
+      "currency": "USD",
+      "category": "socks",
+      "style": "smart-casual",
+      "fit": "mens",
+      "tags": [
+        "argyle pattern",
+        "organic cotton",
+        "casual",
+        "business-casual",
+        "everyday wear"
+      ],
+      "colourHex": "#000000",
+      "colourFamily": "black",
+      "images": [
+        "/images/socks-009.jpg"
+      ],
+      "url": "/products/organic-cotton-argyle-socks-black-white",
+      "inStock": true,
+      "description": "Black organic cotton argyle socks with a classic diamond pattern in contrasting white. Naturally soft and breathable for all-day wear, whether you're dressing up or keeping it casual.",
+      "imagePrompt": "Crew-cut men's socks in black organic cotton, white argyle pattern, everyday comfort wear."
+    }
+  ],
+  "nbHits": 9,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

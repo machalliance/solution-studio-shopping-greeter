@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "category": "mirror",
+    "description": "Guides for choosing and hanging bathroom mirrors."
+  },
+  "entries": [
+    {
+      "uid": "blt-mirror-001",
+      "title": "Bathroom Mirror Buying Guide",
+      "url": "/guides/bathroom-mirror-buying-guide",
+      "content_type_uid": "buying_guide",
+      "summary": "Frameless, framed, or medicine cabinet: how to choose the right mirror size and style for your bathroom.",
+      "tags": [
+        "mirror",
+        "bathroom",
+        "buying-guide"
+      ],
+      "read_time": "4 min",
+      "icon": "book"
+    },
+    {
+      "uid": "blt-mirror-002",
+      "title": "How to Hang a Heavy Bathroom Mirror",
+      "url": "/how-to/hang-bathroom-mirror",
+      "content_type_uid": "how_to",
+      "summary": "Safe anchoring for heavy mirrors \u2014 finding studs, using wall anchors, and levelling. Includes weight limits by anchor type.",
+      "tags": [
+        "mirror",
+        "installation",
+        "how-to",
+        "hanging"
+      ],
+      "read_time": "6 min",
+      "icon": "tool"
+    }
+  ],
+  "count": 2
+}

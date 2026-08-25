@@ -1,0 +1,328 @@
+{
+  "_meta": {
+    "category": "dress",
+    "styles_represented": [
+      "smart-casual",
+      "earthy"
+    ],
+    "fits_represented": [
+      "womens"
+    ],
+    "description": "Dresses and midi skirts for the women's fashion / outfit scenario. LLM substitutes 'dress' for ['top','pants'] when shopper opts for dress or skirt. Skirts (objectIDs dress-005 onward) pair with tops from the top category."
+  },
+  "hits": [
+    {
+      "objectID": "dress-001",
+      "name": "Wrap Midi Dress — Terracotta",
+      "brand": "Reformation",
+      "price": 248,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "terracotta",
+      "tags": [
+        "wrap",
+        "midi",
+        "terracotta",
+        "earthy",
+        "flattering",
+        "layering"
+      ],
+      "images": [
+        "/images/dress-001.jpg"
+      ],
+      "url": "/products/wrap-midi-dress-terracotta",
+      "inStock": true,
+      "colourHex": "#C0633A",
+      "description": "Wrap midi dress in terracotta. Flattering cut, works from rooftop to dinner.",
+      "imagePrompt": "Terracotta wrap midi dress with crossover front closure, fluid draped fabric, midi hem, fitted waist seaming.",
+      "colourFamily": "terracotta"
+    },
+    {
+      "objectID": "dress-002",
+      "name": "Slip Dress — Champagne",
+      "brand": "Vince",
+      "price": 295,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "champagne",
+      "tags": [
+        "slip",
+        "champagne",
+        "satin",
+        "minimal",
+        "elegant",
+        "layering"
+      ],
+      "images": [
+        "/images/dress-002.jpg"
+      ],
+      "url": "/products/slip-dress-champagne",
+      "inStock": true,
+      "colourHex": "#E8DCCF",
+      "description": "Satin slip dress in champagne. Minimal and elegant. Layer with a blazer for smart casual.",
+      "imagePrompt": "Champagne satin slip dress, bias-cut silhouette, delicate thin straps, fluid drape, luxe finish.",
+      "colourFamily": "champagne"
+    },
+    {
+      "objectID": "dress-003",
+      "name": "Linen Shirt Dress — Stone",
+      "brand": "Arket",
+      "price": 145,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "stone",
+      "tags": [
+        "shirt-dress",
+        "linen",
+        "stone",
+        "relaxed",
+        "versatile",
+        "lightweight"
+      ],
+      "images": [
+        "/images/dress-003.jpg"
+      ],
+      "url": "/products/linen-shirt-dress-stone",
+      "inStock": true,
+      "colourHex": "#C4B89A",
+      "description": "Linen shirt dress in stone. Belted or loose — relaxed smart casual.",
+      "imagePrompt": "Oversized linen shirt dress in stone, relaxed fit, lightweight natural fabric, dropped shoulders, long sleeves.",
+      "colourFamily": "stone"
+    },
+    {
+      "objectID": "dress-004",
+      "name": "Knit Midi Dress — Camel",
+      "brand": "Anine Bing",
+      "price": 320,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "tags": [
+        "knit",
+        "midi",
+        "camel",
+        "earthy",
+        "fitted",
+        "layering"
+      ],
+      "images": [
+        "/images/dress-004.jpg"
+      ],
+      "url": "/products/knit-midi-dress-camel",
+      "inStock": true,
+      "colourHex": "#C9A96E",
+      "description": "Fitted knit midi in camel. Earthy, elevated, and warm-weather appropriate.",
+      "imagePrompt": "Camel knit midi dress, fitted silhouette, ribbed texture, knee-length, warm neutral tone, structured fabric drape.",
+      "colourFamily": "camel"
+    },
+    {
+      "objectID": "dress-005",
+      "name": "Satin Midi Dress — Sage",
+      "brand": "Vince",
+      "price": 285,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "sage",
+      "colourFamily": "sage",
+      "tags": [
+        "satin",
+        "midi",
+        "sage",
+        "earthy",
+        "evening",
+        "lightweight",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/dress-005.jpg"
+      ],
+      "url": "/products/satin-midi-dress-sage",
+      "inStock": true,
+      "colourHex": "#8A9E88",
+      "description": "Satin midi dress in sage. Fluid and earthy — works warm or with a light jacket.",
+      "imagePrompt": "Sage satin midi dress for women, thin adjustable straps, bias-cut fluid drape, subtle sheen, midi length, flat lay."
+    },
+    {
+      "objectID": "dress-006",
+      "name": "Midi Skirt — Camel",
+      "brand": "Max Mara",
+      "price": 295,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "camel",
+      "colourFamily": "camel",
+      "tags": [
+        "skirt",
+        "midi",
+        "camel",
+        "earthy",
+        "tailored",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/dress-006.jpg"
+      ],
+      "url": "/products/midi-skirt-camel",
+      "inStock": true,
+      "colourHex": "#C4935A",
+      "description": "Tailored midi skirt in camel. Straight cut, below knee — pairs with a cami or fitted knit.",
+      "imagePrompt": "Camel tailored straight midi skirt for women, below-knee length, structured woven fabric, back slit, clean flat-front waistband, flat lay."
+    },
+    {
+      "objectID": "dress-007",
+      "name": "Satin Midi Skirt — Midnight",
+      "brand": "Raey",
+      "price": 175,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "midnight",
+      "colourFamily": "midnight",
+      "tags": [
+        "skirt",
+        "satin",
+        "midi",
+        "midnight",
+        "evening",
+        "dark",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/dress-007.jpg"
+      ],
+      "url": "/products/satin-midi-skirt-midnight",
+      "inStock": true,
+      "colourHex": "#1A1A2E",
+      "description": "Satin midi skirt in midnight. Lustrous and evening-ready — pairs with a silk cami or fine knit.",
+      "imagePrompt": "Midnight navy satin midi skirt for women, fluid drape, subtle sheen, elasticated waist, mid-calf length, flat lay."
+    },
+    {
+      "objectID": "dress-008",
+      "name": "Pleated Midi Skirt — Ivory",
+      "brand": "Ganni",
+      "price": 195,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "finish": "ivory",
+      "colourFamily": "ivory",
+      "tags": [
+        "skirt",
+        "pleated",
+        "midi",
+        "ivory",
+        "flowy",
+        "summer",
+        "smart-casual"
+      ],
+      "images": [
+        "/images/dress-008.jpg"
+      ],
+      "url": "/products/pleated-midi-skirt-ivory",
+      "inStock": true,
+      "colourHex": "#F5F0E6",
+      "description": "Pleated midi skirt in ivory. Lightweight and feminine — ideal for a warm evening.",
+      "imagePrompt": "Ivory pleated midi skirt for women, fine accordion pleats, lightweight flowing fabric, elasticated waist, below-knee length, flat lay."
+    },
+    {
+      "objectID": "dress-009",
+      "name": "Floral Print Maxi Dress",
+      "brand": "Everlane",
+      "price": 98,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "smart-casual",
+        "floral pattern",
+        "maxi length",
+        "lightweight",
+        "breathable"
+      ],
+      "colourHex": "#F5E6D3",
+      "colourFamily": "cream",
+      "images": [
+        "/images/dress-009.jpg"
+      ],
+      "url": "/products/floral-print-maxi-dress",
+      "inStock": true,
+      "description": "Cream floral print maxi dress with a lightweight, breathable fabric that moves with you. The relaxed fit and full length make it endlessly versatile for everything from brunch to casual dinners.",
+      "imagePrompt": "Maxi-length women's dress in cream cotton, vibrant floral print throughout, flowing silhouette, breathable lightweight fabric, elegant and comfortable."
+    },
+    {
+      "objectID": "dress-010",
+      "name": "Geometric Stripe Maxi Dress",
+      "brand": "Gap",
+      "price": 89,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "smart-casual",
+        "geometric pattern",
+        "maxi length",
+        "versatile",
+        "easy fit"
+      ],
+      "colourHex": "#2C3E50",
+      "colourFamily": "navy",
+      "images": [
+        "/images/dress-010.jpg"
+      ],
+      "url": "/products/geometric-stripe-maxi-dress",
+      "inStock": true,
+      "description": "Navy geometric stripe maxi dress with an easy-fit silhouette that skims the body without clinging. The bold striped pattern keeps it visually interesting from every angle.",
+      "imagePrompt": "Maxi-length easy-fit women's dress in navy cotton, geometric stripe pattern throughout, relaxed silhouette, floor-length hem."
+    },
+    {
+      "objectID": "dress-011",
+      "name": "Abstract Print Maxi Dress",
+      "brand": "Uniqlo",
+      "price": 79,
+      "currency": "USD",
+      "category": "dress",
+      "style": "smart-casual",
+      "fit": "womens",
+      "tags": [
+        "casual",
+        "weekend",
+        "abstract pattern",
+        "maxi length",
+        "rayon blend",
+        "relaxed fit"
+      ],
+      "colourHex": "#D4796F",
+      "colourFamily": "rust",
+      "images": [
+        "/images/dress-011.jpg"
+      ],
+      "url": "/products/abstract-print-maxi-dress",
+      "inStock": true,
+      "description": "This Abstract Print Maxi Dress in rust features an eye-catching geometric pattern that works as hard for weekend errands as it does for casual brunches. The rayon blend fabric drapes effortlessly in a relaxed fit that actually feels comfortable to move in.",
+      "imagePrompt": "Relaxed-fit women's maxi dress in rust rayon blend, abstract pattern throughout, flowing silhouette."
+    }
+  ],
+  "nbHits": 11,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}

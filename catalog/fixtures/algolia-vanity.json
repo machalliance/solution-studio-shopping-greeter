@@ -1,0 +1,242 @@
+{
+  "_meta": {
+    "category": "vanity",
+    "styles_represented": [
+      "scandi",
+      "coastal"
+    ],
+    "description": "Bathroom vanity products. Add more styles by adding hits with the appropriate style slug."
+  },
+  "hits": [
+    {
+      "objectID": "vanity-001",
+      "name": "Fjord 22\" Wall-Mount Vanity",
+      "brand": "Moebe",
+      "price": 449,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "scandi",
+      "finish": "oak",
+      "width": 22,
+      "tags": [
+        "wall-mount",
+        "minimalist",
+        "compact",
+        "natural-wood"
+      ],
+      "images": [
+        "/images/vanity-001.png"
+      ],
+      "url": "/products/fjord-22-wall-mount-vanity",
+      "inStock": true,
+      "colourHex": "#E8DFD0",
+      "description": "Slimline wall-mount vanity in white oak veneer. 22\" wide, ideal for compact powder rooms.",
+      "imagePrompt": "Natural wood wall-mount vanity, compact 22-inch width, clean minimalist lines, light finish, shallow depth construction, with an integrated white ceramic countertop and sink basin.",
+      "colourFamily": "natural wood"
+    },
+    {
+      "objectID": "vanity-002",
+      "name": "Boda Freestanding Vanity 20\"",
+      "brand": "Normann",
+      "price": 329,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "scandi",
+      "finish": "white",
+      "width": 20,
+      "tags": [
+        "freestanding",
+        "minimalist",
+        "storage-drawer"
+      ],
+      "images": [
+        "/images/vanity-002.png"
+      ],
+      "url": "/products/boda-freestanding-vanity",
+      "inStock": true,
+      "colourHex": "#F5F4F2",
+      "description": "Clean-lined freestanding vanity in matte white. 20\" wide with integrated storage drawer.",
+      "imagePrompt": "White lacquered compact vanity, twenty-inch width, single storage drawer, slim legs, minimalist modern design, with an integrated white ceramic countertop and sink basin."
+    },
+    {
+      "objectID": "vanity-003",
+      "name": "Lund Floating Vanity 24\"",
+      "brand": "Kvik",
+      "price": 579,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "scandi",
+      "finish": "birch",
+      "width": 24,
+      "tags": [
+        "floating",
+        "soft-close",
+        "natural-wood"
+      ],
+      "images": [
+        "/images/vanity-003.png"
+      ],
+      "url": "/products/lund-floating-vanity-24",
+      "inStock": true,
+      "colourHex": "#D4C5A8",
+      "description": "Floating vanity in birch laminate with soft-close drawer. Maximises the 24\" allowance.",
+      "imagePrompt": "Solid wood vanity cabinet, light natural finish, clean rectangular form, soft-close drawer front, wall-mounted floating design, with an integrated white ceramic countertop and sink basin.",
+      "colourFamily": "natural wood"
+    },
+    {
+      "objectID": "vanity-004",
+      "name": "Nørre Open Shelf Vanity 18\"",
+      "brand": "Skagerak",
+      "price": 289,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "scandi",
+      "finish": "oak",
+      "width": 18,
+      "tags": [
+        "open-shelf",
+        "compact",
+        "solid-oak"
+      ],
+      "images": [
+        "/images/vanity-004.png"
+      ],
+      "url": "/products/norre-open-shelf-vanity",
+      "inStock": true,
+      "colourHex": "#C9B896",
+      "description": "Compact 18\" vanity with open lower shelf. Solid oak legs, ceramic basin.",
+      "imagePrompt": "Solid oak open-shelf vanity, 18 inches wide, minimalist design with exposed wood grain and natural finish, topped with a white ceramic countertop and sink basin."
+    },
+    {
+      "objectID": "vanity-005",
+      "name": "Strand Minimal Vanity 22\"",
+      "brand": "Vipp",
+      "price": 699,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "scandi",
+      "finish": "steel",
+      "width": 22,
+      "tags": [
+        "wall-mount",
+        "premium",
+        "brushed-steel"
+      ],
+      "images": [
+        "/images/vanity-005.png"
+      ],
+      "url": "/products/strand-minimal-vanity",
+      "inStock": false,
+      "colourHex": "#C8C5BE",
+      "description": "Premium wall-mount vanity with brushed steel accents. Currently out of stock.",
+      "imagePrompt": "Brushed steel wall-mounted vanity, 22 inches wide, minimalist rectangular design, clean lines, matte metal finish, with an integrated white ceramic countertop and sink basin."
+    },
+    {
+      "objectID": "vanity-006",
+      "name": "Nantucket 24\" Shaker Vanity",
+      "brand": "Kohler",
+      "price": 479,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "coastal",
+      "finish": "white",
+      "width": 24,
+      "tags": [
+        "shaker",
+        "freestanding",
+        "soft-close",
+        "classic"
+      ],
+      "images": [
+        "/images/vanity-006.png"
+      ],
+      "url": "/products/nantucket-24-shaker-vanity",
+      "inStock": true,
+      "colourHex": "#F0EFEA",
+      "description": "Classic shaker-door vanity in crisp white. 24\" wide with brushed nickel hardware included.",
+      "imagePrompt": "White painted wood vanity, shaker-style cabinet doors, clean rectangular silhouette, brushed nickel hardware, 24 inches wide, with an integrated white ceramic countertop and sink basin."
+    },
+    {
+      "objectID": "vanity-007",
+      "name": "Driftwood 22\" Floating Vanity",
+      "brand": "Wyndham",
+      "price": 549,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "coastal",
+      "finish": "whitewash",
+      "width": 22,
+      "tags": [
+        "floating",
+        "whitewash",
+        "natural-wood-top",
+        "airy"
+      ],
+      "images": [
+        "/images/vanity-007.png"
+      ],
+      "url": "/products/driftwood-22-floating-vanity",
+      "inStock": true,
+      "colourHex": "#E6DDD0",
+      "description": "Floating vanity in whitewashed oak with a natural stone-effect top. Light and airy Beach House feel.",
+      "imagePrompt": "Whitewash wooden floating vanity with natural wood top, clean lines, minimal hardware, wall-mounted contemporary design, with an integrated sink basin set into the wood top.",
+      "colourFamily": "natural wood top"
+    },
+    {
+      "objectID": "vanity-008",
+      "name": "Harbour 20\" Wall-Mount Vanity",
+      "brand": "Native Trails",
+      "price": 389,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "coastal",
+      "finish": "white",
+      "width": 20,
+      "tags": [
+        "wall-mount",
+        "compact",
+        "beadboard",
+        "cottage"
+      ],
+      "images": [
+        "/images/vanity-008.png"
+      ],
+      "url": "/products/harbour-20-wall-mount-vanity",
+      "inStock": true,
+      "colourHex": "#EDF0F0",
+      "description": "Compact wall-mount vanity with beadboard panel detail. 20\" wide in bright white.",
+      "imagePrompt": "Compact white beadboard wall-mounted vanity, shallow cabinet base, straight legs, clean cottage styling, minimal hardware details, with an integrated white ceramic countertop and sink basin."
+    },
+    {
+      "objectID": "vanity-009",
+      "name": "Breakwater 24\" Freestanding Vanity",
+      "brand": "James Martin",
+      "price": 619,
+      "currency": "USD",
+      "category": "vanity",
+      "style": "coastal",
+      "finish": "white",
+      "width": 24,
+      "tags": [
+        "freestanding",
+        "two-door",
+        "premium",
+        "chrome-legs"
+      ],
+      "images": [
+        "/images/vanity-009.png"
+      ],
+      "url": "/products/breakwater-24-freestanding",
+      "inStock": true,
+      "colourHex": "#F2F2F0",
+      "description": "Freestanding vanity in bright white with polished chrome legs and two soft-close doors.",
+      "imagePrompt": "White two-door bathroom vanity with chrome legs, 24 inches wide, clean lines, freestanding construction, with an integrated white ceramic countertop and sink basin."
+    }
+  ],
+  "nbHits": 9,
+  "page": 0,
+  "nbPages": 1,
+  "hitsPerPage": 20,
+  "processingTimeMS": 1,
+  "query": ""
+}
