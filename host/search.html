@@ -191,7 +191,15 @@ const CATEGORY_LABELS = {
 
 const SKIN_CATS = {
   project: ['vanity','faucet','tile','mirror','lighting','hardware'],
-  clothing: ['jacket','top','jeans','trousers','shoes']
+  clothing: ['jacket','top','pants','shoes']
+};
+
+// Same brackets the chat flow itself offers per goalType (see budgetChoices in server.ts) —
+// project-scale numbers (a vanity, tile job) are a different order of magnitude from a single
+// clothing item, so the two skins need their own set, not one shared list.
+const SKIN_BUDGETS = {
+  project: [['','Any budget'],['1000','Under $1,000'],['2500','Under $2,500'],['5000','Under $5,000']],
+  clothing: [['','Any budget'],['400','Under $400'],['800','Under $800'],['1500','Under $1,500']]
 };
 
 const SKIN_CONFIG = {
@@ -304,7 +312,7 @@ function renderFilters() {
     <div class="filter-group">
       <div class="filter-label">Budget</div>
       <div class="filter-range">
-        ${[['','Any budget'],['500','Under $500'],['1000','Under $1,000'],['2000','Under $2,000'],['5000','Under $5,000']].map(([val, label]) => `
+        ${(SKIN_BUDGETS[currentSkin] || SKIN_BUDGETS.clothing).map(([val, label]) => `
           <label class="filter-range-item">
             <input type="radio" name="budget" value="${val}" ${activeBudget === val ? 'checked' : ''}
               onchange="setFilter('budget','${val}')"> ${label}

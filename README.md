@@ -11,8 +11,9 @@ matched CMS content. It ships as a floating widget embedded on a mockup retailer
 
 ## Quick start
 
-You need Node.js 22+ and an Anthropic API key. Nothing else is required — Greeter runs entirely
-against local sample data by default, no other accounts needed to see it working end to end.
+You need Node.js 22+ and a [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) API key.
+Nothing else is required — Greeter runs entirely against local sample data by default, no
+other accounts needed to see it working end to end.
 
 ```bash
 git clone <this-repo>
@@ -23,7 +24,7 @@ cp .env.example .env
 Open `.env` and set:
 
 ```env
-ANTHROPIC_API_KEY=sk-ant-...
+AI_GATEWAY_API_KEY=vck_...
 ```
 
 Then:
@@ -38,7 +39,7 @@ npm run dev
 directly. `npm run dev` hot-reloads server-side TypeScript changes instantly; re-run `npm run
 build` after editing anything in `src/components/`.)
 
-Visit **http://localhost:&lt;PORT&gt;** (set in `.env`). Click the pulsing floating button,
+Visit `http://localhost:<PORT>` (set in `.env`). Click the pulsing floating button,
 bottom-right, to open the widget.
 
 For the full setup guide — every environment variable explained, running against live
@@ -55,7 +56,7 @@ Algolia/Contentstack instead of fixtures, and troubleshooting — see
 | UI | React + TypeScript, built with Vite |
 | Host mockup site | Static HTML |
 | Agentic framework | [Vercel AI SDK](https://sdk.vercel.ai) |
-| LLM | Claude (Anthropic) or OpenAI — runtime-switchable |
+| LLM | Claude (Anthropic) or OpenAI, via Vercel AI Gateway — runtime-switchable |
 | Search | Local JSON fixtures (default) or [Algolia](https://algolia.com) |
 | CMS | Local JSON fixtures (default) or [Contentstack](https://contentstack.com) |
 

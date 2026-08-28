@@ -54,7 +54,8 @@ export interface LLMAdapter {
   curateOutfits(
     intent: IntentModel,
     budget: number,
-    categoryProducts: { category: string; products: { id: string; name: string; brand?: string; tags: string[]; price: number; currency: string }[] }[]
+    categoryProducts: { category: string; products: { id: string; name: string; brand?: string; tags: string[]; price: number; currency: string }[] }[],
+    previousOutfits?: { name: string; slots: Record<string, string> }[]
   ): Promise<{ name: string; rationale: string; slots: Record<string, string> }[]>
   /**
    * Assigns collage display roles and weights to all assembled categories in one call.
@@ -96,7 +97,8 @@ abstract class BaseAdapter implements LLMAdapter {
   async curateOutfits(
     intent: IntentModel,
     budget: number,
-    categoryProducts: { category: string; products: { id: string; name: string; brand?: string; tags: string[]; price: number; currency: string }[] }[]
+    categoryProducts: { category: string; products: { id: string; name: string; brand?: string; tags: string[]; price: number; currency: string }[] }[],
+    previousOutfits?: { name: string; slots: Record<string, string> }[]
   ): Promise<{ name: string; rationale: string; slots: Record<string, string> }[]> {
     const style = intent.constraints.style ?? 'mixed'
     const colour = intent.constraints.colourDirection ?? ''
@@ -114,6 +116,14 @@ abstract class BaseAdapter implements LLMAdapter {
       return `${category}:\n${lines}`
     }).join('\n\n')
 
+    const productNameById = new Map<string, string>()
+    for (const { products } of categoryProducts) for (const p of products) productNameById.set(p.id, p.name)
+    const prevBlock = previousOutfits?.length
+      ? `\n\nPreviously shown looks (same names = same look continuing across turns):\n${previousOutfits.map(o =>
+          `- "${o.name}": ${Object.entries(o.slots).map(([cat, id]) => `${cat}="${productNameById.get(id) ?? id}"`).join(', ')}`
+        ).join('\n')}`
+      : ''
+
     const { object } = await generateObject({
       model: this.getModel('curation'),
       temperature: 0.3,
@@ -121,7 +131,10 @@ abstract class BaseAdapter implements LLMAdapter {
         outfits: z.array(z.object({
           name: z.string().describe('3–5 word outfit/look name'),
           rationale: z.string().describe('One sentence (max 18 words) explaining why this combination works'),
-          slots: z.record(z.string()).describe('Map of category name to product id'),
+          slots: z.array(z.object({
+            category: z.string(),
+            productId: z.string(),
+          })).describe('One entry per category, mapping it to the chosen product id'),
         })).min(1).max(3),
       }),
       prompt: `You are curating ${intent.goalType === 'style' ? 'outfit' : 'product'} combinations for a shopper.
@@ -130,7 +143,7 @@ Goal: "${intent.goal}"
 Style: ${style}${colour ? ` | Colour direction: ${colour}` : ''}${fit ? ` | Fit: ${fit}` : ''}
 ${budgetLine}
 ${anchorLine}
-${Object.keys(categoryConstraints).length > 0 ? `\nShopper's explicit constraints (must be honoured in EVERY outfit):\n${Object.entries(categoryConstraints).map(([cat, cc]) => `- ${cat}: ${[...(cc.requiresTags ?? []).map(t => `must include "${t}"`), ...(cc.avoidances ?? []).map(t => `avoid "${t}"`)].join(', ')}`).join('\n')}` : ''}
+${Object.keys(categoryConstraints).length > 0 ? `\nShopper's explicit constraints (must be honoured in EVERY outfit):\n${Object.entries(categoryConstraints).map(([cat, cc]) => `- ${cat}: ${[...(cc.requiresTags ?? []).map(t => `must include "${t}"`), ...(cc.avoidances ?? []).map(t => `avoid "${t}"`)].join(', ')}`).join('\n')}` : ''}${prevBlock}
 
 Available products by category (categories listed in display order, left to right):
 ${catBlocks}
@@ -139,12 +152,16 @@ Rules:
 - Create 2 coherent combinations. A 3rd is optional if products allow a meaningfully different look.
 - Style adherence is the first filter: read each product's name and tags and reject any item whose aesthetic clearly contradicts the stated style. For coastal/nautical: reject flannel, rugged outdoor, heavy-weight, heritage workwear. For earthy/minimalist: reject bold prints and loud colours. Use your fashion knowledge.
 - Match colours and materials across the remaining shortlist (earthy tones together, navy with cream, linen with linen-weight fabrics).
-- Try to keep at least one combination within or close to the stated budget (sum of item prices). A second can be aspirational.
+${previousOutfits?.length ? `- CONTINUITY: for each previously shown look above, keep the exact same item in every category the shopper's constraints didn't just change — they may like the rest of the look and only asked to swap one piece. Only pick a different item for an untouched category if the newly-constrained piece genuinely clashes with the old one (formality mismatch, fighting colours/patterns) — if you do swap something extra, say why in the rationale. Don't swap a piece just because a different option exists; swap only when the existing one stops working.\n` : ''}- Try to keep at least one combination within or close to the stated budget (sum of item prices). A second can be aspirational.
 - Outfits 2 and 3 must differ from outfit 1 in at least 2 categories — vary the secondary pieces (top, pants, shoes for fashion; tile, hardware for home) so each combination feels like a distinct direction, not a minor swap.
 - Each combination needs: a name (3–5 words, evocative, not generic), and a rationale (one sentence, max 18 words, specific — e.g. "Earthy linen anchors the look; slim chinos sharpen it without losing the relaxed feel.").
 - Use only product ids from the lists above. Every category must have exactly one id in slots.`,
     })
-    return object.outfits
+    return object.outfits.map(o => ({
+      name: o.name,
+      rationale: o.rationale,
+      slots: Object.fromEntries(o.slots.map(({ category, productId }) => [category, productId])),
+    }))
   }
 
   async generateRefinements(intent: IntentModel, categories: string[]): Promise<string[]> {
@@ -196,23 +213,25 @@ Return:
     const categorySpec = z.object({
       requiresAll: z.array(z.string()).max(4).describe('AND — item must match every tag. Use for explicit user constraints visible in the intent.'),
       requiresAny: z.array(z.string()).min(1).max(6).describe('OR — item must match at least one tag. Use for style/occasion/colour interpretation.'),
-      avoidances: z.array(z.string()).max(4),
+      avoidances: z.array(z.string()).max(4).describe('Fabrics/constructions to exclude. Max 4 — pick the most important if more apply.'),
     })
     const { object } = await generateObject({
       model: this.getModel('spec'),
-      schema: z.object({ spec: z.record(categorySpec) }),
+      schema: z.object({
+        spec: z.array(categorySpec.extend({ category: z.string().describe('Canonical category name, matching one of the categories listed below.') })),
+      }),
       prompt: `Translate a shopper's intent into per-category search specs.
 
 Goal: "${intent.goal}"
 Style: ${style}${colour ? ` | Colour direction: ${colour}` : ''}${fit ? ` | Fit: ${fit}` : ''}${warmth ? ` | Warmth/temperature: ${warmth}` : ''}
 ${globalReq.length ? `Global explicit constraints (apply to all categories): ${globalReq.join(', ')}` : ''}
-${Object.keys(catCC).length ? `Category explicit constraints: ${Object.entries(catCC).map(([cat, cc]) => `${cat}: ${[...(cc.requiresTags ?? []), ...(cc.avoidances ?? []).map(a => `avoid ${a}`)].join(', ')}`).join(' | ')}` : ''}
+${Object.keys(catCC).length ? `Category explicit constraints (already applied directly by the app — do NOT repeat these in requiresAll/requiresAny below, they're shown only so your style tags don't contradict them): ${Object.entries(catCC).map(([cat, cc]) => `${cat}: ${[...(cc.requiresTags ?? []).map(t => `AND ${t}`), ...(cc.requiresAny ?? []).map(t => `OR ${t}`), ...(cc.avoidances ?? []).map(a => `avoid ${a}`)].join(', ')}`).join(' | ')}` : ''}
 Categories needed: ${categories.join(', ')}
 
-For each category return THREE arrays:
-- requiresAll: explicit user constraints that must ALL match (AND). Translate constraints from the intent directly — e.g. "short sleeves only" → ["short-sleeve"]. Leave empty if no explicit user constraint applies to this category.
-- requiresAny: style/occasion/colour interpretation tags — at least ONE must match (OR). E.g. "Coastal Chic, warm evening" → jacket: ["linen","unstructured","cotton","light"]. Use 3–5 tags.
-- avoidances: fabrics or constructions wrong for this intent — excluded entirely.
+Return one entry per category, each with THREE arrays:
+- requiresAll: ADDITIONAL explicit user constraints not already listed above that must ALL match (AND) — e.g. "short sleeves only" → ["short-sleeve"]. Leave empty if nothing new applies to this category. Never put two tags naming different sibling sub-types of the same garment here (e.g. never ["jeans","chinos"] together — no product is both; that belongs in requiresAny instead, or is already handled if it's listed as "OR" above).
+- requiresAny: style/occasion/colour interpretation tags — at least ONE must match (OR). E.g. "Coastal Chic, warm evening" → jacket: ["linen","unstructured","cotton","light"]. Use 3–5 tags. Do not restate alternatives already listed as "OR" above.
+- avoidances: fabrics or constructions wrong for this intent — excluded entirely. Max 4 — pick the most important ones if more come to mind.
 
 Use catalog vocabulary — not style names. E.g. not "coastal" but "linen", "unstructured", "relaxed".
 Sleeve length: use "short-sleeve". Sleeveless: "sleeveless", "cami", or "tank".
@@ -224,15 +243,19 @@ Warmth rules — apply regardless of fabric weight:
   : `Home: coordinate finish/material tags across categories. If vanity is matte black, hardware avoidances exclude "brushed brass","chrome".`}
 
 Example — coastal chic, men's, hot evening, user said "short sleeves only":
-{
-  "jacket": { "requiresAll": [], "requiresAny": ["linen","unstructured","light","relaxed","cotton"], "avoidances": ["heavy","wool","quilted"] },
-  "top":    { "requiresAll": ["short-sleeve"], "requiresAny": ["linen","cotton","breathable","polo","poplin"], "avoidances": ["mock-neck","merino","wool"] },
-  "pants":  { "requiresAll": [], "requiresAny": ["slim","chino","sand","navy","linen"], "avoidances": ["heavy","denim","flannel"] },
-  "shoes":  { "requiresAll": [], "requiresAny": ["loafer","suede","tan","leather","canvas"], "avoidances": [] }
-}`,
+[
+  { "category": "jacket", "requiresAll": [], "requiresAny": ["linen","unstructured","light","relaxed","cotton"], "avoidances": ["heavy","wool","quilted"] },
+  { "category": "top", "requiresAll": ["short-sleeve"], "requiresAny": ["linen","cotton","breathable","polo","poplin"], "avoidances": ["mock-neck","merino","wool"] },
+  { "category": "pants", "requiresAll": [], "requiresAny": ["slim","chino","sand","navy","linen"], "avoidances": ["heavy","denim","flannel"] },
+  { "category": "shoes", "requiresAll": [], "requiresAny": ["loafer","suede","tan","leather","canvas"], "avoidances": [] }
+]`,
       maxTokens: 500,
     })
-    return object.spec
+    const specRecord: Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }> = {}
+    for (const { category, requiresAll, requiresAny, avoidances } of object.spec) {
+      specRecord[category] = { requiresAll, requiresAny, avoidances }
+    }
+    return specRecord
   }
 
   async generateCategories(intent: IntentModel): Promise<string[]> {
@@ -272,7 +295,9 @@ Reason the same way you would mid-conversation: pick categories that fit this sp
 
     const { object } = await generateObject({
       model: this.getModel('allocation'),
-      schema: z.object({ allocation: z.record(z.number()) }),
+      schema: z.object({
+        allocation: z.array(z.object({ category: z.string(), maxPrice: z.number() })),
+      }),
       prompt: `Allocate a total shopping budget across categories.
 
 Total budget: $${totalBudget}
@@ -291,13 +316,16 @@ Rules:
 5. For home projects: vanity and tile get larger share; hardware gets the least
 6. For fashion: jacket/shoes get larger share; belt/socks get the least
 
-Return ONLY valid JSON in the "allocation" field: {"jacket": 350, "top": 130, "shoes": 230, "belt": 90}`,
+Return ONLY valid JSON in the "allocation" field, one entry per category: [{"category": "jacket", "maxPrice": 350}, {"category": "top", "maxPrice": 130}, {"category": "shoes", "maxPrice": 230}, {"category": "belt", "maxPrice": 90}]`,
       maxTokens: 120,
     })
 
+    const allocationRecord: Record<string, number> = {}
+    for (const { category, maxPrice } of object.allocation) allocationRecord[category] = maxPrice
+
     const result: Record<string, number> = {}
     for (const cat of categories) {
-      const alloc = object.allocation[cat]
+      const alloc = allocationRecord[cat]
       const raw = typeof alloc === 'number' ? Math.round(alloc) : (catalogStats[cat]?.max ?? 9999)
       const catMin = catalogStats[cat]?.min ?? 0
       result[cat] = Math.max(raw, catMin)
@@ -309,7 +337,8 @@ Return ONLY valid JSON in the "allocation" field: {"jacket": 350, "top": 130, "s
     const { object } = await generateObject({
       model: this.getModel('rationale'),
       schema: z.object({
-        roles: z.record(z.object({
+        roles: z.array(z.object({
+          category: z.string(),
           displayRole: z.enum(['hero', 'supporting', 'accent']),
           weight: z.number().int().min(1).max(10),
         })),
@@ -326,10 +355,13 @@ Rules:
 - weight 1–10: proportional column width in the collage. Hero: 7–9. Supporting: 4–6. Accent: 2–3.
 - Hero is the piece with the most design decisions riding on it — NOT the most visually striking. For a bathroom: vanity (not mirror, not lighting). For a living room: sofa (not rug, not lamp). For an outfit: the jacket or key garment (not shoes, not belt).
 - Mirrors, lighting, tile, hardware, scarves, socks, and belts are NEVER hero — they are supporting or accent.
+- 'accent' is reserved for genuinely small trim — belts, scarves, socks, hardware, swatches. A primary garment or fixture the shopper actually wears/uses as a main piece (pants, trousers, dress, skirt, top; for home: vanity, tile, faucet) must be 'hero' or 'supporting', never 'accent', even when something else is the hero — it's still a main piece, not a finishing touch.
 - Return an entry for every category listed.`,
       maxTokens: 200,
     })
-    return object.roles
+    const rolesRecord: Record<string, { displayRole: 'hero' | 'supporting' | 'accent'; weight: number }> = {}
+    for (const { category, displayRole, weight } of object.roles) rolesRecord[category] = { displayRole, weight }
+    return rolesRecord
   }
 
   async generateOverallSummary(intent: IntentModel, categories: string[]): Promise<string> {
@@ -360,9 +392,9 @@ export class ClaudeAdapter extends BaseAdapter {
 
   constructor(chatModelId?: string, fastModelId?: string) {
     super()
-    const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-    this.chatModel = anthropic(chatModelId ?? process.env.LLM_CLAUDE_CHAT ?? 'claude-sonnet-4-6')
-    this.fastModel = anthropic(fastModelId ?? process.env.LLM_CLAUDE_FAST ?? 'claude-haiku-4-5-20251001')
+    const anthropic = createAnthropic({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
+    this.chatModel = anthropic(`anthropic/${chatModelId ?? process.env.LLM_CLAUDE_CHAT ?? 'claude-sonnet-4-6'}`)
+    this.fastModel = anthropic(`anthropic/${fastModelId ?? process.env.LLM_CLAUDE_FAST ?? 'claude-haiku-4-5-20251001'}`)
   }
 
   getModel(task: LLMTask): LanguageModel {
@@ -377,9 +409,9 @@ export class OpenAIAdapter extends BaseAdapter {
 
   constructor() {
     super()
-    const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    this.chatModel = openai(process.env.LLM_OPENAI_CHAT ?? 'gpt-4o')
-    this.fastModel = openai(process.env.LLM_OPENAI_FAST ?? 'gpt-4o-mini')
+    const openai = createOpenAI({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
+    this.chatModel = openai(`openai/${process.env.LLM_OPENAI_CHAT ?? 'gpt-4o'}`)
+    this.fastModel = openai(`openai/${process.env.LLM_OPENAI_FAST ?? 'gpt-4o-mini'}`)
   }
 
   getModel(task: LLMTask): LanguageModel {

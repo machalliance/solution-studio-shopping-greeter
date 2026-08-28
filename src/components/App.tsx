@@ -248,7 +248,14 @@ export function App() {
                 }
                 break
               case 'error':
-                setAppState('chat')
+                // Same rule as the 'building'/'assembling' case above: a failure during a
+                // refinement (already in results) must not pop the compact card back open over
+                // the collage — that's what this bug looked like from the outside. Stay in
+                // results, clear the "Updating results..." indicator, and surface the error as
+                // a chat message instead. Only pre-results errors (no collage to preserve yet)
+                // fall back to the compact card.
+                setRefining(false)
+                if (appState !== 'results') setAppState('chat')
                 setMessages(prev => [...prev, {
                   role: 'assistant',
                   content: `⚠️ ${event.message ?? 'Something went wrong — please try again.'}`,

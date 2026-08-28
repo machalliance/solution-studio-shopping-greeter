@@ -53,8 +53,8 @@ CONVERSATION FLOWS
 
 ━━ ROOM PROJECTS (goalType: "project") ━━
 1. Acknowledge the goal warmly (1 sentence).
-2. Ask style family. chips.kind="options": Scandi | Coastal | Industrial | Modern | Farmhouse | Japandi | Transitional
-3. If they pick a broad family, generate 3–4 sub-directions that express distinct interior interpretations of that style — keep them home/decor terms, never fashion or clothing language (e.g. Coastal → Beach House | Relaxed Coastal | Coastal Modern | Pacific). chips.kind="options". After they pick, move to step 4.
+2. Ask style family. chips.kind="options": Scandi | Coastal | Industrial | Modern | Farmhouse | Japandi | Transitional. The moment they pick one of these exact options, set delta.styleFamily to it (and delta.style to the same value for now) — this is the one and only turn styleFamily is ever set.
+3. If they pick a broad family, generate 3–4 sub-directions that express distinct interior interpretations of that style — keep them home/decor terms, never fashion or clothing language (e.g. Coastal → Beach House | Relaxed Coastal | Coastal Modern | Pacific). chips.kind="options". After they pick, move to step 4. If they then pick a sub-direction, set delta.style to it — but never touch delta.styleFamily again for the rest of the conversation, it stays exactly what step 2 set.
 4. Ask room size. chips.kind="select". If compact, follow up on the critical fixture dimension.
 5. Ask budget (total project budget). chips.kind="select". Calibrate ranges to catalog prices above.
 6. PIVOT — summarise, then "Ready to see results, or want to narrow it down?" chips.kind="topic". Generate 2–3 uncaptured refinement topics relevant to this specific room (finish, fixture size, colour, material, etc.) + "Show me now" last.
@@ -62,13 +62,17 @@ CONVERSATION FLOWS
 ━━ FASHION / OUTFIT (goalType: "style") ━━
 1. Acknowledge the goal warmly (1 sentence).
 2. Ask fit FIRST — always the first fashion question, results are unusable without it. chips.kind="select": Men's | Women's | No preference
-3. Ask style direction. chips.kind="options": Smart casual | Coastal | Minimalist | Preppy | Classic
-3a. If they pick a broad family, generate 3–4 sub-directions that express distinct wearable interpretations of that style — keep them outfit/clothing terms, never interior-design or decor language (e.g. Coastal → Beach Casual | Resort Wear | Coastal Chic | Nautical). chips.kind="options". After they pick, move to step 4.
-4. Occasion context — ask ONLY when relevant:
+3. Ask style direction. chips.kind="options": Smart casual | Coastal | Minimalist | Preppy | Classic. The moment they pick one of these exact options, set delta.styleFamily to it (and delta.style to the same value for now) — this is the one and only turn styleFamily is ever set.
+3a. If they pick a broad family, generate 3–4 sub-directions that express distinct wearable interpretations of that style — keep them outfit/clothing terms, never interior-design or decor language (e.g. Coastal → Beach Casual | Resort Wear | Coastal Chic | Nautical). chips.kind="options". After they pick, move to step 4. If they then pick a sub-direction, set delta.style to it — but never touch delta.styleFamily again for the rest of the conversation, it stays exactly what step 3 set.
+4. Occasion context — do not skip this step for an outdoor or evening goal. If the goal
+   description itself names or clearly implies an outdoor or evening setting (rooftop, garden,
+   patio, outdoor wedding, evening event, etc.), the warmth question is required before the
+   pivot, not optional — this is not a judgment call to skip past. Never jump from style
+   straight to the pivot (step 5) on an outdoor/evening goal without having asked it.
    • Outdoor/evening event: warmth question. chips.kind="select": Warm evening | Might get cool | Definitely need a layer
    • Formal/indoor-outdoor event: venue question; follow with warmth if outdoor/mixed.
-   • Relaxed/casual: skip.
-5. PIVOT — one sentence summary + "Ready to see results, or want to narrow down?" chips.kind="topic". Generate 3–4 topics from dimensions not yet captured — e.g. colour direction, shoe style, jacket style, silhouette (dress or skirt vs pants), budget, build around something you own. "Show me now" last.
+   • Relaxed/casual, clearly indoor, or already answered: skip.
+5. PIVOT — one sentence summary + "Ready to see results, or want to narrow down?" chips.kind="topic". Generate 3–4 topics from dimensions not yet captured — e.g. colour direction, shoe style, jacket style, silhouette (dress or skirt vs pants), budget, warmth/weather (if outdoor/evening and still unanswered), build around something you own. "Show me now" last.
 
 RULES:
 - reply is plain text only — no markdown, no asterisks, no bullets. 2 sentences maximum.
@@ -126,7 +130,14 @@ ${currentIntent(intent)}`
 }
 
 
-export function categoryDisplayName(slug: string): string {
+export function categoryDisplayName(slug: string, requiresTags?: string[]): string {
   const s = slug.toLowerCase()
+  // "dress" is the one category that covers two genuinely different garments (see the
+  // canonical-keys note above: "dress (dress or skirt)") — the catalog files skirts as a tag
+  // inside the dress category rather than giving them their own. When the shopper's own
+  // explicit ask narrowed this category to skirt (requiresTags is an AND filter, so this
+  // guarantees the search — and every curated outfit pulling from it — is skirt-only, never a
+  // mix), show the label that actually matches what's displayed instead of the generic one.
+  if (s === 'dress' && requiresTags?.includes('skirt')) return 'Skirt'
   return s.charAt(0).toUpperCase() + s.slice(1)
 }

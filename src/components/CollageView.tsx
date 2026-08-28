@@ -10,9 +10,13 @@ export function CollageView({ categories, skin }: Props) {
   const supporting = categories.filter(c => c.displayRole === 'supporting')
   const accent    = categories.filter(c => c.displayRole === 'accent')
 
-  // Supporting items split across two columns so no column has more than 2 stacked items.
-  // Hero occupies one full-height column. Accent items share one narrow column.
-  const mid = Math.ceil(supporting.length / 2)
+  // Supporting items split across two columns so no column has more than 2 stacked items —
+  // but only once there are enough of them to need splitting. 2 or fewer already fit in one
+  // column together; splitting them anyway (e.g. pants+shoes → pants alone, shoes elsewhere)
+  // isolates one item for no reason. This happens whenever there's no jacket (top becomes
+  // hero, leaving only pants+shoes as 'supporting') — pants would end up alone, disconnected
+  // from everything else, instead of paired with shoes right next to the hero.
+  const mid = supporting.length > 2 ? Math.ceil(supporting.length / 2) : supporting.length
   const sup1    = supporting.slice(0, mid)
   const sup2raw = supporting.slice(mid)
 

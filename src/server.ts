@@ -108,6 +108,25 @@ buildCatalogStats().catch(err => console.error('[catalog] build failed:', err))
 // Not suitable for multi-instance deployments without a shared store (Redis, etc.).
 const intentStore = new Map<string, IntentModel>()
 
+// generateStyleSpec() and allocateBudget() are both LLM calls with real sampling variance —
+// calling them fresh on every assembleResults() means a category the shopper never mentioned
+// can still drift to a different product turn to turn, purely from that variance, not from
+// any actual change to its constraints. Caching per session, keyed on the exact inputs each
+// call actually depends on, makes untouched categories genuinely stable: same inputs → same
+// cached spec/allocation → same search → same top result. A real input change (any signal
+// feeding these two calls) naturally produces a different key, so a real refinement still
+// recomputes correctly — this only suppresses re-sampling identical inputs.
+// Keyed per category, not as one blob for the whole spec — a categoryConstraints change to
+// ONE category (e.g. a "pants" refinement) must not invalidate the cached spec for every
+// other category too, or the "only touched categories change" guarantee breaks immediately.
+const specCache = new Map<string, Record<string, { key: string; spec: { requiresAll: string[]; requiresAny: string[]; avoidances: string[] } }>>()
+const budgetCache = new Map<string, { key: string; allocation: Record<string, number> }>()
+
+// Last curated outfits per session — fed back into curateOutfits() as context so it can bias
+// toward keeping pieces the shopper didn't just ask to change, rather than freely re-picking
+// everything (including categories the shopper never mentioned) on every refinement turn.
+const curatedOutfitCache = new Map<string, { name: string; slots: Record<string, string> }[]>()
+
 // Debug stores — bounded to avoid unbounded growth in long-running instances.
 // /debug/* endpoints read these; they are not part of the production data path.
 const MAX_DEBUG_SESSIONS = 100
@@ -248,9 +267,8 @@ app.post('/api/refinements', async c => {
 app.get('/api/provider', c => c.json({ provider: activeProvider }))
 
 app.get('/api/env-status', c => c.json({
-  anthropicKey: !!process.env.ANTHROPIC_API_KEY,
-  openaiKey:    !!process.env.OPENAI_API_KEY,
-  useFixtures:  useFixtures,
+  gatewayKey:  !!process.env.AI_GATEWAY_API_KEY,
+  useFixtures: useFixtures,
 }))
 
 app.post('/api/provider', async c => {
@@ -276,39 +294,42 @@ const TurnSchema = z.object({
       .describe('"options" for style/aesthetic choices or sub-directions, "select" for factual picks (size/budget/fit), "topic" for pivot refinement topics only'),
     choices: z.array(z.string()).min(2).max(8)
       .describe('The options you are offering the shopper in this reply, each 1–4 words'),
-  }).optional()
-    .describe('Populate with the options you are offering the shopper in this reply. Include whenever the reply presents specific choices (style families, sub-directions, sizes, budgets, topics). Omit only for genuinely open-ended questions with no enumerable options.'),
+  }).nullable()
+    .describe('The options you are offering the shopper in this reply. Populate whenever the reply presents specific choices (style families, sub-directions, sizes, budgets, topics). Use null only for genuinely open-ended questions with no enumerable options.'),
   delta: z.object({
-    goal: z.string().optional().describe('Short phrase describing the shopping goal'),
-    goalType: z.enum(['project', 'style']).optional().describe('"project" for room/renovation, "style" for fashion/outfit'),
-    style: z.string().optional().describe('Confirmed style e.g. "Beach House", "Smart casual"'),
-    fit: z.string().optional().describe('Confirmed fit: "Men\'s", "Women\'s", or "No preference"'),
-    budget: z.string().optional().describe('Total budget label e.g. "$1,000–$2,000", "Under $400"'),
-    colourDirection: z.string().optional().describe('Colour direction e.g. "Earthy tones", "Neutral palette"'),
-    warmth: z.string().optional().describe('"Warm evening", "Might get cool", or "Definitely need a layer"'),
-    venue: z.string().optional().describe('"Indoor", "Outdoor", or "Ceremony outside, reception inside"'),
-    finish: z.string().optional().describe('Material finish e.g. "Matte black", "Brushed nickel"'),
-    roomSize: z.string().optional().describe('Room size e.g. "Tiny (under 35 sq ft)"'),
-    vanityWidth: z.string().optional().describe('Vanity width e.g. "Up to 24in"'),
-    avoidances: z.array(z.string()).optional().describe('Global exclusion filter — applied to all categories. Use when no category noun is mentioned e.g. "no logos", "avoid bright colours".'),
-    requiresTags: z.array(z.string()).optional().describe('Global positive filter — applied to all categories. Use when no category noun is mentioned e.g. "only linen", "only slim fit".'),
-    categoryConstraints: z.record(z.object({
-      requiresTags: z.array(z.string()).optional(),
-      avoidances: z.array(z.string()).optional(),
-    })).optional().describe('Category-scoped filters. Use when the user names a specific category. Map their word to the canonical category name (e.g. "pants"/"jeans"/"trousers" → "pants", "shirt"/"top"/"blouse" → "top", "jacket"/"blazer"/"coat" → "jacket", "shoes"/"boots"/"trainers" → "shoes"). E.g. "slim pants only" → { pants: { requiresTags: ["slim"] } }. "no black tops" → { top: { avoidances: ["black"] } }.'),
+    goal: z.string().nullable().describe('Short phrase describing the shopping goal'),
+    goalType: z.enum(['project', 'style']).nullable().describe('"project" for room/renovation, "style" for fashion/outfit'),
+    style: z.string().nullable().describe('The shopper\'s current style direction, as specific as what they\'ve actually confirmed — e.g. "Smart casual" if that\'s all they\'ve picked, or "City Smart" once they\'ve picked that sub-direction. This drives style-aware product/outfit reasoning, so more specific is better once it\'s known.'),
+    styleFamily: z.string().nullable().describe('The broad style family from the fixed step-2/3 options only (e.g. "Smart casual", "Coastal", "Minimalist", "Preppy", "Classic" for fashion; "Scandi", "Coastal", "Industrial", "Modern", "Farmhouse", "Japandi", "Transitional" for home) — set ONCE, the turn the shopper picks it, in exactly that wording. Never change it afterward, even when they later refine to a sub-direction (that goes in `style` above, not here) — this field must stay pinned to the original family for the life of the conversation, since it is used to look up real catalog data that only recognizes these fixed names, not invented sub-direction labels.'),
+    fit: z.string().nullable().describe('Confirmed fit: "Men\'s", "Women\'s", or "No preference"'),
+    budget: z.string().nullable().describe('Total budget label e.g. "$1,000–$2,000", "Under $400"'),
+    colourDirection: z.string().nullable().describe('Colour direction e.g. "Earthy tones", "Neutral palette"'),
+    warmth: z.string().nullable().describe('"Warm evening", "Might get cool", or "Definitely need a layer"'),
+    venue: z.string().nullable().describe('"Indoor", "Outdoor", or "Ceremony outside, reception inside"'),
+    finish: z.string().nullable().describe('Material finish e.g. "Matte black", "Brushed nickel"'),
+    roomSize: z.string().nullable().describe('Room size e.g. "Tiny (under 35 sq ft)"'),
+    vanityWidth: z.string().nullable().describe('Vanity width e.g. "Up to 24in"'),
+    avoidances: z.array(z.string()).describe('Global exclusion filter — applied to all categories. Empty array if none mentioned this turn. Use when no category noun is mentioned e.g. "no logos", "avoid bright colours".'),
+    requiresTags: z.array(z.string()).describe('Global positive filter — applied to all categories. Return the FULL current set of requirements (not just new ones this turn) — this replaces, not adds to, what was captured before. Empty array if none. Use when no category noun is mentioned e.g. "only linen", "only slim fit".'),
+    categoryConstraints: z.array(z.object({
+      category: z.string().describe('Canonical category name, e.g. "pants", "top", "jacket", "shoes".'),
+      requiresTags: z.array(z.string()).describe('AND filter for this category — the product must match EVERY tag listed. Only put multiple tags here when they all describe the SAME single product (e.g. a fit descriptor plus one garment sub-type). Empty array if none.'),
+      requiresAny: z.array(z.string()).describe('OR filter for this category — the product must match AT LEAST ONE tag listed. Use this whenever the shopper names two or more sibling sub-types as acceptable alternatives (e.g. "jeans or chinos", "boots or trainers") — those tags describe DIFFERENT products, not one product that is both, so they must never go in requiresTags together (a product cannot be both jeans and chinos — that AND-filter would match nothing). Empty array if none.'),
+      avoidances: z.array(z.string()).describe('Exclusion filter for this category. Empty array if none.'),
+    })).describe('Category-scoped filters. Empty array if the shopper named no specific category this turn. One entry per category they named. Map their word to the canonical category name (e.g. "pants"/"jeans"/"trousers" → "pants", "shirt"/"top"/"blouse" → "top", "jacket"/"blazer"/"coat" → "jacket", "shoes"/"boots"/"trainers" → "shoes"). If the word they used names a specific sub-type within that category rather than being a plain synonym for it (e.g. "jeans"/"denim" vs. "trousers"/"chinos" within pants; "boots"/"trainers"/"sandals" within shoes), keep that word as a filter too — mapping it to the category alone and then dropping it loses the one thing the shopper actually asked to narrow down to. The AND/OR choice matters: one sub-type + a fit/style descriptor go in requiresTags together (AND — same product needs both). Two or more sibling sub-types go in requiresAny (OR — any one of them is acceptable), never requiresTags. E.g. "slim pants only" → [{ category: "pants", requiresTags: ["slim"], requiresAny: [], avoidances: [] }]. "slim jeans only" → [{ category: "pants", requiresTags: ["slim", "jeans"], requiresAny: [], avoidances: [] }] (AND — one product, slim AND jeans). "jeans and chinos" / "give me both jeans and chinos options" → [{ category: "pants", requiresTags: [], requiresAny: ["jeans", "chinos"], avoidances: [] }] (OR — never combine sibling sub-types in requiresTags). "no black tops" → [{ category: "top", requiresTags: [], requiresAny: [], avoidances: ["black"] }].'),
     anchorItem: z.object({
       name: z.string(),
-      description: z.string().optional(),
+      description: z.string().nullable(),
       category: z.string().describe('Canonical category this item belongs to (same key used in categoryConstraints, e.g. "pants"). The shopper already owns this — it must be excluded from the shopping list and collage, not shown as something to buy.'),
-    }).optional().describe('An item the user already owns and wants to build around'),
-  }).optional()
-    .describe('Values confirmed in THIS turn only. Only populate fields the user explicitly answered.'),
-  isEarlyReady: z.boolean().default(false)
-    .describe('Set true once 2+ constraints are captured — enables the Show Me button. For fashion goals, never set before fit (mens/womens) is known: results are unusable without it.'),
-  isReady: z.boolean().default(false)
-    .describe('Set true ONLY when all required fields are captured AND user confirms or says "show me". Fashion requires: style + fit + budget. Home requires: style + budget.'),
-  categories: z.array(z.string()).optional()
-    .describe('Shopping list in body order (fashion: jacket→top→pants→shoes; home: lighting→mirror→vanity→faucet→tile→hardware). Required when isReady=true or isEarlyReady=true. Categories display left-to-right representing top-to-bottom on the body or logical project sequence.'),
+    }).nullable().describe('An item the user already owns and wants to build around. Null unless the shopper mentioned one.'),
+  }).nullable()
+    .describe('Values confirmed in THIS turn only. Use null for any field not explicitly confirmed by the shopper this turn — never guess or infer a value that was not actually said. Use null for the whole object if nothing was confirmed this turn.'),
+  isEarlyReady: z.boolean()
+    .describe('Set true once 2+ constraints are captured — enables the Show Me button. For fashion goals, never set before fit (mens/womens) is known: results are unusable without it. Set false if not applicable — always include this field.'),
+  isReady: z.boolean()
+    .describe('Set true ONLY when all required fields are captured AND user confirms or says "show me". Fashion requires: style + fit + budget. Home requires: style + budget. Set false if not ready — always include this field.'),
+  categories: z.array(z.string())
+    .describe('Shopping list in body order (fashion: jacket→top→pants→shoes; home: lighting→mirror→vanity→faucet→tile→hardware). Empty array unless isReady=true or isEarlyReady=true, in which case required. Categories display left-to-right representing top-to-bottom on the body or logical project sequence.'),
 })
 
 
@@ -429,6 +450,8 @@ app.post('/api/chat', async c => {
       // below chosen so a shopper never stares at a stalled spinner for more than ~15s.
       let replyText = ''
       let prevReplyLen = 0
+      let chipsPreviewSent = false
+      let prevChipsLen = 0
       const turn = await Promise.race([
         (async () => {
           for await (const partial of result.partialObjectStream) {
@@ -438,6 +461,28 @@ app.post('/api/chat', async c => {
               replyText += cur.slice(prevReplyLen)
               prevReplyLen = cur.length
             }
+            // Chips are the schema field right after `reply` — the model has already
+            // generated them by the time `delta` starts appearing in the partial object,
+            // since structured output streams fields in declaration order. Previewing them
+            // here (rather than waiting for the whole object — delta, isReady, categories —
+            // to finish too) is what the one-call design was supposed to buy in the first
+            // place; the code just never actually looked at partial.chips before now.
+            //
+            // Gate on chips.choices.length going stable across two consecutive partial
+            // updates — NOT on partial.delta appearing. An earlier version waited for
+            // `delta` as proof chips had fully closed, but `delta` is a ~15-field object
+            // (mostly null/[] boilerplate) the model still has to emit as literal JSON
+            // syntax, and the AI SDK's partial-object updates arrive in provider-side
+            // chunks rather than per-token — so that gate was still absorbing a chunk or
+            // two of delta's boilerplate before firing (measured ~0.7s of avoidable delay
+            // on a plain first-turn reply). Length-stability needs nothing past chips
+            // itself, so it can fire the moment chips is actually done.
+            const chipsLen = partial.chips?.choices?.length ?? 0
+            if (!chipsPreviewSent && partial.chips?.kind && chipsLen >= 2 && chipsLen === prevChipsLen) {
+              chipsPreviewSent = true
+              await write({ type: 'options', kind: partial.chips.kind, choices: partial.chips.choices! })
+            }
+            prevChipsLen = chipsLen
           }
           return result.object
         })(),
@@ -451,9 +496,21 @@ app.post('/api/chat', async c => {
       // ── Build updated intent ───────────────────────────────────────────────
       // Merge delta fields from this turn onto the accumulated intent.
       // Only fields that were explicitly set in delta are applied.
-      const d = turn.delta ?? {}
+      // delta itself is nullable, but every field within it is required (nullable/empty-array
+      // rather than optional) — so the fallback needs every key, not a bare {}.
+      const d = turn.delta ?? {
+        goal: null, goalType: null, style: null, styleFamily: null, fit: null, budget: null,
+        colourDirection: null, warmth: null, venue: null, finish: null,
+        roomSize: null, vanityWidth: null, avoidances: [], requiresTags: [],
+        categoryConstraints: [], anchorItem: null,
+      }
       const deltaConstraints: IntentModel['constraints'] = {}
       if (d.style)           deltaConstraints.style           = d.style
+      // styleFamily is server-enforced sticky, not just prompt instruction (same pattern as the
+      // anchor-item exclusion below) — once set, a real catalog lookup depends on it staying
+      // exactly the fixed family name the shopper originally picked, so a later turn can never
+      // overwrite it, even if the model forgets the "never change it" instruction.
+      if (d.styleFamily && !prevStored?.constraints.styleFamily) deltaConstraints.styleFamily = d.styleFamily
       if (d.fit)             deltaConstraints.fit             = d.fit
       if (d.budget)          deltaConstraints.budget          = d.budget
       if (d.colourDirection) deltaConstraints.colourDirection = d.colourDirection
@@ -462,13 +519,30 @@ app.post('/api/chat', async c => {
       if (d.finish)          deltaConstraints.finish          = d.finish
       if (d.roomSize)        deltaConstraints.roomSize        = d.roomSize
       if (d.vanityWidth)     deltaConstraints.vanityWidth     = d.vanityWidth
-      if (d.avoidances?.length)    deltaConstraints.avoidances    = d.avoidances
-      if (d.requiresTags?.length)  deltaConstraints.requiresTags  = d.requiresTags
-      if (d.categoryConstraints) {
+      // avoidances (exclusion list): safe to union — more exclusions can't create a
+      // contradiction. requiresTags (AND filter, search.ts's requiresAll uses .every()):
+      // NOT unioned — accumulating "requirements" that were actually the shopper changing
+      // their mind would silently zero out search results, worse than losing a stale value.
+      // Stays replace-based, relying on the model restating the full current set (per its
+      // schema description) rather than a mechanical guarantee.
+      if (d.avoidances?.length) {
+        const prevAvoidances = Array.isArray(prevStored?.constraints.avoidances) ? prevStored.constraints.avoidances : []
+        deltaConstraints.avoidances = [...new Set([...prevAvoidances, ...d.avoidances])]
+      }
+      if (d.requiresTags?.length) deltaConstraints.requiresTags = d.requiresTags
+      if (d.categoryConstraints?.length) {
         const prev = prevStored?.constraints.categoryConstraints ?? {}
-        const merged: Record<string, { requiresTags?: string[], avoidances?: string[] }> = { ...prev }
-        for (const [cat, cc] of Object.entries(d.categoryConstraints)) {
-          merged[cat] = { ...(merged[cat] ?? {}), ...cc }
+        const merged: Record<string, { requiresTags?: string[], requiresAny?: string[], avoidances?: string[] }> = { ...prev }
+        for (const { category, requiresTags, requiresAny, avoidances } of d.categoryConstraints) {
+          const existing = merged[category] ?? {}
+          merged[category] = {
+            // requiresTags (AND): same replace-based asymmetry as the global fields above.
+            // requiresAny (OR): safe to union like avoidances — more alternatives can only
+            // widen a match, never zero one out the way accumulating AND tags would.
+            requiresTags: requiresTags.length ? requiresTags : existing.requiresTags,
+            requiresAny:  [...new Set([...(existing.requiresAny ?? []), ...requiresAny])],
+            avoidances:   [...new Set([...(existing.avoidances ?? []), ...avoidances])],
+          }
         }
         deltaConstraints.categoryConstraints = merged
       }
@@ -485,9 +559,11 @@ app.post('/api/chat', async c => {
         goal:      d.goal      ?? prevStored?.goal      ?? '',
         goalType:  d.goalType  ?? prevStored?.goalType  ?? 'project',
         constraints: cleanConstraints,
+        // Replace-by-category, not append: a later mention of the same category is a
+        // correction (e.g. "actually they're navy, not dark"), not a second, separate item.
         anchorItems: [
-          ...(prevStored?.anchorItems ?? []),
-          ...(d.anchorItem ? [{ name: d.anchorItem.name, description: d.anchorItem.description, category: d.anchorItem.category }] : []),
+          ...(prevStored?.anchorItems ?? []).filter(a => a.category !== d.anchorItem?.category),
+          ...(d.anchorItem ? [{ name: d.anchorItem.name, description: d.anchorItem.description ?? undefined, category: d.anchorItem.category }] : []),
         ],
         sessionId,
       }
@@ -517,7 +593,12 @@ app.post('/api/chat', async c => {
       }
 
       // ── Emit Q&A chips and early-ready signal ─────────────────────────────
-      if (!isReady && chips && chips.choices.length > 0) {
+      // Skip if this is exactly what the in-loop preview above already sent — the common
+      // case, since the budget gate only rewrites chips in the one specific isReady-without-
+      // budget path. Only actually re-emit when the final chips differ from the preview.
+      const chipsMatchPreview = chipsPreviewSent && chips
+        && JSON.stringify(chips.choices) === JSON.stringify(turn.chips?.choices) && chips.kind === turn.chips?.kind
+      if (!isReady && chips && chips.choices.length > 0 && !chipsMatchPreview) {
         await write({ type: 'options', kind: chips.kind, choices: chips.choices })
       }
       if (!isReady && turn.isEarlyReady) {
@@ -738,13 +819,44 @@ async function assembleResults(
   const hasSpecSignal = !!(intent.constraints.style || intent.constraints.warmth ||
     intent.constraints.colourDirection || intent.constraints.venue || intent.constraints.finish)
 
+  // Global signals feed every category's spec entry (style coherence); a category's own
+  // categoryConstraints only feeds its own entry. A category's key changes only if one of
+  // those two actually changed for it — untouched categories keep the identical key turn to
+  // turn regardless of what changed elsewhere in the intent.
+  const globalSpecSignal = JSON.stringify({
+    style: intent.constraints.style, colour: intent.constraints.colourDirection,
+    fit: intent.constraints.fit, warmth: intent.constraints.warmth,
+    venue: intent.constraints.venue, finish: intent.constraints.finish,
+    goalType: intent.goalType, goal: intent.goal, globalRequiresTags,
+  })
+  const specKeyFor = (cat: string) => JSON.stringify({ global: globalSpecSignal, cc: categoryConstraints[cat] ?? null })
+
   const [styleSpec, perCategoryMax] = await Promise.all([
-    hasSpecSignal
-      ? llm.generateStyleSpec(intent, categories).catch(err => {
-          console.error('[spec] generation failed, proceeding without:', err)
-          return {} as Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }>
-        }).then(spec => { console.log('[spec]', JSON.stringify(spec)); return spec })
-      : Promise.resolve({} as Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }>),
+    (async (): Promise<Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }>> => {
+      if (!hasSpecSignal) return {}
+      const prevEntries = specCache.get(intent.sessionId) ?? {}
+      const stale = categories.filter(cat => prevEntries[cat]?.key !== specKeyFor(cat))
+      if (stale.length === 0) {
+        const reused: Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }> = {}
+        for (const cat of categories) reused[cat] = prevEntries[cat].spec
+        return reused
+      }
+      const fresh = await llm.generateStyleSpec(intent, categories).catch(err => {
+        console.error('[spec] generation failed, proceeding without:', err)
+        return {} as Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }>
+      })
+      console.log('[spec]', JSON.stringify(fresh), '| stale categories recomputed:', stale.join(', '))
+      const merged: Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }> = {}
+      const nextEntries: Record<string, { key: string; spec: { requiresAll: string[]; requiresAny: string[]; avoidances: string[] } }> = {}
+      for (const cat of categories) {
+        const useFresh = stale.includes(cat) || !prevEntries[cat]
+        const spec = useFresh ? (fresh[cat] ?? { requiresAll: [], requiresAny: [], avoidances: [] }) : prevEntries[cat].spec
+        merged[cat] = spec
+        nextEntries[cat] = { key: specKeyFor(cat), spec }
+      }
+      specCache.set(intent.sessionId, nextEntries)
+      return merged
+    })(),
 
     // Budget: fit-aware per-category allocation.
     // Build fit-aware stats first (per-category search queries), then call allocateBudget.
@@ -764,9 +876,13 @@ async function assembleResults(
         }
         relevantStats[cat] = catalogStats[cat]
       }))
+      const budgetKey = JSON.stringify({ budgetFacet, categories, relevantStats })
+      const cachedBudget = budgetCache.get(intent.sessionId)
+      if (cachedBudget?.key === budgetKey) return cachedBudget.allocation
       const alloc = await llm.allocateBudget(budgetFacet, categories, relevantStats).catch(() => ({}))
       console.log('[budget] fit-aware stats:', JSON.stringify(relevantStats))
       console.log('[budget] per-category allocation:', JSON.stringify(alloc))
+      budgetCache.set(intent.sessionId, { key: budgetKey, allocation: alloc })
       return alloc
     })(),
   ])
@@ -781,10 +897,15 @@ async function assembleResults(
       const catSpec = styleSpec[category]
       const avoidances = [...globalAvoidances, ...(catCC.avoidances ?? []), ...(catSpec?.avoidances ?? [])]
       // requiresAll (AND): explicit user constraints — global + per-category + spec's explicit read of intent.
-      // requiresAny (OR): style interpretation from spec — suppressed when catCC already captures the user's
-      // explicit constraint for this category, to prevent style OR tags diluting a hard constraint.
+      // requiresAny (OR): the shopper's own explicit alternatives (catCC.requiresAny, e.g. "jeans or
+      // chinos") always apply — never suppressed. Spec's style-interpretation OR tags are suppressed
+      // only when catCC already has a hard AND constraint for this category, to prevent style tags
+      // diluting it; they coexist fine alongside the shopper's own OR alternatives.
       const requiresAll = [...globalRequiresTags, ...(catCC.requiresTags ?? []), ...(catSpec?.requiresAll ?? [])]
-      const requiresAny = catCC.requiresTags?.length ? [] : (catSpec?.requiresAny ?? [])
+      const requiresAny = [
+        ...(catCC.requiresAny ?? []),
+        ...(catCC.requiresTags?.length ? [] : (catSpec?.requiresAny ?? [])),
+      ]
 
       let products = await search.query({ category, facets, avoidances, requiresAll, requiresAny, limit: 10 })
       // Retry 1: drop budget filter if it's starving the row
@@ -795,35 +916,36 @@ async function assembleResults(
         products = await search.query({ category, facets: relaxedFacets, avoidances, requiresAll, requiresAny, limit: 10 })
         console.log(`[budget] ${category} returned ${initialCount} at maxPrice=${facets.maxPrice}, retried without price filter → ${products.length} results`)
       }
-      // Retry 2: drop spec avoidances and requiresAny if still starved — explicit requiresAll stays in force
+      // Retry 2: drop spec avoidances and requiresAny if still starved — explicit requiresAll and the
+      // shopper's own requiresAny (catCC.requiresAny) stay in force, only spec's style-interpretation
+      // requiresAny is dropped.
       if (products.length < 3 && catSpec && (catSpec.requiresAny.length > 0 || catSpec.avoidances.length > 0)) {
         const baseAvoidances = [...globalAvoidances, ...(catCC.avoidances ?? [])]
-        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll, requiresAny: [], limit: 10 })
+        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
         console.log(`[spec] ${category} still thin after budget retry, dropped spec requiresAny/avoidances → ${products.length} results`)
       }
       // Retry 3: drop spec requiresAll too — last resort so categories are never empty
       if (products.length < 3 && catSpec?.requiresAll?.length) {
         const baseAvoidances = [...globalAvoidances, ...(catCC.avoidances ?? [])]
         const baseRequiresAll = [...globalRequiresTags, ...(catCC.requiresTags ?? [])]
-        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll: baseRequiresAll, requiresAny: [], limit: 10 })
+        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll: baseRequiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
         console.log(`[spec] ${category} still empty, dropped spec requiresAll too → ${products.length} results`)
       }
-      // Retry 4: drop catCC.requiresTags too if the category is still completely empty.
-      // These normally stay in force at every retry above because they represent the
-      // shopper's own explicit ask (e.g. "slim pants only" from chat) — dropping them
-      // would show something that contradicts what was typed. But categoryConstraints
-      // also gets written to from anchor items ("build around something you own"), where
-      // the tags are the LLM's own guess at translating freeform language into search
-      // tags, not something the shopper typed — and that guess isn't grounded in the
-      // catalog's real vocabulary the way generateStyleSpec() deliberately is. A guess
-      // like ["dark","slim"] for "slim dark indigo jeans" can permanently zero out a
-      // category, since real tags are always compound ("dark-indigo", never bare "dark")
-      // and this constraint was otherwise never relaxed. Only fires when the category
-      // would otherwise be entirely empty (< 1, not < 3) — a thin-but-nonempty result
-      // from an explicit constraint is left alone.
-      if (products.length < 1 && catCC.requiresTags?.length) {
+      // Retry 4: drop catCC.requiresTags and catCC.requiresAny too if the category is still completely
+      // empty. These normally stay in force at every retry above because they represent the shopper's
+      // own explicit ask (e.g. "slim pants only", "jeans or chinos" from chat) — dropping them would
+      // show something that contradicts what was typed. But categoryConstraints also gets written to
+      // from anchor items ("build around something you own"), where the tags are the LLM's own guess
+      // at translating freeform language into search tags, not something the shopper typed — and that
+      // guess isn't grounded in the catalog's real vocabulary the way generateStyleSpec() deliberately
+      // is. A guess like ["dark","slim"] for "slim dark indigo jeans" can permanently zero out a
+      // category, since real tags are always compound ("dark-indigo", never bare "dark") and this
+      // constraint was otherwise never relaxed. Only fires when the category would otherwise be
+      // entirely empty (< 1, not < 3) — a thin-but-nonempty result from an explicit constraint is left
+      // alone.
+      if (products.length < 1 && (catCC.requiresTags?.length || catCC.requiresAny?.length)) {
         products = await search.query({ category, facets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
-        console.log(`[anchor] ${category} still empty, dropped category constraint requiresTags too → ${products.length} results`)
+        console.log(`[anchor] ${category} still empty, dropped category constraint requiresTags/requiresAny too → ${products.length} results`)
       }
 
       const productNames = products.slice(0, 4).map(p => p.name)
@@ -857,7 +979,7 @@ async function assembleResults(
 
       return {
         name: category,
-        displayName: categoryDisplayName(category),
+        displayName: categoryDisplayName(category, intent.constraints.categoryConstraints?.[category]?.requiresTags),
         displayRole: 'supporting' as const,  // placeholder — overwritten below
         weight: 5,
         products: products.slice(0, 4),
@@ -927,7 +1049,9 @@ async function buildCuratedOutfits(
 
   let curatedSlots: { name: string; rationale: string; slots: Record<string, string> }[] = []
   try {
-    curatedSlots = await llm.curateOutfits(intent, budget, categoryProducts)
+    const previousOutfits = curatedOutfitCache.get(intent.sessionId)
+    curatedSlots = await llm.curateOutfits(intent, budget, categoryProducts, previousOutfits)
+    curatedOutfitCache.set(intent.sessionId, curatedSlots.map(({ name, slots }) => ({ name, slots })))
   } catch (err) {
     console.error('[curation error]', err)
   }

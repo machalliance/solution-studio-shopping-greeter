@@ -11,6 +11,9 @@ docs/implementation-guide.md
 docs/business-case-template.md
 docs/production-considerations.md
 
+# Not for the public repo.
+scripts/generate-cms-images.py
+
 # Local editor/tool config and scratch files.
 .claude/
 scratch/

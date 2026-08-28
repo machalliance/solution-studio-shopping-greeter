@@ -13,8 +13,10 @@ floating widget on a mockup retailer site.
 - **Node.js 22+** — enforced via `engines` in `package.json`. If you need to manage multiple
   Node versions, [nvm](https://github.com/nvm-sh/nvm) is a straightforward way to install it
   without needing root.
-- **An Anthropic API key** (or an OpenAI key — see below). This is the only account you need to
-  get the demo running end to end.
+- **A [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) API key.** LLM calls (both Claude
+  and OpenAI) are routed through Gateway — one key covers both providers, no separate Anthropic
+  or OpenAI account needed. This is the only account you need to get the demo running end to
+  end.
 
 > ⚠️ **You do NOT need an Algolia or Contentstack account to run the demo.** By default
 > (`USE_FIXTURES=true`), Greeter serves product and content data from JSON fixture files
@@ -34,12 +36,12 @@ cp .env.example .env
 Open `.env` and set at minimum:
 
 ```env
-ANTHROPIC_API_KEY=sk-ant-...
+AI_GATEWAY_API_KEY=vck_...
 ```
 
-(`LLM_PROVIDER` defaults to `claude`, so this is the one key you need to fill in to start.
-Set `OPENAI_API_KEY` and `LLM_PROVIDER=openai` instead if you'd rather run on OpenAI — see
-**Environment variables** below.)
+(`LLM_PROVIDER` defaults to `claude`; set `LLM_PROVIDER=openai` instead if you'd rather run on
+OpenAI — same `AI_GATEWAY_API_KEY` covers both, nothing else to change. See **Environment
+variables** below.)
 
 Then:
 
@@ -51,7 +53,7 @@ npm run dev
 
 The build step is one-time — it compiles the React widget into `dist/`, which the server reads
 directly; re-run it after editing anything in `src/components/`. `npm run dev` hot-reloads
-server-side TypeScript changes instantly. The app listens on **http://localhost:&lt;PORT&gt;**
+server-side TypeScript changes instantly. The app listens on `http://localhost:<PORT>`
 (set `PORT` in `.env`).
 
 **You should see:**
@@ -67,15 +69,14 @@ server-side TypeScript changes instantly. The app listens on **http://localhost:
 All variables are documented in `.env.example`. Copy it to `.env` and fill in what you need —
 nothing outside `USE_FIXTURES=true` mode is required to run the demo.
 
-### Anthropic / AI
+### Vercel AI Gateway / LLM
 
 | Variable | Controls | Required? |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | Claude API access. Get a key from the Anthropic Console (console.anthropic.com), under API Keys. | Required if `LLM_PROVIDER=claude` (the default). |
+| `AI_GATEWAY_API_KEY` | Vercel AI Gateway access — routes calls to both Claude and OpenAI through one key. Get one from your [Vercel dashboard](https://vercel.com/dashboard) under the AI Gateway product (requires a Vercel account; a free tier exists, but note it may not include Claude model access on every account — see **Troubleshooting** below). | Required. |
 | `LLM_PROVIDER` | Which provider is active at startup — `claude` or `openai`. Runtime-switchable afterward via `POST /api/provider`. | Optional — defaults to `claude`. |
 | `LLM_CLAUDE_CHAT` | Model id used for the main conversation/extraction turn (quality matters more than speed here). | Optional — defaults to `claude-sonnet-4-6` in code if unset. |
 | `LLM_CLAUDE_FAST` | Model id used for everything else (rationale text, refinement chips, spec translation, budget allocation, curation) — a faster/cheaper model. | Optional — defaults to `claude-haiku-4-5-20251001` in code if unset. |
-| `OPENAI_API_KEY` | OpenAI API access, only used if `LLM_PROVIDER=openai`. Get a key from platform.openai.com, under API Keys. | Required only if using the OpenAI provider. |
 | `LLM_OPENAI_CHAT` | Model id for the main conversation turn under the OpenAI provider. | Optional — defaults to `gpt-4o` in code if unset. |
 | `LLM_OPENAI_FAST` | Model id for fast/background tasks under the OpenAI provider. | Optional — defaults to `gpt-4o-mini` in code if unset. |
 
@@ -181,6 +182,12 @@ Skip this section entirely if you're running with the default `USE_FIXTURES=true
    captured, click **Show me now** (or answer through to completion) to see the assembled
    results: a shopping list of categories (vanity, faucet, mirror, lighting, tile, hardware) on
    the left, and curated product collages plus matched CMS guides on the right.
+
+   > ⚠️ **Only "Powder room refresh" has real supporting catalog data today.** The fixture
+   > catalog's home-project categories are bathroom fixtures only (vanity, faucet, mirror,
+   > lighting, tile, hardware), and the category list itself is fixed in code — "Deck
+   > refinishing," "Kitchen backsplash," and "New flooring" will still start a conversation, but
+   > won't assemble a sensible result.
 4. **Try the other built-in scenario**: start over, switch to "The Clothing Store" skin, and
    click one of its quick-example buttons — "Rooftop dinner outfit", "Weekend look", "Work from
    office", or "Wedding guest" — or type your own fashion goal, e.g. *"Need an outfit for a
@@ -253,16 +260,22 @@ server memory — it just sits unused until the server restarts.
 - Confirm `scripts/seed-contentstack.py` completed successfully and created all three content
   types (`buying_guide`, `how_to`, `project_guide`).
 
-**Claude API errors**
-- Missing key: confirm `ANTHROPIC_API_KEY` is set in `.env` and the server was restarted
-  after adding it.
-- Wrong model name: `LLM_CLAUDE_CHAT` / `LLM_CLAUDE_FAST` must be valid, currently-available
-  model ids — an invalid id fails at request time, not at startup.
-- Quota/rate limit errors surface directly from the Anthropic API; check usage in the
-  Anthropic Console.
-- If you're intentionally on the OpenAI provider instead, confirm `LLM_PROVIDER=openai` and
-  `OPENAI_API_KEY` is set — `POST /api/provider` also lets you switch providers at runtime
-  without restarting.
+**LLM / Gateway errors**
+- Missing key: confirm `AI_GATEWAY_API_KEY` is set in `.env` and the server was restarted
+  after adding it. `GET /api/env-status` reports whether the server sees a key at all
+  (`gatewayKey: true/false`) — useful for confirming a `.env` change actually took effect,
+  same restart caveat as the Algolia/CMS checks above.
+- Wrong model name: `LLM_CLAUDE_CHAT` / `LLM_CLAUDE_FAST` / `LLM_OPENAI_CHAT` /
+  `LLM_OPENAI_FAST` must be valid, currently-available model ids — an invalid id fails at
+  request time with a `404 Not Found`, not at startup (confirmed directly against Gateway).
+- `403 Forbidden` / `"Free tier users do not have access to this model"`: some Gateway
+  accounts' free tier covers OpenAI models but not Claude. Add paid credits to the Vercel
+  account behind your `AI_GATEWAY_API_KEY` (the error body includes a direct top-up link), or
+  switch to the OpenAI provider (`LLM_PROVIDER=openai`) in the meantime.
+- `429` rate-limit errors, or other quota issues, surface directly from Gateway; check usage
+  under the AI Gateway product in your Vercel dashboard.
+- `POST /api/provider` lets you switch between `claude` and `openai` at runtime without
+  restarting, if you want to try the other provider quickly.
 
 **Port already in use**
 - Something else is already using port 80 on your machine. Set `PORT=<other-port>` in `.env`

@@ -358,6 +358,11 @@ html, body {
   animation: showMePulse 2.4s ease-in-out infinite;
 }
 .g-show-me:hover { opacity: 0.84; }
+.g-show-me:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation-play-state: paused;
+}
 
 /* ── Typing indicator ── */
 .g-typing {
@@ -818,9 +823,9 @@ html, body {
 .g-cms-arrow-slot > * { pointer-events: auto; }
 .g-cms-arrow-slot-left { left: 6px; }
 .g-cms-arrow-slot-right { right: 6px; }
-.g-cms-scroll-arrow {
-  width: 26px;
-  height: 26px;
+/* Shared round icon-button affordance — also used by .g-stack-arrow (collage scroll-down). */
+.g-cms-scroll-arrow,
+.g-stack-arrow {
   border-radius: 50%;
   background: white;
   border: 1px solid var(--hairline);
@@ -832,7 +837,12 @@ html, body {
   color: var(--ink);
   transition: box-shadow 0.12s;
 }
-.g-cms-scroll-arrow:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.16); }
+.g-cms-scroll-arrow:hover,
+.g-stack-arrow:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.16); }
+.g-cms-scroll-arrow {
+  width: 26px;
+  height: 26px;
+}
 .g-cms-strip {
   min-width: 0; /* flex min-width:auto trap — without this the strip's content width
                    overrides the track's flex sizing and escapes .g-results */
@@ -980,7 +990,7 @@ html, body {
   background: white;
 }
 
-/* Scroll-down arrow — same round affordance as the original product-row arrows */
+/* Scroll-down arrow — shared round affordance defined with .g-cms-scroll-arrow above */
 .g-stack-arrow {
   position: absolute;
   bottom: 14px;
@@ -988,19 +998,8 @@ html, body {
   transform: translateX(-50%);
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid var(--hairline);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
-  color: var(--ink);
-  transition: box-shadow 0.12s;
 }
-.g-stack-arrow:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.16); }
 
 /* Product links under each collage — chips linking to the product page */
 .g-collage-chips {

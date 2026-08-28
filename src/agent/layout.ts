@@ -20,17 +20,14 @@ function getStr(constraints: IntentModel['constraints'], ...keys: string[]): str
 }
 
 /**
- * Maps verbose style labels the model might produce to the slug used in fixtures and Algolia.
- * Add entries here when new style sub-directions need to map to an existing fixture file.
+ * Slugifies a style label for the fixture/Algolia `style` facet. Only ever called with
+ * `styleFamily` — one of the fixed step-2/3 chip options ("Smart casual", "Coastal", "Scandi",
+ * etc.) that the catalog's own style values already match once lowercased and hyphenated. There
+ * is deliberately no alias table here: a free-form sub-direction name the model invents (e.g.
+ * "City Smart") is never passed to this function — see `styleFamily` in the TurnSchema for why.
  */
-const STYLE_ALIASES: Record<string, string> = {
-  'beach house': 'coastal',
-  'coastal beach house': 'coastal',
-  'relaxed coastal': 'coastal',
-}
 function normalizeStyle(label: string): string {
-  const lower = label.toLowerCase()
-  return STYLE_ALIASES[lower] ?? lower.replace(/\s+/g, '-')
+  return label.toLowerCase().replace(/\s+/g, '-')
 }
 
 /** Maps the model's fit label to the canonical slug used in fixture files and Algolia. */
@@ -47,7 +44,7 @@ export function buildShowAllUrl(category: string, intent: IntentModel): string {
   const params = new URLSearchParams({ q: category })
   const skin = intent.goalType === 'project' ? 'project' : 'clothing'
   params.set('skin', skin)
-  const style  = getStr(c, 'style')
+  const style  = getStr(c, 'styleFamily', 'style')
   const budget = getStr(c, 'budget')
   const colour = getStr(c, 'colourDirection', 'color', 'colour')
   const fit    = getStr(c, 'fit', 'gender', 'shopFor', 'shoppingFor', 'fitPreference')

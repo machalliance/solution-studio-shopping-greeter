@@ -6,11 +6,11 @@ export interface IntentModel {
     // rather than folded into the open string/string[] bag below, since every consumer
     // needs its real shape (server.ts, llm.ts). Previously typed away with `as Record<...>`
     // casts at every read/write site; this is the actual shape, not a widening.
-    categoryConstraints?: Record<string, { requiresTags?: string[]; avoidances?: string[] }>
+    categoryConstraints?: Record<string, { requiresTags?: string[]; requiresAny?: string[]; avoidances?: string[] }>
     // Open record — every other key the model writes is kept. Known keys (style, budget,
     // finish, colourDirection) are read by search/CMS adapters; all keys are shown in the
     // tag strip (buildConstraintTags in ChatView.tsx, which already skips non-string values).
-    [key: string]: string | string[] | Record<string, { requiresTags?: string[]; avoidances?: string[] }> | undefined
+    [key: string]: string | string[] | Record<string, { requiresTags?: string[]; requiresAny?: string[]; avoidances?: string[] }> | undefined
   }
   anchorItems?: AnchorItem[]
   inspoImageSignals?: ImageSignals

@@ -697,7 +697,7 @@
       "price": 189,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "mens",
       "tags": [
         "flannel",
@@ -725,7 +725,7 @@
       "price": 225,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "mens",
       "tags": [
         "flannel",
@@ -753,7 +753,7 @@
       "price": 165,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "mens",
       "tags": [
         "flannel",
@@ -781,7 +781,7 @@
       "price": 79.95,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "womens",
       "tags": [
         "casual",
@@ -807,7 +807,7 @@
       "price": 74.5,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "womens",
       "tags": [
         "casual",
@@ -859,7 +859,7 @@
       "price": 59.95,
       "currency": "USD",
       "category": "top",
-      "style": "smart-casual",
+      "style": "casual",
       "fit": "womens",
       "tags": [
         "casual",

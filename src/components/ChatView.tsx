@@ -305,25 +305,23 @@ export function ChatView({
 
   return (
     <div ref={chatRef} className="g-chat" style={cardStyle}>
-      {/* Card header — only in chat/assembling state; results uses global header */}
-      {appState !== 'results' && (
-        <div className="g-card-head">
-          <span className="g-stage-brand">{cardBrand}</span>
-          <div className="g-stage-actions">
-            <button className="g-stage-restart" onClick={onStartOver}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
-                <path d="M3 12a9 9 0 1 1 2.64 6.36"/><path d="M3 21v-6h6"/>
-              </svg>
-              Start over
-            </button>
-            <button className="g-close-btn" onClick={onClose} aria-label="Close">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
+      {/* Card header — the 'results' state has its own early return above and uses a global header instead */}
+      <div className="g-card-head">
+        <span className="g-stage-brand">{cardBrand}</span>
+        <div className="g-stage-actions">
+          <button className="g-stage-restart" onClick={onStartOver}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
+              <path d="M3 12a9 9 0 1 1 2.64 6.36"/><path d="M3 21v-6h6"/>
+            </svg>
+            Start over
+          </button>
+          <button className="g-close-btn" onClick={onClose} aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Answer tag strip — grows as answers accumulate. "Show me now" is a UI action, not
           a captured preference — excluded here so it doesn't read as an answered question. */}
