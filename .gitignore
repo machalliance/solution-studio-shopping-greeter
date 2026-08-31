@@ -6,10 +6,6 @@ dist/
 
 # Internal AI-agent instructions and in-progress design notes — not for the public repo.
 CLAUDE.md
-docs/vercel-gateway-schema-plan.md
-docs/implementation-guide.md
-docs/business-case-template.md
-docs/production-considerations.md
 
 # Not for the public repo.
 scripts/generate-cms-images.py
