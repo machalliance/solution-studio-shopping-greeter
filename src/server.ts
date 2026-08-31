@@ -2,8 +2,8 @@ import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
-import { streamObject, generateObject } from 'ai'
-import { z } from 'zod'
+import { streamText, Output } from 'ai'
+import { z } from 'zod/v3';
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
@@ -47,7 +47,7 @@ function getPanelHtml() { return readFileSync(PANEL_HTML_PATH, 'utf-8') }
 const useFixtures = process.env.USE_FIXTURES !== 'false'
 const zeroResultsAction = (process.env.ZERO_RESULTS_ACTION ?? 'fallback') as 'fallback' | 'notice'
 // Max wait for a single /api/chat LLM turn before it's treated as failed — see the
-// streamObject timeout guard below for why this exists.
+// streamText timeout guard below for why this exists.
 const CHAT_TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 15_000
 const search: SearchAdapter = useFixtures
   ? new FixtureSearchAdapter()
@@ -281,8 +281,43 @@ app.post('/api/provider', async c => {
   return c.json({ provider: activeProvider })
 })
 
+// Free-text 'chat' model override — not a fixed list, any model ID the active provider's
+// Gateway recognizes works. Not pre-validated: a bad ID just fails naturally on the next
+// chat call, same as any other LLM error. Resets to the adapter's own default whenever the
+// provider switches (Claude/OpenAI model IDs are different namespaces).
+app.get('/api/chat-model', c => c.json({ model: llm.chatModelOverride }))
+
+app.post('/api/chat-model', async c => {
+  const { model } = await c.req.json<{ model: string }>()
+  if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
+  llm.chatModelOverride = model.trim()
+  console.log(`[chat-model] switched to ${llm.chatModelOverride}`)
+  return c.json({ model: llm.chatModelOverride })
+})
+
+// Same free-text pattern as /api/chat-model, independently for 'spec' and 'curation'.
+app.get('/api/spec-model', c => c.json({ model: llm.specModelOverride }))
+
+app.post('/api/spec-model', async c => {
+  const { model } = await c.req.json<{ model: string }>()
+  if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
+  llm.specModelOverride = model.trim()
+  console.log(`[spec-model] switched to ${llm.specModelOverride}`)
+  return c.json({ model: llm.specModelOverride })
+})
+
+app.get('/api/curation-model', c => c.json({ model: llm.curationModelOverride }))
+
+app.post('/api/curation-model', async c => {
+  const { model } = await c.req.json<{ model: string }>()
+  if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
+  llm.curationModelOverride = model.trim()
+  console.log(`[curation-model] switched to ${llm.curationModelOverride}`)
+  return c.json({ model: llm.curationModelOverride })
+})
+
 /**
- * Unified schema for every agent turn — generated in a single streamObject call.
+ * Unified schema for every agent turn — generated in a single streamText+Output call.
  * The model streams `reply` first, then populates chips, delta, isReady, and categories
  * in the same response. No extraction phase needed.
  */
@@ -431,13 +466,13 @@ app.post('/api/chat', async c => {
         await write({ type: 'building' })
       }
 
-      // ── Single streamObject call: reply + chips generated together ────────────
-      // The model streams `reply` first (partialObjectStream tracks it character by character),
+      // ── Single streamText+Output call: reply + chips generated together ───────
+      // The model streams `reply` first (partialOutputStream tracks it character by character),
       // then populates chips, delta, isReady, and categories in the same response.
-      const result = streamObject({
+      const result = streamText({
         model: llm.getModel('chat'),
-        schema: TurnSchema,
-        system: buildChatPrompt(prevStored, selections, catalogStats, clientCategories ?? []),
+        output: Output.object({ schema: TurnSchema }),
+        instructions: buildChatPrompt(prevStored, selections, catalogStats, clientCategories ?? []),
         messages,
       })
 
@@ -451,40 +486,32 @@ app.post('/api/chat', async c => {
       let replyText = ''
       let prevReplyLen = 0
       let chipsPreviewSent = false
-      let prevChipsLen = 0
       const turn = await Promise.race([
         (async () => {
-          for await (const partial of result.partialObjectStream) {
+          for await (const partial of result.partialOutputStream) {
             const cur = partial.reply ?? ''
             if (cur.length > prevReplyLen) {
               await write({ type: 'text-delta', content: cur.slice(prevReplyLen) })
               replyText += cur.slice(prevReplyLen)
               prevReplyLen = cur.length
             }
-            // Chips are the schema field right after `reply` — the model has already
-            // generated them by the time `delta` starts appearing in the partial object,
-            // since structured output streams fields in declaration order. Previewing them
-            // here (rather than waiting for the whole object — delta, isReady, categories —
-            // to finish too) is what the one-call design was supposed to buy in the first
-            // place; the code just never actually looked at partial.chips before now.
-            //
-            // Gate on chips.choices.length going stable across two consecutive partial
-            // updates — NOT on partial.delta appearing. An earlier version waited for
-            // `delta` as proof chips had fully closed, but `delta` is a ~15-field object
-            // (mostly null/[] boilerplate) the model still has to emit as literal JSON
-            // syntax, and the AI SDK's partial-object updates arrive in provider-side
-            // chunks rather than per-token — so that gate was still absorbing a chunk or
-            // two of delta's boilerplate before firing (measured ~0.7s of avoidable delay
-            // on a plain first-turn reply). Length-stability needs nothing past chips
-            // itself, so it can fire the moment chips is actually done.
-            const chipsLen = partial.chips?.choices?.length ?? 0
-            if (!chipsPreviewSent && partial.chips?.kind && chipsLen >= 2 && chipsLen === prevChipsLen) {
+            // Preview chips as soon as `delta` starts appearing in the partial object — proof
+            // `chips` has fully closed, not a heuristic. The model generates tokens strictly
+            // in order, so `"delta":` cannot appear in the stream before `chips` (the
+            // preceding schema field) has been completely, validly generated — unlike a
+            // length-stability check across chunks, this can't fire on a still-growing or
+            // still-mid-string array. Re-tried 2026-08-28 after the stability-check version
+            // (tried the same day) produced two confirmed bugs — a truncated option and a
+            // missing pivot topic — both shown to the shopper before the model had actually
+            // finished. Measured to cost no latency vs. the stability-check version it
+            // replaces (~0.7s gap either way) — see [[greeter_topic_chip_early_preview_bug]].
+            if (!chipsPreviewSent && partial.delta !== undefined && partial.chips?.kind
+                && partial.chips.choices && partial.chips.choices.length >= 2) {
               chipsPreviewSent = true
-              await write({ type: 'options', kind: partial.chips.kind, choices: partial.chips.choices! })
+              await write({ type: 'options', kind: partial.chips.kind, choices: partial.chips.choices })
             }
-            prevChipsLen = chipsLen
           }
-          return result.object
+          return result.output
         })(),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error(`LLM response timed out after ${CHAT_TIMEOUT_MS}ms`)), CHAT_TIMEOUT_MS)),
@@ -683,7 +710,7 @@ app.post('/api/chat', async c => {
       console.error('[chat error]', err)
       await write({ type: 'error' })
     }
-  })
+  });
 })
 
 // Dedicated "Show me now" endpoint — deliberately NOT part of the conversational chat turn.
@@ -946,6 +973,17 @@ async function assembleResults(
       if (products.length < 1 && (catCC.requiresTags?.length || catCC.requiresAny?.length)) {
         products = await search.query({ category, facets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
         console.log(`[anchor] ${category} still empty, dropped category constraint requiresTags/requiresAny too → ${products.length} results`)
+      }
+      // Retry 5: drop the styleFamily facet too, absolute last resort. Unlike fit (never
+      // dropped — showing the wrong gender is a worse failure than an empty category), style
+      // is a preference the catalog may simply not have coverage for in every category (e.g.
+      // no "smart-casual"-tagged belts at all) — an empty shopping-list row is worse than one
+      // stylistically-imperfect item in it, matching every other relaxable filter above.
+      if (products.length < 1 && facets.style) {
+        const relaxedFacets = { ...facets }
+        delete relaxedFacets.style
+        products = await search.query({ category, facets: relaxedFacets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
+        console.log(`[style] ${category} still empty, dropped style facet too → ${products.length} results`)
       }
 
       const productNames = products.slice(0, 4).map(p => p.name)

@@ -19,6 +19,7 @@
   --radius: 4px;
   --accent: #1E2B4A;
   --accent-hover: #2A3C6A;
+  --brand-yellow: #FFCB1B; /* MACH Alliance brand accent — highlight only, never carries white text */
   --green: #16a34a;
   --red: #dc2626;
   --yellow: #d97706;
@@ -33,6 +34,10 @@ nav {
   border-bottom: 1px solid rgba(255,255,255,0.07);
   position: sticky; top: 0; z-index: 100;
 }
+.nav-brand { display: flex; align-items: center; margin-right: 4px; }
+.nav-brand img { height: 18px; width: auto; display: block; }
+.nav-brand:focus-visible { outline: 2px solid var(--brand-yellow); outline-offset: 2px; border-radius: 2px; }
+.nav-brand-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.18); flex-shrink: 0; }
 .nav-logo { font-size: 14px; font-weight: 600; color: white; letter-spacing: -0.02em; }
 .nav-logo span { color: rgba(255,255,255,0.4); font-weight: 400; }
 .nav-back {
@@ -94,11 +99,28 @@ h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 
 .stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
 .mono { font-family: monospace; font-size: 11px; color: var(--muted); background: var(--stone); padding: 2px 6px; border-radius: 3px; }
+
+.model-input-row { display: flex; gap: 8px; }
+.text-input {
+  flex: 1; font-family: var(--font); font-size: 13px;
+  padding: 6px 10px; border-radius: 4px; border: 1px solid var(--hairline);
+  color: var(--ink); background: var(--white);
+}
+.text-input:focus { outline: none; border-color: var(--accent); }
+.apply-btn {
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  padding: 6px 14px; border-radius: 4px; border: 1px solid var(--accent);
+  background: var(--accent); color: white; cursor: pointer; transition: background 0.15s;
+}
+.apply-btn:hover { background: var(--accent-hover); }
+.field-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
 </style>
 </head>
 <body>
 
 <nav>
+  <a class="nav-brand" href="https://machalliance.org/" target="_blank" rel="noopener noreferrer" title="MACH Alliance"><img src="/images/mach-alliance-logo.svg" alt="MACH Alliance"></a>
+  <span class="nav-brand-sep"></span>
   <span class="nav-logo">Greeter <span>/ Settings</span></span>
   <a href="/" class="nav-back">← Back to demo</a>
 </nav>
@@ -123,6 +145,34 @@ h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 
         <div id="keyStatus">
           <div class="status-row"><div class="dot yellow"></div><span class="status-label">Loading…</span></div>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Task Models</div>
+      <div class="field">
+        <label>Chat — conversation back-and-forth</label>
+        <div class="model-input-row">
+          <input type="text" id="chatModelInput" class="text-input" placeholder="e.g. claude-haiku-4-5-20251001" />
+          <button class="apply-btn" onclick="setChatModel()">Apply</button>
+        </div>
+        <div class="field-hint" id="chatModelStatus">Loading…</div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Spec — style/warmth/colour → search tags</label>
+        <div class="model-input-row">
+          <input type="text" id="specModelInput" class="text-input" placeholder="e.g. claude-haiku-4-5-20251001" />
+          <button class="apply-btn" onclick="setSpecModel()">Apply</button>
+        </div>
+        <div class="field-hint" id="specModelStatus">Loading…</div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Curation — outfit/set composition</label>
+        <div class="model-input-row">
+          <input type="text" id="curationModelInput" class="text-input" placeholder="e.g. claude-haiku-4-5-20251001" />
+          <button class="apply-btn" onclick="setCurationModel()">Apply</button>
+        </div>
+        <div class="field-hint" id="curationModelStatus">Loading…</div>
       </div>
     </div>
 
@@ -164,6 +214,8 @@ async function load() {
     t.classList.toggle('on', t.dataset.p === health.provider)
   })
 
+  await Promise.all(TASK_MODELS.map(loadTaskModel))
+
   // API key status
   const keys = [
     { label: 'Vercel AI Gateway', ok: env.gatewayKey },
@@ -190,7 +242,44 @@ async function load() {
 async function setProvider(p) {
   await fetch('/api/provider', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ provider: p }) })
   document.querySelectorAll('.model-tab[data-p]').forEach(t => t.classList.toggle('on', t.dataset.p === p))
+  // Switching provider resets every task model to that provider's own default (Claude/OpenAI
+  // model IDs are different namespaces) — refresh all three fields so none show a stale value.
+  await Promise.all(TASK_MODELS.map(loadTaskModel))
 }
+
+// One entry per independently-configurable task — chat/spec/curation each get their own
+// /api/<task>-model endpoint and settings-page field, all following the same pattern.
+const TASK_MODELS = [
+  { task: 'chat',     inputId: 'chatModelInput',     statusId: 'chatModelStatus' },
+  { task: 'spec',     inputId: 'specModelInput',     statusId: 'specModelStatus' },
+  { task: 'curation', inputId: 'curationModelInput', statusId: 'curationModelStatus' },
+]
+
+async function loadTaskModel({ task, inputId, statusId }) {
+  const { model } = await fetch(`/api/${task}-model`).then(r => r.json())
+  document.getElementById(inputId).value = model
+  document.getElementById(statusId).textContent = `Currently: ${model}`
+}
+
+async function setTaskModel(task, inputId, statusId) {
+  const input = document.getElementById(inputId)
+  const statusEl = document.getElementById(statusId)
+  const model = input.value.trim()
+  if (!model) return
+  statusEl.textContent = 'Applying…'
+  const res = await fetch(`/api/${task}-model`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ model }) })
+  const data = await res.json()
+  if (res.ok) {
+    input.value = data.model
+    statusEl.textContent = `Currently: ${data.model}`
+  } else {
+    statusEl.textContent = data.error || 'Failed to switch model'
+  }
+}
+
+function setChatModel()     { setTaskModel('chat', 'chatModelInput', 'chatModelStatus') }
+function setSpecModel()     { setTaskModel('spec', 'specModelInput', 'specModelStatus') }
+function setCurationModel() { setTaskModel('curation', 'curationModelInput', 'curationModelStatus') }
 
 load()
 </script>

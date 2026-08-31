@@ -122,7 +122,7 @@
     },
     {
       "objectID": "jacket-005",
-      "name": "Structured Blazer \u2014 Cream",
+      "name": "Structured Blazer — Cream",
       "brand": "Theory",
       "price": 395,
       "currency": "USD",
@@ -204,8 +204,8 @@
     },
     {
       "objectID": "jacket-008",
-      "name": "Wrap Blazer \u2014 Camel",
-      "brand": "Tot\u00eame",
+      "name": "Wrap Blazer — Camel",
+      "brand": "Totême",
       "price": 465,
       "currency": "USD",
       "category": "jacket",
@@ -307,7 +307,7 @@
       "url": "/products/forest-green-field-jacket",
       "inStock": true,
       "colourHex": "#2D4A2D",
-      "description": "Deep forest green cotton field jacket. Four-pocket utility silhouette \u2014 elevated enough for dinner.",
+      "description": "Deep forest green cotton field jacket. Four-pocket utility silhouette — elevated enough for dinner.",
       "imagePrompt": "Forest green cotton field jacket, relaxed fit, structured shoulders, multiple utility pockets, worn-in canvas weave."
     },
     {
@@ -362,7 +362,7 @@
       "url": "/products/burgundy-corduroy-blazer",
       "inStock": true,
       "colourHex": "#6B2737",
-      "description": "Burgundy corduroy blazer with patch pockets. A rich, textured alternative to navy \u2014 confident without trying.",
+      "description": "Burgundy corduroy blazer with patch pockets. A rich, textured alternative to navy — confident without trying.",
       "imagePrompt": "Burgundy corduroy blazer, tailored single-breasted cut, structured shoulders, ribbed fabric texture, notched lapels, button closure."
     },
     {
@@ -628,9 +628,111 @@
       "inStock": true,
       "description": "The brown Evergreen Insulated Quilted Jacket from Nature's Edge keeps you warm and comfortable during cold-weather adventures with its reliable insulation and durable quilted construction. Perfect for weekend getaways and casual outdoor activities, this versatile womens jacket pairs easily with your favorite winter outfits.",
       "imagePrompt": "Brown quilted insulated women's winter jacket with a fitted silhouette, featuring vertical stitching patterns and outdoor functionality details."
+    },
+    {
+      "objectID": "jacket-025",
+      "name": "Vintage Corduroy Blazer",
+      "brand": "Ralph Lauren Polo",
+      "price": 129.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "casual",
+      "fit": "mens",
+      "tags": [
+        "vintage",
+        "corduroy",
+        "blazer",
+        "button-up"
+      ],
+      "colourHex": "#654321",
+      "colourFamily": "brown",
+      "images": [
+        "/images/jacket-025.jpg"
+      ],
+      "url": "/products/vintage-corduroy-blazer",
+      "inStock": true,
+      "description": "This brown corduroy blazer from Ralph Lauren Polo delivers timeless vintage style with its classic button-up design and textured fabric. Perfect for layering over casual or business-casual outfits, this men's piece combines retro charm with enduring versatility.",
+      "imagePrompt": "Brown corduroy men's blazer vintage button-up, rich chocolate textured fabric with classic notch lapels and worn patina details."
+    },
+    {
+      "objectID": "jacket-026",
+      "name": "Vintage Plaid Blazer",
+      "brand": "Ralph Lauren Polo",
+      "price": 139.99,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "casual",
+      "fit": "mens",
+      "tags": [
+        "vintage",
+        "plaid",
+        "blazer",
+        "button-up"
+      ],
+      "colourHex": "#B41E3F",
+      "colourFamily": "red",
+      "images": [
+        "/images/jacket-026.jpg"
+      ],
+      "url": "/products/vintage-plaid-blazer",
+      "inStock": true,
+      "description": "This vintage red plaid blazer from Ralph Lauren Polo features a classic button-up style perfect for adding timeless preppy style to any wardrobe. An authentic piece that works equally well dressed up or down.",
+      "imagePrompt": "men's vintage plaid blazer in red wool, classic button-up design with traditional checked pattern and tailored fit"
+    },
+    {
+      "objectID": "jacket-027",
+      "name": "Vintage Polo Blazer",
+      "brand": "Ralph Lauren",
+      "price": 185,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "casual",
+      "fit": "womens",
+      "tags": [
+        "vintage",
+        "polo",
+        "blazer",
+        "relaxed-fit",
+        "preppy"
+      ],
+      "colourHex": "#2C3E50",
+      "colourFamily": "navy",
+      "images": [
+        "/images/jacket-027.jpg"
+      ],
+      "url": "/products/vintage-polo-blazer",
+      "inStock": true,
+      "description": "This navy blazer from Ralph Lauren's vintage collection features the brand's iconic Polo styling with a relaxed, preppy fit that's perfect for layering or dressing up. A timeless piece that brings effortless sophistication to any wardrobe.",
+      "imagePrompt": "polo women's blazer in navy cotton, vintage preppy style with relaxed fit and classic detailing"
+    },
+    {
+      "objectID": "jacket-028",
+      "name": "Vintage Polo Sport Blazer",
+      "brand": "Ralph Lauren",
+      "price": 175,
+      "currency": "USD",
+      "category": "jacket",
+      "style": "casual",
+      "fit": "womens",
+      "tags": [
+        "vintage",
+        "polo",
+        "blazer",
+        "oversized",
+        "heritage"
+      ],
+      "colourHex": "#8B4513",
+      "colourFamily": "brown",
+      "images": [
+        "/images/jacket-028.jpg"
+      ],
+      "url": "/products/vintage-polo-sport-blazer",
+      "inStock": true,
+      "description": "Vintage Polo Sport Blazer in brown with a classic oversized silhouette, featuring the iconic Polo Sport branding and heritage construction. Perfect for layering or wearing as a statement piece, this timeless Ralph Lauren blazer captures the essence of 90s luxury sportswear.",
+      "imagePrompt": "Smart clean women's blazer in rich brown wool, vintage polo heritage style with classic tailoring and timeless elegance."
     }
   ],
-  "nbHits": 23,
+  "nbHits": 27,
   "page": 0,
   "nbPages": 1,
   "hitsPerPage": 20,

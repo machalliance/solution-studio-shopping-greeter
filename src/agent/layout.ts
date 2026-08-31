@@ -58,15 +58,29 @@ export function buildShowAllUrl(category: string, intent: IntentModel): string {
 export function buildSearchFacets(intent: IntentModel): Record<string, string | number> {
   const c = intent.constraints
   const facets: Record<string, string | number> = {}
-  const fit     = getStr(c, 'fit', 'gender', 'shopFor', 'shoppingFor', 'fitPreference')
-  const budget  = getStr(c, 'budget')
-  // Fit and price are the only hard constraints applied at search time — both are
-  // domain-agnostic. Style, warmth, colour direction, and finish are intent signals:
-  // the spec LLM (generateStyleSpec) translates them into per-category requiresTags
-  // and avoidances before search runs, identically for fixtures and live Algolia.
-  // Do not add them back as facets here — that splits interpretation across layers
-  // and reintroduces the domain hardcoding this module must stay free of.
-  if (fit)    facets.fit    = normalizeFit(fit)
-  if (budget) { const n = parseBudgetNumber(budget); if (n != null) facets.maxPrice = n }
+  const fit         = getStr(c, 'fit', 'gender', 'shopFor', 'shoppingFor', 'fitPreference')
+  const budget       = getStr(c, 'budget')
+  const styleFamily  = getStr(c, 'styleFamily')
+  // Fit, price, and styleFamily are the only hard constraints applied at search time.
+  // Warmth, colour direction, finish, and free-form style refinements (e.g. a sub-direction
+  // like "City Smart") remain intent signals the spec LLM (generateStyleSpec) translates
+  // into per-category requiresTags/avoidances before search runs — do not add those back as
+  // facets here, that splits interpretation across layers and reintroduces the domain
+  // hardcoding this module must stay free of.
+  //
+  // styleFamily is the one exception, and deliberately uses styleFamily (never plain
+  // `style`): it's the only style-related field guaranteed to always be one of the fixed
+  // step-2/3 chip options the catalog's own `style` field actually uses — `style` itself can
+  // be a free-form sub-direction the catalog has no vocabulary for, which would zero out
+  // every search the moment a shopper picks one. Both search adapters already null-safely
+  // handle a style facet (keep items with no style set, exclude items whose style disagrees)
+  // — this was already built, just never populated. Without this, nothing ever checks a
+  // product's own style classification against the requested one: a correctly-tagged
+  // `casual` item can still win a spot in a `smart-casual` pool purely by matching a fuzzy
+  // material/occasion tag (e.g. "cotton") in the spec's requiresAny — see
+  // [[greeter_style_facet_added]] for the real incident this fixes.
+  if (fit)         facets.fit   = normalizeFit(fit)
+  if (budget)      { const n = parseBudgetNumber(budget); if (n != null) facets.maxPrice = n }
+  if (styleFamily) facets.style = normalizeStyle(styleFamily)
   return facets
 }

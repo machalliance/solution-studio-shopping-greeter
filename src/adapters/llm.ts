@@ -1,33 +1,48 @@
-import { generateText, generateObject } from 'ai'
+import { generateText, Output } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createOpenAI } from '@ai-sdk/openai'
 import type { LanguageModel } from 'ai'
-import { z } from 'zod'
+import { z } from 'zod/v3';
 import type { IntentModel } from '../types/intent.js'
 
 /**
  * Task keys used for model routing. Both adapters read chat/fast model IDs from env vars
  * and assign them to tasks here — no task-specific logic leaks into server.ts.
  *
- * Routing:
- *   chat        → provider's chat model (Claude Sonnet / GPT-4o)  — used by streamObject in server.ts
- *   rationale   → fast model — short generative sentences (category rationale, overall summary)
- *   refinements → fast model — JSON list generation
- *   extraction  → fast model — reserved for future use; main extraction is now via streamObject
- *   spec        → fast model — translates intent into per-category tag requirements before search
- *   allocation  → fast model — structured budget allocation JSON
- *   curation    → fast model — selects specific product combinations for outfit/set cards
+ * Routing, restored 2026-08-28 to the literal original baseline after a same-day detour
+ * through several other splits (all tried, all reverted or superseded — see
+ * greeter_speed_optimization_reverted and greeter_provider_split_pending in project memory
+ * for that history, kept for context, not as a guide to re-attempt any of it):
+ *
+ *   chat        → PREMIUM by default, but independently configurable — see
+ *                 chatModelOverride on LLMAdapter, a free-text model ID switchable at
+ *                 runtime via /api/chat-model (Settings page). This is the only task with
+ *                 that live-switchable behavior; everything below is a fixed code choice.
+ *   everything else (reply, extraction, refinements, rationale, spec, allocation, curation)
+ *               → fast, unconditionally. No per-task premium routing beyond 'chat'.
  */
 export type LLMTask = 'chat' | 'reply' | 'extraction' | 'refinements' | 'rationale' | 'spec' | 'allocation' | 'curation'
-// 'reply'  → fast model (Haiku). Used for streaming conversation replies — lower TTFT than Sonnet.
-// 'chat'   → chat model (Sonnet). Used for structured extraction where accuracy matters more than speed.
 
 /**
  * Provider-agnostic LLM interface. Implement this for any model provider.
- * The chat turn (streamObject) is handled directly in server.ts via getModel('chat')
+ * The chat turn (streamText+Output) is handled directly in server.ts via getModel('chat')
  * to keep streaming control in one place. All post-assembly generation goes through here.
  */
 export interface LLMAdapter {
+  /** Exact model ID the 'chat', 'spec', and 'curation' tasks use respectively — each
+   *  independently user-switchable at runtime via /api/chat-model, /api/spec-model, and
+   *  /api/curation-model (settings.html), all as free text, not a fixed list: any ID the
+   *  Gateway recognizes for this provider works, since new models ship faster than this app
+   *  could maintain a dropdown. An invalid ID isn't pre-validated — it just fails naturally
+   *  on the next call via the Gateway's own error response, same as any other LLM call
+   *  failure. Every other task (rationale, extraction, refinements, allocation) always uses
+   *  the adapter's fast model, not independently configurable — see the getModel() routing
+   *  note below. Defaults differ per adapter — see each constructor. All three reset to the
+   *  new adapter's own defaults on a provider switch (Claude/OpenAI model IDs are different
+   *  namespaces, so carrying one across doesn't make sense). */
+  chatModelOverride: string
+  specModelOverride: string
+  curationModelOverride: string
   /** Returns the provider-agnostic AI SDK model instance for a given task. */
   getModel(task: LLMTask): LanguageModel
   /** Generates 9 refinement chip suggestions for the results panel. */
@@ -92,6 +107,9 @@ export interface LLMAdapter {
  * keeping all prompt logic in one place. Only getModel() differs between providers.
  */
 abstract class BaseAdapter implements LLMAdapter {
+  abstract chatModelOverride: string
+  abstract specModelOverride: string
+  abstract curationModelOverride: string
   abstract getModel(task: LLMTask): LanguageModel
 
   async curateOutfits(
@@ -124,10 +142,10 @@ abstract class BaseAdapter implements LLMAdapter {
         ).join('\n')}`
       : ''
 
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('curation'),
       temperature: 0.3,
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         outfits: z.array(z.object({
           name: z.string().describe('3–5 word outfit/look name'),
           rationale: z.string().describe('One sentence (max 18 words) explaining why this combination works'),
@@ -136,7 +154,7 @@ abstract class BaseAdapter implements LLMAdapter {
             productId: z.string(),
           })).describe('One entry per category, mapping it to the chosen product id'),
         })).min(1).max(3),
-      }),
+      }) }),
       prompt: `You are curating ${intent.goalType === 'style' ? 'outfit' : 'product'} combinations for a shopper.
 
 Goal: "${intent.goal}"
@@ -157,7 +175,7 @@ ${previousOutfits?.length ? `- CONTINUITY: for each previously shown look above,
 - Each combination needs: a name (3–5 words, evocative, not generic), and a rationale (one sentence, max 18 words, specific — e.g. "Earthy linen anchors the look; slim chinos sharpen it without losing the relaxed feel.").
 - Use only product ids from the lists above. Every category must have exactly one id in slots.`,
     })
-    return object.outfits.map(o => ({
+    return output.outfits.map(o => ({
       name: o.name,
       rationale: o.rationale,
       slots: Object.fromEntries(o.slots.map(({ category, productId }) => [category, productId])),
@@ -168,14 +186,14 @@ ${previousOutfits?.length ? `- CONTINUITY: for each previously shown look above,
     const { text } = await generateText({
       model: this.getModel('refinements'),
       prompt: buildRefinementsPrompt(intent, categories),
-      maxTokens: 256,
+      maxOutputTokens: 256,
     })
     try {
       const parsed = JSON.parse(text.trim())
       if (Array.isArray(parsed)) return parsed.slice(0, 9)
     } catch {
       const matches = text.match(/"([^"]+)"/g)
-      if (matches) return matches.slice(0, 9).map(s => s.replace(/"/g, ''))
+      if (matches) return matches.slice(0, 9).map(s => s.replace(/"/g, ''));
     }
     return defaultRefinements(intent)
   }
@@ -184,21 +202,21 @@ ${previousOutfits?.length ? `- CONTINUITY: for each previously shown look above,
     const style = intent.constraints.style ?? 'the chosen style'
     const finish = intent.constraints.finish ? `, preferably in ${intent.constraints.finish}` : ''
     const products = productNames.slice(0, 4).join(', ')
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('rationale'),
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         rationale: z.string().describe('One sentence, max 18 words. No "you" — use "look for" or "pick".'),
         filterChips: z.array(z.string()).min(2).max(3),
-      }),
+      }) }),
       prompt: `Shopper: "${intent.goal}". Style: ${style}${finish}.
 Category: ${category}. Products assembled: ${products}.
 
 Return:
 - rationale: ONE sentence (max 18 words) — specific advice on what to look for and why it suits the style. No "you". E.g. "Look for breathable linens in neutral tones — they carry coastal chic's relaxed effortlessness."
 - filterChips: 2–3 short filter labels (1–3 words each) based on what varies in the product list. E.g. ["Brushed brass", "Under $200", "Natural wood"].`,
-      maxTokens: 120,
+      maxOutputTokens: 120,
     })
-    return { rationale: object.rationale || undefined, filterChips: object.filterChips }
+    return { rationale: output.rationale || undefined, filterChips: output.filterChips }
   }
 
   async generateStyleSpec(intent: IntentModel, categories: string[]): Promise<Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }>> {
@@ -215,11 +233,11 @@ Return:
       requiresAny: z.array(z.string()).min(1).max(6).describe('OR — item must match at least one tag. Use for style/occasion/colour interpretation.'),
       avoidances: z.array(z.string()).max(4).describe('Fabrics/constructions to exclude. Max 4 — pick the most important if more apply.'),
     })
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('spec'),
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         spec: z.array(categorySpec.extend({ category: z.string().describe('Canonical category name, matching one of the categories listed below.') })),
-      }),
+      }) }),
       prompt: `Translate a shopper's intent into per-category search specs.
 
 Goal: "${intent.goal}"
@@ -249,22 +267,22 @@ Example — coastal chic, men's, hot evening, user said "short sleeves only":
   { "category": "pants", "requiresAll": [], "requiresAny": ["slim","chino","sand","navy","linen"], "avoidances": ["heavy","denim","flannel"] },
   { "category": "shoes", "requiresAll": [], "requiresAny": ["loafer","suede","tan","leather","canvas"], "avoidances": [] }
 ]`,
-      maxTokens: 500,
+      maxOutputTokens: 500,
     })
     const specRecord: Record<string, { requiresAll: string[]; requiresAny: string[]; avoidances: string[] }> = {}
-    for (const { category, requiresAll, requiresAny, avoidances } of object.spec) {
+    for (const { category, requiresAll, requiresAny, avoidances } of output.spec) {
       specRecord[category] = { requiresAll, requiresAny, avoidances }
     }
     return specRecord
   }
 
   async generateCategories(intent: IntentModel): Promise<string[]> {
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('extraction'),
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         categories: z.array(z.string()).min(1).max(8)
           .describe('Never empty — if genuinely uncertain, fall back to a sensible default set for the goalType rather than omitting categories.'),
-      }),
+      }) }),
       prompt: `A shopper pressed "show me now" before every detail was captured. Decide the shopping-list categories to assemble right now, from whatever is known so far.
 
 AVAILABLE CATEGORIES — only use these, never invent others:
@@ -276,9 +294,9 @@ Goal: "${intent.goal}" (${intent.goalType})
 Captured so far: ${JSON.stringify(intent.constraints)}
 
 Reason the same way you would mid-conversation: pick categories that fit this specific goal and occasion, in body order (fashion: jacket/outerwear → top → pants/dress → shoes → belt/accessories; home: lighting → mirror → vanity → faucet → tile → hardware).`,
-      maxTokens: 150,
+      maxOutputTokens: 150,
     })
-    return object.categories
+    return output.categories
   }
 
   async allocateBudget(
@@ -293,11 +311,11 @@ Reason the same way you would mid-conversation: pick categories that fit this sp
 
     const sumOfMins = categories.reduce((sum, cat) => sum + (catalogStats[cat]?.min ?? 0), 0)
 
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('allocation'),
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         allocation: z.array(z.object({ category: z.string(), maxPrice: z.number() })),
-      }),
+      }) }),
       prompt: `Allocate a total shopping budget across categories.
 
 Total budget: $${totalBudget}
@@ -317,11 +335,11 @@ Rules:
 6. For fashion: jacket/shoes get larger share; belt/socks get the least
 
 Return ONLY valid JSON in the "allocation" field, one entry per category: [{"category": "jacket", "maxPrice": 350}, {"category": "top", "maxPrice": 130}, {"category": "shoes", "maxPrice": 230}, {"category": "belt", "maxPrice": 90}]`,
-      maxTokens: 120,
+      maxOutputTokens: 120,
     })
 
     const allocationRecord: Record<string, number> = {}
-    for (const { category, maxPrice } of object.allocation) allocationRecord[category] = maxPrice
+    for (const { category, maxPrice } of output.allocation) allocationRecord[category] = maxPrice
 
     const result: Record<string, number> = {}
     for (const cat of categories) {
@@ -334,15 +352,15 @@ Return ONLY valid JSON in the "allocation" field, one entry per category: [{"cat
   }
 
   async assignCollageRoles(intent: IntentModel, categories: string[]): Promise<Record<string, { displayRole: 'hero' | 'supporting' | 'accent'; weight: number }>> {
-    const { object } = await generateObject({
+    const { output } = await generateText({
       model: this.getModel('rationale'),
-      schema: z.object({
+      output: Output.object({ schema: z.object({
         roles: z.array(z.object({
           category: z.string(),
           displayRole: z.enum(['hero', 'supporting', 'accent']),
           weight: z.number().int().min(1).max(10),
         })),
-      }),
+      }) }),
       prompt: `Assign a collage display role and visual weight to each category for this shopping goal.
 
 Goal: "${intent.goal}"
@@ -357,10 +375,10 @@ Rules:
 - Mirrors, lighting, tile, hardware, scarves, socks, and belts are NEVER hero — they are supporting or accent.
 - 'accent' is reserved for genuinely small trim — belts, scarves, socks, hardware, swatches. A primary garment or fixture the shopper actually wears/uses as a main piece (pants, trousers, dress, skirt, top; for home: vanity, tile, faucet) must be 'hero' or 'supporting', never 'accent', even when something else is the hero — it's still a main piece, not a finishing touch.
 - Return an entry for every category listed.`,
-      maxTokens: 200,
+      maxOutputTokens: 200,
     })
     const rolesRecord: Record<string, { displayRole: 'hero' | 'supporting' | 'accent'; weight: number }> = {}
-    for (const { category, displayRole, weight } of object.roles) rolesRecord[category] = { displayRole, weight }
+    for (const { category, displayRole, weight } of output.roles) rolesRecord[category] = { displayRole, weight }
     return rolesRecord
   }
 
@@ -379,43 +397,80 @@ Fashion example: "For a rooftop dinner, the jacket is your anchor — it sets th
 Home example: "For a powder room refresh, the vanity and faucet define the space — choose those first. Mirror and lighting shift the atmosphere, tile sets the palette, and hardware ties it all together."
 
 No quotes around the output. No preamble. Just the sentences.`,
-      maxTokens: 120,
+      maxOutputTokens: 120,
     })
-    return text.trim().replace(/^["']|["']$/g, '')
+    return text.trim().replace(/^["']|["']$/g, '');
   }
 }
 
 /** Claude provider. Models configured via LLM_CLAUDE_CHAT and LLM_CLAUDE_FAST env vars. */
 export class ClaudeAdapter extends BaseAdapter {
-  private chatModel: LanguageModel
+  private anthropic: ReturnType<typeof createAnthropic>
   private fastModel: LanguageModel
+  private fastModelId: string
+  // Defaults to the premium model's own ID — this is the literal original baseline: 'chat'
+  // is the only task on premium, everything else (including curation/spec/rationale) is
+  // fast. Free-text override via /api/chat-model still lets anyone try a different model
+  // (e.g. "claude-haiku-4-5-20251001") without a code change.
+  private premiumModelId: string
+  chatModelOverride: string
+  // spec/curation independently default to the fast model's ID — matches the literal
+  // original baseline (only 'chat' is premium by default). Independently switchable via
+  // /api/spec-model and /api/curation-model without touching the other, or 'chat'.
+  specModelOverride: string
+  curationModelOverride: string
 
-  constructor(chatModelId?: string, fastModelId?: string) {
+  constructor(fastModelId?: string) {
     super()
-    const anthropic = createAnthropic({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
-    this.chatModel = anthropic(`anthropic/${chatModelId ?? process.env.LLM_CLAUDE_CHAT ?? 'claude-sonnet-4-6'}`)
-    this.fastModel = anthropic(`anthropic/${fastModelId ?? process.env.LLM_CLAUDE_FAST ?? 'claude-haiku-4-5-20251001'}`)
+    this.anthropic = createAnthropic({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
+    this.fastModelId = fastModelId ?? process.env.LLM_CLAUDE_FAST ?? 'claude-haiku-4-5-20251001'
+    this.fastModel = this.anthropic(`anthropic/${this.fastModelId}`)
+    this.premiumModelId = process.env.LLM_CLAUDE_CHAT ?? 'claude-sonnet-4-6'
+    this.chatModelOverride = this.premiumModelId
+    this.specModelOverride = this.fastModelId
+    this.curationModelOverride = this.fastModelId
   }
 
   getModel(task: LLMTask): LanguageModel {
-    return task === 'chat' ? this.chatModel : this.fastModel
+    if (task === 'chat') return this.anthropic(`anthropic/${this.chatModelOverride}`)
+    if (task === 'spec') return this.anthropic(`anthropic/${this.specModelOverride}`)
+    if (task === 'curation') return this.anthropic(`anthropic/${this.curationModelOverride}`)
+    return this.fastModel
   }
 }
 
 /** OpenAI provider. Models configured via LLM_OPENAI_CHAT and LLM_OPENAI_FAST env vars. */
 export class OpenAIAdapter extends BaseAdapter {
-  private chatModel: LanguageModel
+  private openai: ReturnType<typeof createOpenAI>
   private fastModel: LanguageModel
+  // Defaults to the premium model ID — 'chat' is the only task on premium, everything else
+  // is fast, the literal original baseline. gpt-4o-mini hasn't been verified against this
+  // project's schemas the way Claude Haiku was (see greeter_provider_split_pending in
+  // project memory), which is a second, independent reason this stays on gpt-4o by default.
+  // Still fully switchable via /api/chat-model if someone wants to try gpt-4o-mini, or any
+  // other model, themselves.
+  chatModelOverride: string
+  // spec/curation independently default to the fast model ID, matching the literal original
+  // baseline — only 'chat' is premium by default. Switchable via /api/spec-model and
+  // /api/curation-model without touching the other, or 'chat'.
+  specModelOverride: string
+  curationModelOverride: string
 
   constructor() {
     super()
-    const openai = createOpenAI({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
-    this.chatModel = openai(`openai/${process.env.LLM_OPENAI_CHAT ?? 'gpt-4o'}`)
-    this.fastModel = openai(`openai/${process.env.LLM_OPENAI_FAST ?? 'gpt-4o-mini'}`)
+    this.openai = createOpenAI({ apiKey: process.env.AI_GATEWAY_API_KEY, baseURL: 'https://ai-gateway.vercel.sh/v1' })
+    const fastModelId = process.env.LLM_OPENAI_FAST ?? 'gpt-4o-mini'
+    this.fastModel = this.openai(`openai/${fastModelId}`)
+    this.chatModelOverride = process.env.LLM_OPENAI_CHAT ?? 'gpt-4o'
+    this.specModelOverride = fastModelId
+    this.curationModelOverride = fastModelId
   }
 
   getModel(task: LLMTask): LanguageModel {
-    return task === 'chat' ? this.chatModel : this.fastModel
+    if (task === 'chat') return this.openai(`openai/${this.chatModelOverride}`)
+    if (task === 'spec') return this.openai(`openai/${this.specModelOverride}`)
+    if (task === 'curation') return this.openai(`openai/${this.curationModelOverride}`)
+    return this.fastModel
   }
 }
 

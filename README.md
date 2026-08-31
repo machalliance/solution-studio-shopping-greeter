@@ -1,5 +1,7 @@
 # Greeter
 
+![Greeter — curated results panel](docs/images/key_shot.png)
+
 An intent-driven shopping assistant prototype for the **MACH Alliance Agent Solution Studio**.
 
 A shopper describes a goal in natural language. The assistant runs a short guided
@@ -7,13 +9,18 @@ conversation, builds a structured intent model, then assembles a curated collage
 products — hero, supporting, and accent items chosen and weighted by the AI — alongside
 matched CMS content. It ships as a floating widget embedded on a mockup retailer site.
 
+The retailer mockup pages (`host/index.html`, `search.html`, `product.html`, `guide.html`) are
+deliberately retailer-branded, not MACH Alliance-branded — they're simulating someone else's
+storefront. The tool-facing pages (the demo-control bar on the host page, `host/settings.html`)
+carry the official MACH Alliance logo and brand accent instead.
+
 ---
 
 ## Quick start
 
-You need Node.js 22+ and a [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) API key.
-Nothing else is required — Greeter runs entirely against local sample data by default, no
-other accounts needed to see it working end to end.
+You need a [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) API key. Nothing else is
+required — Greeter runs entirely against local sample data by default, no other accounts
+needed to see it working end to end.
 
 ```bash
 git clone <this-repo>
@@ -27,7 +34,15 @@ Open `.env` and set:
 AI_GATEWAY_API_KEY=vck_...
 ```
 
-Then:
+Then pick whichever of these you already have installed — same app, same `.env`, either way:
+
+**Have Docker?**
+
+```bash
+docker compose up
+```
+
+**Don't have Docker, have Node.js 22+?**
 
 ```bash
 npm install
@@ -37,7 +52,9 @@ npm run dev
 
 (The build step is one-time — it compiles the React widget into `dist/`, which the server reads
 directly. `npm run dev` hot-reloads server-side TypeScript changes instantly; re-run `npm run
-build` after editing anything in `src/components/`.)
+build` after editing anything in `src/components/`. The Docker path rebuilds the image instead —
+`docker compose up --build` — after any code change, since it's a self-contained image rather
+than a live dev loop.)
 
 Visit `http://localhost:<PORT>` (set in `.env`). Click the pulsing floating button,
 bottom-right, to open the widget.
@@ -59,6 +76,7 @@ Algolia/Contentstack instead of fixtures, and troubleshooting — see
 | LLM | Claude (Anthropic) or OpenAI, via Vercel AI Gateway — runtime-switchable |
 | Search | Local JSON fixtures (default) or [Algolia](https://algolia.com) |
 | CMS | Local JSON fixtures (default) or [Contentstack](https://contentstack.com) |
+| Packaging | Plain Node, or a self-contained Docker image — neither is a hard dependency |
 
 Search and CMS each swap via a single `USE_FIXTURES` flag — the same adapter interface backs
 both the fixture and live implementations, so the app behaves identically either way.
@@ -75,10 +93,11 @@ greeter/
     components/   # React widget UI
     types/        # Shared TypeScript types
     server.ts     # Hono server — all routes
-  catalog/        # Fixture data + product/CMS images
+  catalog/        # Fixture data + product/CMS images (incl. the MACH Alliance logo asset)
   scripts/        # Seed and content-generation scripts for live Algolia/Contentstack
-  host/           # Static mockup retailer pages the widget embeds into
-  docs/           # Setup instructions
+  host/           # Static mockup retailer pages the widget embeds into, + settings.html
+  docs/           # Setup instructions + images
+  Dockerfile, docker-compose.yml, .dockerignore   # optional container path — see Quick start
 ```
 
 ---

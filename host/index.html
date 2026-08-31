@@ -20,6 +20,7 @@
   --muted: #767670;
   --white: #FFFFFF;
   --radius: 4px;
+  --brand-yellow: #FFCB1B; /* MACH Alliance brand accent — highlight only, never carries white text */
 }
 
 /* PROJECT STORE — deep botanical green */
@@ -57,6 +58,10 @@ body {
   gap: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
+.switcher-brand { display: flex; align-items: center; }
+.switcher-brand img { height: 16px; width: auto; display: block; }
+.switcher-brand:focus-visible { outline: 2px solid var(--brand-yellow); outline-offset: 2px; border-radius: 2px; }
+.switcher-brand-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.18); flex-shrink: 0; }
 .switcher-label {
   font-size: 10px;
   color: rgba(255,255,255,0.38);
@@ -79,6 +84,7 @@ body {
 }
 .switcher-tab:hover { color: white; border-color: rgba(255,255,255,0.4); }
 .switcher-tab.on { background: white; color: #0F0F0D; border-color: white; font-weight: 500; }
+.switcher-tab:focus-visible { outline: 2px solid var(--brand-yellow); outline-offset: 2px; }
 .switcher-note {
   font-size: 10px;
   color: rgba(255,255,255,0.24);
@@ -626,16 +632,12 @@ footer {
 <body>
 
 <div class="skin-switcher">
+  <a class="switcher-brand" href="https://machalliance.org/" target="_blank" rel="noopener noreferrer" title="MACH Alliance"><img src="/images/mach-alliance-logo.svg" alt="MACH Alliance"></a>
+  <span class="switcher-brand-sep"></span>
   <span class="switcher-label">Demo skin</span>
   <div class="switcher-tabs" id="skinTabs">
     <button class="switcher-tab on" onclick="setSkin('project')">The Project Store</button>
     <button class="switcher-tab" onclick="setSkin('clothing')">The Clothing Store</button>
-  </div>
-  <span style="width:1px;height:14px;background:rgba(255,255,255,0.12);flex-shrink:0"></span>
-  <span class="switcher-label">AI model</span>
-  <div class="switcher-tabs" id="providerTabs">
-    <button class="switcher-tab" onclick="setProvider('claude')">Claude</button>
-    <button class="switcher-tab" onclick="setProvider('openai')">ChatGPT</button>
   </div>
   <span style="width:1px;height:14px;background:rgba(255,255,255,0.12);flex-shrink:0"></span>
   <button class="switcher-tab" id="clearBtn" onclick="clearSession()" style="color:rgba(255,180,180,0.75);border-color:rgba(255,120,120,0.25)">↺ Clear session</button>
@@ -982,25 +984,6 @@ document.getElementById('modalInput').addEventListener('keydown', e => {
 
 const _initSkin = new URLSearchParams(location.search).get('skin') || localStorage.getItem('greeter-skin') || 'project';
 setSkin(_initSkin);
-
-const PROVIDERS = ['claude', 'openai'];
-
-async function setProvider(key) {
-  await fetch('/api/provider', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ provider: key }),
-  }).catch(() => {});
-  document.querySelectorAll('#providerTabs .switcher-tab').forEach((tab, i) => {
-    tab.classList.toggle('on', PROVIDERS[i] === key);
-  });
-}
-
-fetch('/api/provider').then(r => r.json()).then(({ provider }) => {
-  document.querySelectorAll('#providerTabs .switcher-tab').forEach((tab, i) => {
-    tab.classList.toggle('on', PROVIDERS[i] === provider);
-  });
-}).catch(() => {});
 
 // ── Debug panel ──────────────────────────────────────────────────────────────
 let debugOpen = false;

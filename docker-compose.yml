@@ -1,0 +1,7 @@
+services:
+  greeter:
+    build: .
+    ports:
+      - "${PORT:-3003}:${PORT:-3003}"
+    env_file:
+      - .env
