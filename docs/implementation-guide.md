@@ -124,6 +124,21 @@ server). If the pilot embeds the widget from a *different* origin than the retai
 re-verified — cross-origin `localStorage` isn't shared, and the whole "come back later" flow
 depends on it being readable from the host page.
 
+**1.4.2a — Make the session cookie work cross-origin** (Small · Required) *depends on 1.4.1*
+The same constraint as 1.4.2, on a different mechanism, and it fails harder. The server issues
+the session id as a cookie with `SameSite=Lax` and `Secure` only when `NODE_ENV=production`
+(`src/server/session.ts`). Both are correct for the current same-origin mockup over plain HTTP,
+and both are wrong for a cross-origin embed: a `Lax` cookie is not sent on requests from an
+iframe on another origin, so every request would mint a fresh session and the shopper's
+conversation would reset on each turn — not a degraded experience but a broken one.
+
+A cross-origin deployment needs `SameSite=None; Secure`, which then requires HTTPS end to end
+(1.2.1) and means the cookie is a third-party cookie, subject to browser partitioning and
+blocking. Neither attribute is configurable today; making them so is small. Deciding what
+happens when a browser blocks the cookie outright is the real work, and it is the same decision
+as 1.4.2 — likely a `postMessage` handoff from the host page rather than relying on either
+cookies or `localStorage` crossing the origin boundary. Worth resolving both together.
+
 **1.4.3 — Re-verify every outbound link still uses `target="_top"`** (Small · Required)
 This was a real, already-fixed bug this session, not a hypothetical: a plain `<a href>` inside
 the widget's iframe navigates only the iframe, leaving the real host page frozen. Every
@@ -136,17 +151,22 @@ with iframe navigation differently than the mockup does.
 
 ### Deployment Infrastructure
 
-**1.5.1 — Choose and build a real deployment artifact** (Extra Large · Required)
-The prototype deliberately runs as a plain Node process (`npm run build` once, then `npm run
-dev` or `npm start`) — there is no Dockerfile or container image anywhere in this repo today.
-That's the right call for local development and for handing the repo to someone else to run on
-their own machine (see `docs/production-considerations.md`'s framing on this), but a real pilot
-embedded on a live retailer page needs a proper deployment artifact — a container image, a
-platform-specific build (Vercel, Cloud Run, a managed Node buildpack), or whatever your existing
-infrastructure standardizes on. If a container image is the right choice for your platform, build
-one fresh with a multi-stage pattern (build the Vite bundle in one stage, copy only
-`node_modules`, `dist/`, `src/`, `host/`, and `package.json` into a slim runtime stage) rather
-than reintroducing dev-oriented bind mounts.
+**1.5.1 — Choose a deployment target for the existing image** (Large · Required)
+*Partially addressed in the prototype.* The repo ships a `Dockerfile` and `docker-compose.yml`
+alongside the plain-Node path (`npm run build`, then `npm start`). The image is already
+production-shaped: multi-stage, so the build toolchain never reaches the runtime layer;
+`npm ci --omit=dev`; a non-root `USER`; a `HEALTHCHECK` against the existing `/health` route;
+`NODE_ENV=production`, which is what turns the operator routes off by default (1.2.2). A Grype
+scan of it reports zero critical and zero high findings — the remaining three are one busybox
+CVE with no fix available in any Alpine release.
+
+What is missing is everywhere to run it. There is no orchestration, no registry, no deployment
+pipeline, and no rollout strategy — restarting replaces whatever was running, with a gap in
+availability while it comes back. The remaining work is choosing the target (Cloud Run, ECS,
+Kubernetes, a managed Node platform), publishing the image somewhere, and getting a new version
+validated before traffic moves to it. Two properties of the current image to preserve when you
+do: it holds no state on disk beyond `/tmp`, and it needs `ENABLE_ADMIN_ROUTES` left unset to
+keep the locked-down default.
 
 **1.5.2 — Confirm the deployment target loads `.env` the way the app expects** (Small ·
 Required) *depends on 1.5.1*
@@ -429,6 +449,38 @@ hours).
 
 ---
 
+## Testing and CI
+
+**T.1 — Decide what gates a deploy** (Small · Required)
+The repo has a Vitest suite — 394 tests, roughly 90% statement coverage — run with `npm test`,
+plus `npx tsc --noEmit` for types. It covers the agent modules and adapters near-exhaustively,
+the HTTP surface including the conversational SSE contract and the intent delta-merge rules, the
+result-assembly retry ladder, the React widget's own state machine, and the access-control and
+rate-limit behaviour from Phase 1. Several of those tests exist because they caught real bugs
+while being written.
+
+What the repo deliberately does **not** have is any CI configuration — no workflow file, no
+pre-commit hook, nothing that runs the suite automatically. Today it runs only when a person
+runs it. Before a pilot, decide what gates a merge and a deploy: at minimum `npm test` and
+`npx tsc --noEmit`; reasonably also a vulnerability scan of the built image (`grype <image>
+--fail-on critical` currently passes), since the image is what actually ships. This is a
+deliberate omission rather than an oversight — it is one file on most platforms, and which
+platform is your decision, not the prototype's.
+
+**T.2 — Cover the components the suite reaches only incidentally** (Small · Recommended)
+`ResultsView` (70% statements), `CollageView` (81%) and `CMSCardView` (18%) have no tests of
+their own — they are exercised only as a side effect of rendering `App`. `CMSCardView` in
+particular is close to untested. These render the shopper-facing collage and CMS cards, so a
+silent break there is highly visible and nothing currently fails when it happens.
+
+**T.3 — Note the two untested seams that need real credentials** (Small · Recommended)
+The live `AlgoliaAdapter` and `ContentstackAdapter` are covered against mocked `fetch`, which
+proves request construction and response mapping but not that either vendor actually behaves as
+assumed. Whoever first runs `USE_FIXTURES=false` against real accounts is doing that validation
+by hand; worth capturing what they find as tests rather than losing it.
+
+---
+
 ## Sequencing Summary
 
 | Phase | Focus | Key dependency | Suggested duration |
@@ -437,6 +489,7 @@ hours).
 | 2 — Data & Integration | Real catalog and CMS content live | Phase 1 substantially complete | Weeks 2–5 |
 | 3 — Observability & Operations | Structured logging, metrics, alerting | Parallel with Phase 2 | Weeks 2–4 |
 | 4 — Pilot Operations | Real embed, real traffic, coverage review | Phases 1–3 complete | Weeks 5–7 |
+| T — Testing & CI | Choose a CI platform, gate merges on the existing suite | None — do it first, it protects every phase above | Days, not weeks |
 
 A realistic path from prototype to a running pilot is five to seven weeks. The dominant variable
 is Phase 2: how much real editorial CMS content needs to be authored, and how clean the real
