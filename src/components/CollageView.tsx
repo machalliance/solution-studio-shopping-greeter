@@ -52,13 +52,17 @@ export function CollageView({ categories, skin }: Props) {
             // back, not a new tab + close-tab link. ?skin=... — p.url is a bare catalog path
             // with no idea which skin the shopper is browsing; without this the destination
             // page defaults to skin=project (wrong accent color) regardless of the actual site.
+            // Height share within a stacked column — without this, every item sharing a role
+            // (e.g. pants+shoes with no jacket) always splits 50/50 regardless of the weight
+            // the LLM assigned, so its per-item decision never actually reached the screen.
             if (!p) {
-              return <div key={cat.name} className="g-collage-item"><div className="g-collage-empty" /></div>
+              return <div key={cat.name} className="g-collage-item" style={{ flex: cat.weight }}><div className="g-collage-empty" /></div>
             }
             return (
               <a
                 key={cat.name}
                 className="g-collage-item"
+                style={{ flex: cat.weight }}
                 href={`${p.url}?skin=${skin}`}
                 target="_top"
               >

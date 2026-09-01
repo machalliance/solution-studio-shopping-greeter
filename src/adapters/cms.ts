@@ -98,8 +98,19 @@ export class ContentstackAdapter implements CMSAdapter {
       // freeform LLM text ("Rooftop dinner outfit" vs. the seeded "rooftop dinner outfit")
       // and could silently fail to match on case alone. Normalizing everything here, once,
       // means no caller has to remember to do it themselves.
-      const matchTags = [params.category, params.goal, ...(params.tags ?? [])]
-        .filter(Boolean)
+      //
+      // category is namespaced ("category:pants"), same reasoning as the style: namespace
+      // below — a bare category name is a collision risk, not just with an unrelated raw
+      // product tag but with a narrower guide that legitimately carries the plain category
+      // word for browsing/taxonomy purposes without actually being *about* the category as a
+      // whole. A "Finding Your Jean Fit" guide tagged plain "pants" matched every pants-category
+      // query regardless of whether any returned product was actually jeans — jean-fit isn't
+      // pants-fit, so that guide should only ever surface via its own "jeans" product-attribute
+      // tag, never via the category. Only a guide that opts in with "category:pants" now matches
+      // on category alone; everything else has to earn its match through goal, style, or an
+      // actual product tag.
+      const matchTags = [params.category ? `category:${params.category}` : undefined, params.goal, ...(params.tags ?? [])]
+        .filter((t): t is string => Boolean(t))
         .map(t => t.toLowerCase())
       // Each type is queried for the full `limit`, independent of what other types have
       // already contributed — shrinking this by results-so-far was the other half of the
