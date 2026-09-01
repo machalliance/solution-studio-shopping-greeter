@@ -10,7 +10,7 @@ export const FIXTURES_DIR = join(__dirname, '../../catalog/fixtures')
  * reachable in practice: without the trim, " mirror " normalises to "-mirror-", misses the
  * file, and the miss is then cached — a silently empty product row or guide list with no error.
  */
-export function fixtureKey(category: string): string {
+function fixtureKey(category: string): string {
   return category.trim().toLowerCase().replace(/\s+/g, '-')
 }
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { IntentModel, CategoryResult, CuratedOutfit } from '../types/intent'
 import { ChatView } from './ChatView'
 import { ResultsView } from './ResultsView'
+import { nextSelections, chunkRefinements, readSSE } from './chatStream'
 
 export type AppState = 'chat' | 'assembling' | 'results'
 
@@ -141,23 +142,10 @@ export function App() {
 
   const sendMessage = useCallback(async (text: string, isSelection = false) => {
     // Record chip selections immediately — before the API call so the server gets them.
-    // If the last selection was a broad style family and this is a sub-direction,
-    // replace it so the tag reads "Coastal Beach House" not "Coastal" + "Beach House".
-    const STYLE_FAMILIES = new Set(['Scandi', 'Coastal', 'Industrial', 'Modern', 'Farmhouse',
-      'Transitional', 'Japandi', 'Mediterranean', 'Minimalist', 'Preppy', 'Classic'])
-    const prev = selectionsRef.current
-    const lastSel = prev[prev.length - 1] ?? ''
-    const isSubDirection = STYLE_FAMILIES.has(lastSel)
-    const nextSelections = isSelection
-      ? (isSubDirection
-          // Replace parent — combine only if sub-direction doesn't already name the family
-          ? [...prev.slice(0, -1), text.toLowerCase().includes(lastSel.toLowerCase()) ? text : `${lastSel} ${text}`]
-          : [...prev, text])
-      : prev
-
+    const updatedSelections = nextSelections(selectionsRef.current, text, isSelection)
     if (isSelection) {
-      selectionsRef.current = nextSelections
-      setSelections(nextSelections)
+      selectionsRef.current = updatedSelections
+      setSelections(updatedSelections)
     }
 
     const newMessages: Message[] = [...messages, { role: 'user', content: text }]
@@ -178,104 +166,89 @@ export function App() {
           messages: newMessages,
           sessionId: sessionIdRef.current,
           intent,
-          selections: nextSelections,
+          selections: updatedSelections,
           // Include assembled categories so the server can re-assemble after a restart
           categories: categories.map(c => c.name),
         }),
       })
 
       if (!res.body) throw new Error('No response body')
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
 
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const blocks = buffer.split('\n\n')
-        buffer = blocks.pop() ?? ''
-
-        for (const block of blocks) {
-          const dataLine = block.split('\n').find(l => l.startsWith('data: '))
-          if (!dataLine) continue
-          const raw = dataLine.slice(6).trim()
-          if (!raw || raw === '[DONE]') continue
-          try {
-            const event = JSON.parse(raw)
-            switch (event.type) {
-              case 'text-delta':
-                assistantText += event.content
-                setStreamingText(t => t + event.content)
-                break
-              case 'options':
-                if (Array.isArray(event.choices) && event.choices.length) {
-                  setPendingOptions({ choices: event.choices, kind: event.kind ?? 'options' })
-                }
-                break
-              case 'early-ready':
-                setEarlyReady(true)
-                break
-              case 'assembling':
-              case 'building':
-                // In results state, stay in results and show an inline indicator.
-                // Switching to 'assembling' would hide the results panel, which is jarring.
-                if (appState === 'results') {
-                  setRefining(true)
-                } else {
-                  setAppState('assembling')
-                }
-                break
-              case 'intent-update':
-                if (event.intent) setIntent(event.intent)
-                break
-              case 'intent-ready':
-                if (event.intent) setIntent(event.intent)
-                if (event.summary) {
-                  setSummary(event.summary)
-                  if (!summaryAnimatedRef.current) {
-                    summaryAnimatedRef.current = true
-                    setSummaryKey(k => k + 1)
-                  }
-                }
-                setRefining(false)
-                if (event.categories?.length) {
-                  setCategories(event.categories)
-                  if (event.curatedOutfits?.length) setCuratedOutfits(event.curatedOutfits)
-                  setAppState('results')
-                } else {
-                  setAppState('chat')
-                }
-                break
-              case 'error':
-                // Same rule as the 'building'/'assembling' case above: a failure during a
-                // refinement (already in results) must not pop the compact card back open over
-                // the collage — that's what this bug looked like from the outside. Stay in
-                // results, clear the "Updating results..." indicator, and surface the error as
-                // a chat message instead. Only pre-results errors (no collage to preserve yet)
-                // fall back to the compact card.
-                setRefining(false)
-                if (appState !== 'results') setAppState('chat')
-                setMessages(prev => [...prev, {
-                  role: 'assistant',
-                  content: `⚠️ ${event.message ?? 'Something went wrong — please try again.'}`,
-                }])
-                break
-              case 'refinements':
-                if (event.refinements?.length) {
-                  const chunks: string[][] = []
-                  for (let i = 0; i < event.refinements.length; i += 3) {
-                    chunks.push(event.refinements.slice(i, i + 3))
-                  }
-                  setInitialRefinements(chunks)
-                }
-                break
+      for await (const event of readSSE(res.body)) {
+        switch (event.type) {
+          case 'text-delta':
+            assistantText += event.content
+            setStreamingText(t => t + event.content)
+            break
+          case 'options':
+            if (Array.isArray(event.choices) && event.choices.length) {
+              setPendingOptions({ choices: event.choices, kind: event.kind ?? 'options' })
             }
-          } catch {}
+            break
+          case 'early-ready':
+            setEarlyReady(true)
+            break
+          case 'assembling':
+          case 'building':
+            // In results state, stay in results and show an inline indicator.
+            // Switching to 'assembling' would hide the results panel, which is jarring.
+            if (appState === 'results') {
+              setRefining(true)
+            } else {
+              setAppState('assembling')
+            }
+            break
+          case 'intent-update':
+            if (event.intent) setIntent(event.intent)
+            break
+          case 'intent-ready':
+            if (event.intent) setIntent(event.intent)
+            if (event.summary) {
+              setSummary(event.summary)
+              if (!summaryAnimatedRef.current) {
+                summaryAnimatedRef.current = true
+                setSummaryKey(k => k + 1)
+              }
+            }
+            setRefining(false)
+            if (event.categories?.length) {
+              setCategories(event.categories)
+              if (event.curatedOutfits?.length) setCuratedOutfits(event.curatedOutfits)
+              setAppState('results')
+            } else {
+              setAppState('chat')
+            }
+            break
+          case 'error':
+            // Same rule as the 'building'/'assembling' case above: a failure during a
+            // refinement (already in results) must not pop the compact card back open over
+            // the collage — that's what this bug looked like from the outside. Stay in
+            // results, clear the "Updating results..." indicator, and surface the error as
+            // a chat message instead. Only pre-results errors (no collage to preserve yet)
+            // fall back to the compact card.
+            setRefining(false)
+            if (appState !== 'results') setAppState('chat')
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `⚠️ ${event.message ?? 'Something went wrong — please try again.'}`,
+            }])
+            break
+          case 'refinements':
+            if (event.refinements?.length) {
+              setInitialRefinements(chunkRefinements(event.refinements))
+            }
+            break
         }
       }
     } catch (err) {
-      setStreamingText('Sorry, something went wrong. Please try again.')
+      // Committed as a message, not into streamingText: the unconditional setStreamingText('')
+      // below clears that before it can render, so a failed turn used to leave the shopper
+      // looking at a blank card with no error and no way to tell the request had died.
+      // Matches how the 'error' SSE event above surfaces the same class of failure.
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: '⚠️ Something went wrong — please try again.',
+      }])
       console.error(err)
     }
 
@@ -319,11 +292,7 @@ export function App() {
           setSummaryKey(k => k + 1)
         }
       }
-      if (data.refinements?.length) {
-        const chunks: string[][] = []
-        for (let i = 0; i < data.refinements.length; i += 3) chunks.push(data.refinements.slice(i, i + 3))
-        setInitialRefinements(chunks)
-      }
+      if (data.refinements?.length) setInitialRefinements(chunkRefinements(data.refinements))
       setAppState('results')
     } catch (err) {
       console.error('[show me now]', err)
