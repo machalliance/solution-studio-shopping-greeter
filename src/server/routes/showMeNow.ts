@@ -1,4 +1,6 @@
 import type { Hono } from 'hono'
+import { getSessionId, type AppEnv } from '../session.js'
+import { rateLimit } from '../rateLimit.js'
 import type { IntentModel, CategoryResult } from '../../types/intent.js'
 import { llm } from '../config.js'
 import { intentStore, categoryStore, earlyCategories, saveCategoryStore } from '../stores.js'
@@ -14,10 +16,12 @@ import { assembleResults, buildCuratedOutfits } from '../assemble.js'
 // triggers (the quick-action chip and the dedicated button, see ChatView.tsx) call the exact
 // same client function, which posts here — one deterministic path, always guaranteed to reach
 // either real results or a clear error, never a silent dead end.
-export function registerShowMeNowRoute(app: Hono) {
-  app.post('/api/show-me-now', async c => {
-    const body = await c.req.json<{ sessionId: string; intent: IntentModel | null; categories?: string[] }>()
-    const { sessionId } = body
+export function registerShowMeNowRoute(app: Hono<AppEnv>) {
+  app.post('/api/show-me-now', rateLimit, async c => {
+    const body = await c.req.json<{ intent: IntentModel | null; categories?: string[] }>()
+    // From the session cookie only. A sessionId in the body is ignored — trusting it let any
+    // caller read another session's stored intent and assembled categories.
+    const sessionId = getSessionId(c)
     const intent = body.intent ?? intentStore.get(sessionId) ?? null
     if (!intent) return c.json({ error: 'No intent captured yet for this session' }, 400)
 

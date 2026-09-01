@@ -1,4 +1,6 @@
 import type { Hono } from 'hono'
+import { getSessionId, type AppEnv } from '../session.js'
+import { rateLimit } from '../rateLimit.js'
 import { streamSSE } from 'hono/streaming'
 import { streamText, Output } from 'ai'
 import { z } from 'zod/v3';
@@ -59,17 +61,18 @@ const TurnSchema = z.object({
 })
 
 /** Registers the conversational turn endpoint. */
-export function registerChatRoute(app: Hono) {
-  app.post('/api/chat', async c => {
+export function registerChatRoute(app: Hono<AppEnv>) {
+  app.post('/api/chat', rateLimit, async c => {
     const body = await c.req.json<{
       messages: { role: 'user' | 'assistant'; content: string }[]
-      sessionId: string
       intent: IntentModel | null
       selections?: string[]
       categories?: string[]
     }>()
 
-    const { messages, sessionId, selections = [], categories: clientCategories } = body
+    const { messages, selections = [], categories: clientCategories } = body
+    // From the session cookie only — see session.ts. A body-supplied id is ignored.
+    const sessionId = getSessionId(c)
     const logEntry = { ts: new Date().toISOString(), sessionId, msgCount: messages.length, clientCats: clientCategories?.join(',') ?? 'none' }
     requestLog.push(logEntry)
     if (requestLog.length > 50) requestLog.shift()

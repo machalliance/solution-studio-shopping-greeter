@@ -18,3 +18,5 @@ scratch/
 # OS/editor cruft
 .DS_Store
 *.log
+# Local security-tooling workspace — not part of the app.
+.deepsec/

@@ -43,12 +43,10 @@ function clearSession() {
   } catch {}
 }
 
-function makeSessionId(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
-  })
-}
+// The session id is issued by the server as an HttpOnly cookie and travels automatically on
+// every request — see src/server/session.ts. The client neither generates nor sends one: a
+// client-supplied id was trusted by the server, so anyone could read another session's work.
+// "Start fresh" clears the local session; the server-side one is harmless to keep.
 
 export function App() {
   const params = new URLSearchParams(location.search)
@@ -84,7 +82,6 @@ export function App() {
   const selectionsRef = useRef<string[]>(loadSession()?.selections ?? [])
   const [selections, setSelections] = useState<string[]>(selectionsRef.current)
 
-  const sessionIdRef = useRef(makeSessionId())
   const [streamingText, setStreamingText] = useState('')
 
   function resetState() {
@@ -104,7 +101,6 @@ export function App() {
     setShowContinue(false)
     selectionsRef.current = []
     setSelections([])
-    sessionIdRef.current = makeSessionId()
   }
 
   const startFresh = useCallback(() => {
@@ -164,7 +160,6 @@ export function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages,
-          sessionId: sessionIdRef.current,
           intent,
           selections: updatedSelections,
           // Include assembled categories so the server can re-assemble after a restart
@@ -274,7 +269,6 @@ export function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: sessionIdRef.current,
           intent,
           categories: categories.map(c => c.name),
         }),

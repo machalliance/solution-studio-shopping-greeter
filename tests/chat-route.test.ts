@@ -51,10 +51,12 @@ async function chat(body: {
   selections?: string[]
   categories?: string[]
 }): Promise<SSEEvent[]> {
+  // The session travels in the server-issued cookie, not the body — see src/server/session.ts.
+  const { sessionId, ...payload } = body
   const res = await app.request('/api/chat', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ intent: null, ...body }),
+    headers: { 'content-type': 'application/json', cookie: `gsid=${sessionId}` },
+    body: JSON.stringify({ intent: null, ...payload }),
   })
   expect(res.status).toBe(200)
   return parseSSE(await res.text())

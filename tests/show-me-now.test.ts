@@ -43,11 +43,14 @@ function intentOf(overrides: Partial<IntentModel> = {}): IntentModel {
   }
 }
 
-async function showMeNow(body: Record<string, unknown>) {
+// The session travels in the server-issued cookie, not the body — see src/server/session.ts.
+// `sessionId` here names the session under test; it is sent as that cookie.
+async function showMeNow(body: Record<string, unknown> & { sessionId: string }) {
+  const { sessionId, ...payload } = body
   const res = await app.request('/api/show-me-now', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: { 'content-type': 'application/json', cookie: `gsid=${sessionId}` },
+    body: JSON.stringify(payload),
   })
   return { status: res.status, body: await res.json() as any }
 }

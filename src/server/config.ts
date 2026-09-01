@@ -19,6 +19,22 @@ export const STYLE_SRC         = join(ROOT, 'src/style.css')
 /** Read fresh on each request so `npm run build` hot-swaps the bundle without a server restart. */
 export function getPanelHtml() { return readFileSync(PANEL_HTML_PATH, 'utf-8') }
 
+/**
+ * Gates the /debug/* dumps and the POST routes that rewrite global model config.
+ *
+ * Both are operator tools with no authentication. /debug/intents returns every session's
+ * captured goal, budget and preferences and /debug/raw returns raw model output, so on a public
+ * deployment they are other people's conversations; the config writes mutate module-level state
+ * for every user at once, so any visitor can repoint or break the demo for everyone.
+ *
+ * Defaults to on outside production so local development is unchanged, and off inside the
+ * container (the Dockerfile sets NODE_ENV=production). Set ENABLE_ADMIN_ROUTES explicitly to
+ * override either way.
+ */
+export const adminRoutesEnabled = process.env.ENABLE_ADMIN_ROUTES != null
+  ? process.env.ENABLE_ADMIN_ROUTES === 'true'
+  : process.env.NODE_ENV !== 'production'
+
 export const useFixtures = process.env.USE_FIXTURES !== 'false'
 export const zeroResultsAction = (process.env.ZERO_RESULTS_ACTION ?? 'fallback') as 'fallback' | 'notice'
 // Max wait for a single /api/chat LLM turn before it's treated as failed — see the streamText

@@ -6,16 +6,18 @@
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
+import type { Context } from 'hono'
 import { readFileSync, readdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { IntentModel } from './types/intent.js'
 import {
   ROOT, FIXTURES_DIR, IMAGES_SERVE_ROOT, STYLE_SRC, getPanelHtml, useFixtures, zeroResultsAction,
-  activeProvider, llm, search, cms, setProvider, type ProviderKey,
+  activeProvider, llm, search, cms, setProvider, adminRoutesEnabled, type ProviderKey,
 } from './server/config.js'
 import { catalogStats, buildCatalogStats } from './server/catalogStats.js'
 import { intentStore, lastEvents, rawReplies, requestLog } from './server/stores.js'
+import { sessionMiddleware, type AppEnv } from './server/session.js'
 import { registerChatRoute } from './server/routes/chat.js'
 import { registerShowMeNowRoute } from './server/routes/showMeNow.js'
 
@@ -25,18 +27,29 @@ export type { CategoryStats, CatalogStats } from './server/catalogStats.js'
 
 buildCatalogStats().catch(err => console.error('[catalog] build failed:', err))
 
-export const app = new Hono()
+export const app = new Hono<AppEnv>()
+
+// Every request carries a server-issued session identity; handlers never read one from the body.
+app.use('*', sessionMiddleware)
+
+/**
+ * Operator-only routes 404 rather than 403 when disabled — a public deployment should not
+ * advertise that they exist. See adminRoutesEnabled in config.ts for what they expose.
+ */
+function adminOnly(handler: (c: Context<AppEnv>) => Response | Promise<Response>) {
+  return (c: Context<AppEnv>) => adminRoutesEnabled ? handler(c) : c.notFound()
+}
 
 app.get('/health', c => c.json({ ok: true, fixtures: useFixtures, provider: activeProvider, intents: intentStore.size, catalogCategories: Object.keys(catalogStats).length }))
 app.get('/api/catalog-stats', c => c.json(catalogStats))
-app.post('/api/catalog-stats/refresh', async c => {
+app.post('/api/catalog-stats/refresh', adminOnly(async c => {
   await buildCatalogStats()
   return c.json({ ok: true, categories: Object.keys(catalogStats) })
-})
-app.get('/debug/intents', c => c.json(Object.fromEntries(intentStore)))
-app.get('/debug/events', c => c.json(Object.fromEntries(lastEvents)))
-app.get('/debug/requests', c => c.json(requestLog))
-app.get('/debug/raw', c => c.json(Object.fromEntries(rawReplies)))
+}))
+app.get('/debug/intents', adminOnly(c => c.json(Object.fromEntries(intentStore))))
+app.get('/debug/events', adminOnly(c => c.json(Object.fromEntries(lastEvents))))
+app.get('/debug/requests', adminOnly(c => c.json(requestLog)))
+app.get('/debug/raw', adminOnly(c => c.json(Object.fromEntries(rawReplies))))
 const SWATCH_WRAP_JS = `(function(){
   function wrap(img){
     if(img.parentElement&&img.parentElement.classList.contains('g-swatch'))return;
@@ -128,14 +141,14 @@ app.get('/api/env-status', c => c.json({
   useFixtures: useFixtures,
 }))
 
-app.post('/api/provider', async c => {
+app.post('/api/provider', adminOnly(async c => {
   const { provider } = await c.req.json<{ provider: ProviderKey }>()
   const valid: ProviderKey[] = ['claude', 'openai']
   if (!valid.includes(provider)) return c.json({ error: 'Unknown provider' }, 400)
   setProvider(provider)
   console.log(`[provider] switched to ${provider}`)
   return c.json({ provider: activeProvider })
-})
+}))
 
 // Free-text 'chat' model override — not a fixed list, any model ID the active provider's
 // Gateway recognizes works. Not pre-validated: a bad ID just fails naturally on the next
@@ -143,34 +156,34 @@ app.post('/api/provider', async c => {
 // provider switches (Claude/OpenAI model IDs are different namespaces).
 app.get('/api/chat-model', c => c.json({ model: llm.chatModelOverride }))
 
-app.post('/api/chat-model', async c => {
+app.post('/api/chat-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
   if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
   llm.chatModelOverride = model.trim()
   console.log(`[chat-model] switched to ${llm.chatModelOverride}`)
   return c.json({ model: llm.chatModelOverride })
-})
+}))
 
 // Same free-text pattern as /api/chat-model, independently for 'spec' and 'curation'.
 app.get('/api/spec-model', c => c.json({ model: llm.specModelOverride }))
 
-app.post('/api/spec-model', async c => {
+app.post('/api/spec-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
   if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
   llm.specModelOverride = model.trim()
   console.log(`[spec-model] switched to ${llm.specModelOverride}`)
   return c.json({ model: llm.specModelOverride })
-})
+}))
 
 app.get('/api/curation-model', c => c.json({ model: llm.curationModelOverride }))
 
-app.post('/api/curation-model', async c => {
+app.post('/api/curation-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
   if (!model || typeof model !== 'string' || !model.trim()) return c.json({ error: 'Model ID required' }, 400)
   llm.curationModelOverride = model.trim()
   console.log(`[curation-model] switched to ${llm.curationModelOverride}`)
   return c.json({ model: llm.curationModelOverride })
-})
+}))
 
 /**
  * Unified schema for every agent turn — generated in a single streamText+Output call.

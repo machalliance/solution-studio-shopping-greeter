@@ -6,3 +6,4 @@ dist
 scratch
 *.log
 .DS_Store
+.deepsec
