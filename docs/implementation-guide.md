@@ -151,22 +151,51 @@ with iframe navigation differently than the mockup does.
 
 ### Deployment Infrastructure
 
-**1.5.1 — Choose a deployment target for the existing image** (Large · Required)
-*Partially addressed in the prototype.* The repo ships a `Dockerfile` and `docker-compose.yml`
-alongside the plain-Node path (`npm run build`, then `npm start`). The image is already
-production-shaped: multi-stage, so the build toolchain never reaches the runtime layer;
-`npm ci --omit=dev`; a non-root `USER`; a `HEALTHCHECK` against the existing `/health` route;
-`NODE_ENV=production`, which is what turns the operator routes off by default (1.2.2). A Grype
-scan of it reports zero critical and zero high findings — the remaining three are one busybox
-CVE with no fix available in any Alpine release.
+**1.5.1 — Review and harden the container image, then choose a deployment target**
+(Extra Large · Required)
 
-What is missing is everywhere to run it. There is no orchestration, no registry, no deployment
-pipeline, and no rollout strategy — restarting replaces whatever was running, with a gap in
-availability while it comes back. The remaining work is choosing the target (Cloud Run, ECS,
-Kubernetes, a managed Node platform), publishing the image somewhere, and getting a new version
-validated before traffic moves to it. Two properties of the current image to preserve when you
-do: it holds no state on disk beyond `/tmp`, and it needs `ENABLE_ADMIN_ROUTES` left unset to
-keep the locked-down default.
+**The `Dockerfile` in this repo builds a testing image. It is not suitable for production
+deployment as written, and should be treated as a starting point to review and harden, not an
+artifact to ship.** It exists so the demo runs identically on any machine with Docker. It has had
+some obvious sharp edges removed — multi-stage so the build toolchain never reaches the runtime
+layer, `npm ci --omit=dev`, a non-root `USER`, a `HEALTHCHECK`, and `NODE_ENV=production`, which
+is what turns the operator routes off by default (1.2.2). None of that makes it
+production-ready. Scan it yourself before trusting it, and re-scan on a schedule: any result
+recorded in a document is a statement about one moment, and says nothing about how the image
+behaves under real traffic, which it has never seen.
+
+Concrete gaps found by inspecting the built image, all of which need addressing before this runs
+anywhere real:
+
+- **No graceful shutdown.** Nothing in the app handles `SIGTERM`; the container exits 143,
+  killed by the signal. Every in-flight `/api/chat` SSE stream is severed mid-response, so a
+  rolling deploy truncates the conversation of every shopper currently talking to it. Needs a
+  signal handler that stops accepting connections and drains in-flight streams first.
+- **The app is not PID 1.** The entrypoint is the `tsx` wrapper, which spawns the real server as
+  a child, plus a resident `esbuild` compile service. Signals happen to reach the child today,
+  but the process tree is an accident of the dev runner, not a deliberate supervision model.
+- **TypeScript is compiled at runtime.** The image runs `src/*.ts` through `tsx` rather than
+  precompiled JavaScript, which is why a build tool is resident in the runtime container at all.
+  Production should compile ahead of time and run plain `node`.
+- **The base image is a floating tag** (`node:22-alpine`) and the runtime stage runs
+  `apk upgrade`, so two builds of the same commit can produce different images. Reproducibility
+  and patch freshness are in genuine tension here; production usually resolves it by pinning a
+  digest and rebuilding on a schedule.
+- **No SBOM, provenance, or image signing**, and no scan gating the build (see T.1).
+- **368MB of catalog imagery is baked into the image**, which is most of its 1.06GB. Those
+  belong on a CDN (2.4.1); the image should not be the delivery mechanism.
+- **No runtime hardening**: no read-only root filesystem, no dropped capabilities, no seccomp
+  profile, and no memory or CPU limits in `docker-compose.yml`.
+- **Never load-tested.** No concurrency, memory, or restart behaviour has been measured under
+  anything resembling real traffic.
+
+Beyond the image itself there is nowhere to run it: no orchestration, no registry, no deployment
+pipeline, no rollout strategy. Restarting replaces whatever was running, with a gap in
+availability while it comes back. Choosing the target (Cloud Run, ECS, Kubernetes, a managed Node
+platform) and getting a new version validated before traffic moves to it is the rest of this
+task. Two properties of the current image worth preserving when you rebuild it: it holds no
+state on disk beyond `/tmp`, and it needs `ENABLE_ADMIN_ROUTES` left unset to keep the
+locked-down default.
 
 **1.5.2 — Confirm the deployment target loads `.env` the way the app expects** (Small ·
 Required) *depends on 1.5.1*
@@ -462,10 +491,12 @@ while being written.
 What the repo deliberately does **not** have is any CI configuration — no workflow file, no
 pre-commit hook, nothing that runs the suite automatically. Today it runs only when a person
 runs it. Before a pilot, decide what gates a merge and a deploy: at minimum `npm test` and
-`npx tsc --noEmit`; reasonably also a vulnerability scan of the built image (`grype <image>
---fail-on critical` currently passes), since the image is what actually ships. This is a
-deliberate omission rather than an oversight — it is one file on most platforms, and which
-platform is your decision, not the prototype's.
+`npx tsc --noEmit`; reasonably also a vulnerability scan of the built image, since the image is
+what actually ships and its dependency tree changes underneath you whether or not the code does.
+Gate on the scan rather than recording its output anywhere — a result written into a document is
+stale the next time the upstream advisory database updates. This is a deliberate omission rather
+than an oversight: it is one file on most platforms, and which platform is your decision, not
+the prototype's.
 
 **T.2 — Cover the components the suite reaches only incidentally** (Small · Recommended)
 `ResultsView` (70% statements), `CollageView` (81%) and `CMSCardView` (18%) have no tests of
