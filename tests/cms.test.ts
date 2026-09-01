@@ -112,6 +112,15 @@ describe('FixtureCMSAdapter.getContent', () => {
     expect(shouty).toEqual(canonical)
   })
 
+  // Same untrimmed-normalisation hazard as the search fixture adapter: " mirror " would
+  // become "-mirror-", miss the file, and cache the miss as "no guides for this category".
+  it.each([' mirror', 'mirror ', '  mirror  '])(
+    'resolves the fixture for a padded category %j', async category => {
+      const cms = new FixtureCMSAdapter()
+      const results = await cms.getContent({ goal: 'hang a mirror', category, limit: 5 })
+      expect(results.map(r => r.uid)).toEqual(['blt-mirror-001', 'blt-mirror-002'])
+    })
+
   it('returns an empty list rather than throwing for a category with no content', async () => {
     const cms = new FixtureCMSAdapter()
     await expect(

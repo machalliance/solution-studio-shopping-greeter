@@ -52,6 +52,17 @@ describe('FixtureSearchAdapter — catalogue loading', () => {
     expect(ids(lower)).toEqual(ids(upper))
   })
 
+  // Categories originate as free-form LLM output, so stray padding is reachable. Untrimmed,
+  // " lighting " normalises to "-lighting-", misses the file, and caches the miss — a whole
+  // product row silently empty.
+  it.each([' lighting', 'lighting ', '  lighting  ', '\tlighting\n'])(
+    'resolves the fixture file for a padded category %j', async category => {
+      const adapter = new FixtureSearchAdapter()
+      const padded = await adapter.query(params({ category }))
+      expect(ids(padded)).toEqual(ids(await adapter.query(params({ category: 'lighting' }))))
+      expect(padded.length).toBeGreaterThan(0)
+    })
+
   it('caches unfiltered hits, so a narrow query does not shrink a later broad one', async () => {
     const adapter = new FixtureSearchAdapter()
     const narrow = await adapter.query(params({ category: 'lighting', facets: { style: 'coastal' } }))
