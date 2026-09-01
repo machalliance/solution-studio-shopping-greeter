@@ -22,8 +22,14 @@ export function registerShowMeNowRoute(app: Hono<AppEnv>) {
     // From the session cookie only. A sessionId in the body is ignored — trusting it let any
     // caller read another session's stored intent and assembled categories.
     const sessionId = getSessionId(c)
-    const intent = body.intent ?? intentStore.get(sessionId) ?? null
-    if (!intent) return c.json({ error: 'No intent captured yet for this session' }, 400)
+    const supplied = body.intent ?? intentStore.get(sessionId) ?? null
+    if (!supplied) return c.json({ error: 'No intent captured yet for this session' }, 400)
+
+    // The intent object carries its own sessionId, and assembleResults keys the per-session
+    // spec, budget and outfit caches on it. Overwritten with the cookie's id so a caller who
+    // embeds someone else's id there cannot read or poison that session's cached work — the
+    // same hole as a body-supplied sessionId, one layer down.
+    const intent: IntentModel = { ...supplied, sessionId }
 
     intentStore.set(sessionId, intent)
 

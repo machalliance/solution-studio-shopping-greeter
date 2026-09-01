@@ -77,7 +77,13 @@ export function registerChatRoute(app: Hono<AppEnv>) {
     requestLog.push(logEntry)
     if (requestLog.length > 50) requestLog.shift()
     console.log(`[chat] request received — session: ${sessionId}, msgs: ${messages.length}, clientCats: ${logEntry.clientCats}`)
-    const prevStored = intentStore.get(sessionId) ?? body.intent ?? null
+    // The client may send an intent when the server has none (e.g. after a restart). Its own
+    // sessionId field is overwritten with the cookie's: assembleResults keys the per-session
+    // spec, budget and outfit caches on it, and the show-me-now fast path below hands this
+    // object straight to assembly, so a caller-chosen id there would reach another session's
+    // cached work.
+    const carried = intentStore.get(sessionId) ?? body.intent ?? null
+    const prevStored: IntentModel | null = carried ? { ...carried, sessionId } : null
 
     return streamSSE(c, async s => {
       const sessionLog: { type: string; size: number; categoriesLen?: number }[] = []

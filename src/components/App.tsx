@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { IntentModel, CategoryResult, CuratedOutfit } from '../types/intent'
 import { ChatView } from './ChatView'
 import { ResultsView } from './ResultsView'
-import { nextSelections, chunkRefinements, readSSE } from './chatStream'
+import { nextSelections, chunkRefinements, readSSE, postIntent } from './chatStream'
 
 export type AppState = 'chat' | 'assembling' | 'results'
 
@@ -265,14 +265,7 @@ export function App() {
     setAppState('assembling')
     setPendingOptions(null)
     try {
-      const res = await fetch('/api/show-me-now', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          intent,
-          categories: categories.map(c => c.name),
-        }),
-      })
+      const res = await postIntent('/api/show-me-now', intent, categories)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? `Server returned ${res.status}`)
 

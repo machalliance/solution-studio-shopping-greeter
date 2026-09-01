@@ -27,6 +27,24 @@ export function nextSelections(prev: string[], text: string, isSelection: boolea
   return [...prev.slice(0, -1), merged]
 }
 
+/**
+ * POSTs the current intent and assembled category names — the body /api/show-me-now and
+ * /api/refinements both take. The session travels in the server-issued cookie, so nothing
+ * identifying goes in the body; see src/server/session.ts.
+ * Callers handle their own response and failure semantics, which differ between the two.
+ */
+export function postIntent(
+  path: string,
+  intent: unknown,
+  categories: { name: string }[],
+): Promise<Response> {
+  return fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ intent, categories: categories.map(c => c.name) }),
+  })
+}
+
 /** Groups refinement labels into the rows of three the chip strip cycles through. */
 export function chunkRefinements(refinements: string[], size = 3): string[][] {
   const chunks: string[][] = []

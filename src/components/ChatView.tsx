@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { IntentModel, CategoryResult } from '../types/intent'
 import type { AppState, Message } from './App'
 import { buildDisplayTags, buildHistory } from './chatHistory'
-import { chunkRefinements } from './chatStream'
+import { chunkRefinements, postIntent } from './chatStream'
 import { useTypewriter } from './useTypewriter'
 
 interface Props {
@@ -97,11 +97,7 @@ export function ChatView({
     if (!intent || loadingMore) return
     setLoadingMore(true)
     try {
-      const res = await fetch('/api/refinements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent, categories: categories.map(c => c.name) }),
-      })
+      const res = await postIntent('/api/refinements', intent, categories)
       const data = await res.json()
       if (Array.isArray(data.refinements) && data.refinements.length) {
         setRefinements(chunkRefinements(data.refinements))

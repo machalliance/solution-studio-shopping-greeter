@@ -57,7 +57,7 @@ beforeEach(() => {
   mocks.generateRefinements.mockReset().mockResolvedValue([])
   mocks.generateCategories.mockReset().mockResolvedValue(['top'])
   mocks.assignCollageRoles.mockReset().mockResolvedValue({})
-  mocks.curateOutfits.mockReset().mockResolvedValue([])
+  mocks.curateOutfits.mockReset().mockResolvedValue([{ name: 'Look', rationale: '', slots: {} }])
 })
 
 describe('debug routes are not public', () => {
@@ -221,6 +221,26 @@ describe('the session id comes from the server, not the client', () => {
     const body = await res.json() as any
     // Falls back to a freshly generated list, not the victim's cached ['shoes'].
     expect(body.categories.map((c: any) => c.name)).toEqual(['top'])
+  })
+
+  // The per-session spec/budget/outfit caches in assemble.ts are keyed on intent.sessionId,
+  // which arrives inside the client-supplied intent object. Left unnormalised, a caller who
+  // sets it to someone else's id reads and poisons that session's cached work — the same class
+  // of hole as the body sessionId, one layer down.
+  it('does not let an intent-embedded sessionId reach another session\'s caches', async () => {
+    const shared = 'someone-elses-session'
+    const intentClaiming = { ...intentOf(), sessionId: shared }
+
+    await post('/api/show-me-now', { intent: intentClaiming, categories: ['top'] },
+      { cookie: 'gsid=session-a', 'x-forwarded-for': freshIp() })
+
+    mocks.curateOutfits.mockClear()
+    await post('/api/show-me-now', { intent: intentClaiming, categories: ['top'] },
+      { cookie: 'gsid=session-b', 'x-forwarded-for': freshIp() })
+
+    // 4th argument is previousOutfits, fed from curatedOutfitCache.
+    const previousOutfits = mocks.curateOutfits.mock.calls.at(-1)?.[3]
+    expect(previousOutfits).toBeUndefined()
   })
 
   it('keeps a session\'s own work reachable across requests with its cookie', async () => {
