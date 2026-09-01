@@ -168,7 +168,7 @@ function saveCategoryStore() {
   } catch { /* non-fatal */ }
 }
 
-const app = new Hono()
+export const app = new Hono()
 
 app.get('/health', c => c.json({ ok: true, fixtures: useFixtures, provider: activeProvider, intents: intentStore.size, catalogCategories: Object.keys(catalogStats).length }))
 app.get('/api/catalog-stats', c => c.json(catalogStats))
@@ -802,12 +802,16 @@ app.get('*', async c => {
   return c.html(await readFile(join(ROOT, 'host/guide.html'), 'utf-8'))
 })
 
-const port = Number(process.env.PORT) || 3003
-serve({ fetch: app.fetch, port }, info => {
-  console.log(`Greeter running → http://localhost:${info.port}`)
-  console.log(`  Fixtures: ${useFixtures}`)
-  console.log(`  Provider: ${activeProvider}`)
-})
+// Skipped under Vitest so tests can import `app` and drive it through app.request()
+// without binding a port.
+if (!process.env.VITEST) {
+  const port = Number(process.env.PORT) || 3003
+  serve({ fetch: app.fetch, port }, info => {
+    console.log(`Greeter running → http://localhost:${info.port}`)
+    console.log(`  Fixtures: ${useFixtures}`)
+    console.log(`  Provider: ${activeProvider}`)
+  })
+}
 
 /**
  * Assembles the full results payload for a given intent and category list.
@@ -822,7 +826,7 @@ serve({ fetch: app.fetch, port }, info => {
  * All categories are assembled in parallel. Budget allocation runs first (single LLM call)
  * so per-category maxPrice is available before the parallel search queries fire.
  */
-async function assembleResults(
+export async function assembleResults(
   intent: IntentModel,
   categories: string[]
 ): Promise<CategoryResult[]> {
@@ -935,28 +939,48 @@ async function assembleResults(
       ]
 
       let products = await search.query({ category, facets, avoidances, requiresAll, requiresAny, limit: 10 })
+
+      // Facets carried into every later retry. Once a retry proves a facet is starving the
+      // row, it stays dropped — re-applying it below would re-create the exact starvation the
+      // retry just escaped.
+      let activeFacets = facets
+
+      // Each retry relaxes a different constraint, but a looser query is NOT a superset of a
+      // tighter one: dropping the spec's style tags re-queries with a different tag set and can
+      // return fewer products than the previous attempt already found. Adopting unconditionally
+      // therefore threw away products that were already in hand and shipped a thinner (often
+      // empty) shopping-list row. Only take a retry that genuinely improves the row; on a tie,
+      // keep the earlier, more precise result.
+      const adopt = (candidate: typeof products) => {
+        if (candidate.length > products.length) products = candidate
+      }
+
       // Retry 1: drop budget filter if it's starving the row
-      if (products.length < 3 && facets.maxPrice != null) {
+      if (products.length < 3 && activeFacets.maxPrice != null) {
         const initialCount = products.length
-        const relaxedFacets = { ...facets }
+        const relaxedFacets = { ...activeFacets }
         delete relaxedFacets.maxPrice
-        products = await search.query({ category, facets: relaxedFacets, avoidances, requiresAll, requiresAny, limit: 10 })
-        console.log(`[budget] ${category} returned ${initialCount} at maxPrice=${facets.maxPrice}, retried without price filter → ${products.length} results`)
+        const retried = await search.query({ category, facets: relaxedFacets, avoidances, requiresAll, requiresAny, limit: 10 })
+        activeFacets = relaxedFacets
+        adopt(retried)
+        console.log(`[budget] ${category} returned ${initialCount} at maxPrice=${facets.maxPrice}, retried without price filter → ${retried.length} results`)
       }
       // Retry 2: drop spec avoidances and requiresAny if still starved — explicit requiresAll and the
       // shopper's own requiresAny (catCC.requiresAny) stay in force, only spec's style-interpretation
       // requiresAny is dropped.
       if (products.length < 3 && catSpec && (catSpec.requiresAny.length > 0 || catSpec.avoidances.length > 0)) {
         const baseAvoidances = [...globalAvoidances, ...(catCC.avoidances ?? [])]
-        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
-        console.log(`[spec] ${category} still thin after budget retry, dropped spec requiresAny/avoidances → ${products.length} results`)
+        const retried = await search.query({ category, facets: activeFacets, avoidances: baseAvoidances, requiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
+        adopt(retried)
+        console.log(`[spec] ${category} still thin after budget retry, dropped spec requiresAny/avoidances → ${retried.length} results`)
       }
       // Retry 3: drop spec requiresAll too — last resort so categories are never empty
       if (products.length < 3 && catSpec?.requiresAll?.length) {
         const baseAvoidances = [...globalAvoidances, ...(catCC.avoidances ?? [])]
         const baseRequiresAll = [...globalRequiresTags, ...(catCC.requiresTags ?? [])]
-        products = await search.query({ category, facets, avoidances: baseAvoidances, requiresAll: baseRequiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
-        console.log(`[spec] ${category} still empty, dropped spec requiresAll too → ${products.length} results`)
+        const retried = await search.query({ category, facets: activeFacets, avoidances: baseAvoidances, requiresAll: baseRequiresAll, requiresAny: catCC.requiresAny ?? [], limit: 10 })
+        adopt(retried)
+        console.log(`[spec] ${category} still empty, dropped spec requiresAll too → ${retried.length} results`)
       }
       // Retry 4: drop catCC.requiresTags and catCC.requiresAny too if the category is still completely
       // empty. These normally stay in force at every retry above because they represent the shopper's
@@ -971,19 +995,22 @@ async function assembleResults(
       // entirely empty (< 1, not < 3) — a thin-but-nonempty result from an explicit constraint is left
       // alone.
       if (products.length < 1 && (catCC.requiresTags?.length || catCC.requiresAny?.length)) {
-        products = await search.query({ category, facets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
-        console.log(`[anchor] ${category} still empty, dropped category constraint requiresTags/requiresAny too → ${products.length} results`)
+        const retried = await search.query({ category, facets: activeFacets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
+        adopt(retried)
+        console.log(`[anchor] ${category} still empty, dropped category constraint requiresTags/requiresAny too → ${retried.length} results`)
       }
       // Retry 5: drop the styleFamily facet too, absolute last resort. Unlike fit (never
       // dropped — showing the wrong gender is a worse failure than an empty category), style
       // is a preference the catalog may simply not have coverage for in every category (e.g.
       // no "smart-casual"-tagged belts at all) — an empty shopping-list row is worse than one
       // stylistically-imperfect item in it, matching every other relaxable filter above.
-      if (products.length < 1 && facets.style) {
-        const relaxedFacets = { ...facets }
+      if (products.length < 1 && activeFacets.style) {
+        const relaxedFacets = { ...activeFacets }
         delete relaxedFacets.style
-        products = await search.query({ category, facets: relaxedFacets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
-        console.log(`[style] ${category} still empty, dropped style facet too → ${products.length} results`)
+        const retried = await search.query({ category, facets: relaxedFacets, avoidances: globalAvoidances, requiresAll: globalRequiresTags, requiresAny: [], limit: 10 })
+        activeFacets = relaxedFacets
+        adopt(retried)
+        console.log(`[style] ${category} still empty, dropped style facet too → ${retried.length} results`)
       }
 
       const productNames = products.slice(0, 4).map(p => p.name)
@@ -1036,7 +1063,19 @@ async function assembleResults(
     return {} as Record<string, { displayRole: 'hero' | 'supporting' | 'accent'; weight: number }>
   })
 
-  return assembled.map(cat => ({
+  // Drop rows that found nothing. Every retry above has already run, so an empty row here means
+  // the catalog genuinely has no vocabulary for that category — usually one the model invented
+  // (the chat prompt warns it twice about "trousers"). CollageView renders such a row as a blank
+  // tile, and nothing else between here and render filters it. Dropping is also what lets the
+  // callers' "no results → intent-update" fallback fire: the row count previously equalled the
+  // requested category count no matter what was found, so it could never reach zero.
+  const populated = assembled.filter(cat => cat.products.length > 0)
+  if (populated.length !== assembled.length) {
+    const dropped = assembled.filter(cat => cat.products.length === 0).map(cat => cat.name)
+    console.warn(`[assemble] dropped categories with no catalog match: ${dropped.join(', ')}`)
+  }
+
+  return populated.map(cat => ({
     ...cat,
     displayRole: roles[cat.name]?.displayRole ?? cat.displayRole,
     weight: roles[cat.name]?.weight ?? cat.weight,
@@ -1044,7 +1083,7 @@ async function assembleResults(
 }
 
 /** Extracts the upper numeric bound from budget strings like "Under $500", "$400–$800", "No set limit". */
-function parseBudgetUpperBound(budget: unknown): number {
+export function parseBudgetUpperBound(budget: unknown): number {
   if (!budget || typeof budget !== 'string') return Infinity
   if (/no.*(set\s+)?limit/i.test(budget) || /^over/i.test(budget)) return Infinity
   const nums = [...budget.matchAll(/\d[\d,]*/g)].map(m => parseInt(m[0].replace(/,/g, '')))
@@ -1058,19 +1097,11 @@ function parseBudgetUpperBound(budget: unknown): number {
  * Falls back to index-based pairing if curation fails or returns bad IDs.
  */
 
-async function buildCuratedOutfits(
+export async function buildCuratedOutfits(
   intent: IntentModel,
   categoryResults: CategoryResult[]
 ): Promise<CuratedOutfit[]> {
   const budget = parseBudgetUpperBound(intent.constraints.budget)
-
-  // Product lookup — all products across all categories
-  const productLookup = new Map<string, (typeof categoryResults)[0]['products'][0]>()
-  for (const cat of categoryResults) {
-    for (const p of [...cat.products, ...cat.scrollProducts]) {
-      productLookup.set(p.id, p)
-    }
-  }
 
   // Slim product lists for the LLM prompt (no images, no rationale text)
   const categoryProducts = categoryResults.map(cat => ({
@@ -1102,7 +1133,13 @@ async function buildCuratedOutfits(
     for (const cat of categoryResults) {
       const allProducts = [...cat.products, ...cat.scrollProducts]
       const selectedId = slots[cat.name]
-      const product = (selectedId ? productLookup.get(selectedId) : null) ?? allProducts[0]
+      // Resolve the curated id within THIS category only. Resolving against a lookup spanning
+      // every category (as this used to) meant an id the curation model put in the wrong slot
+      // rendered e.g. a pair of pants in the top slot — an outfit with two pairs of pants and no
+      // shirt. A mismatched id now falls through to the category's own top product, same as an
+      // unknown one.
+      const selected = selectedId ? allProducts.find(p => p.id === selectedId) : undefined
+      const product = selected ?? allProducts[0]
       if (!product) continue
       items.push({ category: cat.name, product })
       totalPrice += product.price

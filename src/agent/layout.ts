@@ -3,8 +3,15 @@ import type { IntentModel } from '../types/intent.js'
 /**
  * Extracts the upper bound from a budget label like "$1,000–$2,500" or "Under $2,000".
  * Used to set Algolia's maxPrice numeric filter. "No set limit" / no match → undefined (no filter).
+ *
+ * A leading "over" names a FLOOR, not a ceiling — "Over $5,000" is the top project budget chip
+ * (see budgetChoices in server.ts), and reading its number as maxPrice capped the most generous
+ * shopper below the "No set limit" one. Must stay in agreement with parseBudgetUpperBound in
+ * server.ts, which already reads the same label as Infinity. Anchored deliberately: "Just over
+ * $300" is a bound the shopper typed, not an open tier.
  */
 function parseBudgetNumber(label: string): number | undefined {
+  if (/^\s*over\b/i.test(label)) return undefined
   const nums = label.match(/\d[\d,]*/g)?.map(n => parseInt(n.replace(/,/g, ''), 10)) ?? []
   if (nums.length === 0) return undefined
   return Math.max(...nums)
