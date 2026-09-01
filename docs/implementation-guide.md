@@ -53,30 +53,39 @@ The Greeter serves both the widget and the mockup host pages from one Hono serve
 port (`3003` by default, via `PORT`). In any real deployment this sits behind TLS termination —
 typically at a load balancer or ingress layer in front of wherever the process actually runs.
 
-**1.2.2 — Lock down the debug and admin routes** (Medium · Required)
-`server.ts` exposes `/debug/intents`, `/debug/events`, `/debug/requests`, and `/debug/raw` with
-no authentication at all. `/debug/intents` returns every active session's full `IntentModel` — goal text, captured
-constraints, anchor items — for anyone who requests the URL. `/debug/raw` returns raw LLM
-replies per session. `/api/provider` (POST) lets anyone switch the active LLM provider for the
-whole running server, also with no auth. None of these are meant for a shopper-facing
-deployment; they exist purely for development. Either remove them from any production build, or
-gate them behind the same access control as the settings page (next task) — never leave them
-open on a public host.
+**1.2.2 — Replace the admin flag with real access control** (Medium · Required)
+*Partially addressed in the prototype.* `/debug/intents`, `/debug/events`, `/debug/requests`,
+`/debug/raw` and the `POST` routes that rewrite global model config are now mounted only when
+`ENABLE_ADMIN_ROUTES` is on — default **on** in development, **off** when `NODE_ENV=production`
+(which the Docker image sets), returning `404` rather than `403` so a public deployment does not
+advertise them. That removes the outright exposure: `/debug/intents` previously returned every
+active session's full `IntentModel` — goal text, captured constraints, anchor items — to anyone
+who requested the URL.
+
+What remains is that this is one on/off switch, not access control. There is no way to let an
+operator debug a running production instance without re-exposing those routes to everyone. The
+production task is to put identity-based auth or network restriction (VPN, IP allowlist, SSO)
+in front of them, so the flag can stay on where it is genuinely needed.
 
 **1.2.3 — Restrict `/settings`** (Small · Required)
-`host/settings.html` is a provider/data-mode switcher (`/api/provider`, plus toggles described
-in its own UI) with, like the debug routes, zero authentication today. It's a reasonable
-lightweight admin surface for a pilot, but it should sit behind a VPN, IP allowlist, or basic
-auth at minimum before the widget is embedded on a real page — right now anyone who finds the
-URL can flip the active LLM provider or reconfigure runtime behavior for every shopper hitting
-the site.
+`host/settings.html` is a provider/data-mode switcher driving `/api/provider` and the model
+override routes. Those routes are now behind `ENABLE_ADMIN_ROUTES` (1.2.2), so the page stops
+functioning in production rather than reconfiguring runtime behaviour for every shopper — but
+the page itself is still served unauthenticated at `/settings`, and the underlying routes work
+for anyone whenever the flag is on. Same resolution as 1.2.2: VPN, IP allowlist, or basic auth
+in front of both, so the surface can be used where it is needed without being open.
 
-**1.2.4 — Add HTTP rate limiting** (Small · Recommended)
-There is currently no rate limiting anywhere in `server.ts` — confirmed by inspection, not
-assumed. `/api/chat` is the most exposed endpoint (it drives every LLM call), and it has no
-throttle. Rate limiting at the ingress level, generous enough not to degrade the conversation
-experience but strict enough to bound cost exposure from abuse, is worth adding before a public
-pilot.
+**1.2.4 — Move rate limiting to the edge** (Small · Recommended)
+*Partially addressed in the prototype.* `/api/chat` and `/api/show-me-now` — the two endpoints
+that drive LLM spend — are now capped at `RATE_LIMIT_MAX` per client per `RATE_LIMIT_WINDOW_MS`
+(20/minute by default), returning `429` with `Retry-After`.
+
+Two limits make this insufficient on its own. The counter is an in-memory `Map`, so it is per
+process and does nothing once the service is horizontally scaled — precisely the deployment
+shape the stateless architecture otherwise encourages. And the client identity it keys on is the
+first `X-Forwarded-For` hop, which a direct caller can set freely. Production wants this enforced
+at the ingress (WAF, API gateway) or backed by a shared store, with the in-process limiter kept
+as a backstop rather than the only control.
 
 ---
 
@@ -84,8 +93,9 @@ pilot.
 
 **1.3.1 — Decide whether `/settings` needs real identity-based auth for the pilot** (Small ·
 Recommended) *depends on 1.2.3*
-This codebase has no user/operator concept — no login, no roles, no session cookies (confirmed
-by inspection). For a single-retailer pilot, an IP allowlist or basic auth in
+This codebase has no user/operator concept — no login and no roles. There is a session cookie,
+but it is anonymous identity for continuity, not authentication: it distinguishes one browser
+from another and nothing more. For a single-retailer pilot, an IP allowlist or basic auth in
 front of `/settings` and the debug routes is likely sufficient; full SSO is probably
 over-engineering at this stage. Revisit if multiple people need distinct access levels.
 
@@ -210,7 +220,7 @@ needs to be decided based on how often the pilot retailer's catalog actually cha
 **2.1.4 — Validate search quality against the real catalog** (Small · Required) *depends on
 2.1.2*
 Run both demo scenarios (see Phase 4) against the real, seeded index and confirm every category
-returns usable results. The retry ladder in `assembleResults()` (four progressively looser
+returns usable results. The retry ladder in `assembleResults()` (five progressively looser
 retries, ending in a hard guarantee that no category stays permanently empty) was tuned against
 fixture data's tag vocabulary — a real catalog with a different tagging convention may behave
 differently and is worth observing directly rather than assuming it transfers.
@@ -308,7 +318,8 @@ whether the pilot is working.*
 ### Logging
 
 **3.1.1 — Replace plain console logging with structured JSON** (Small · Required)
-`server.ts` currently has 35 separate `console.log`/`console.error` calls, all plain text with
+The server modules (`server.ts` plus `src/server/**`) currently have 41 separate
+`console.log`/`console.error`/`console.warn` calls, all plain text with
 inconsistent prefixes (`[spec]`, `[budget]`, `[demo]`, `[anchor]`, etc.) — no structured format,
 no log levels, no consistent fields. This should move to structured JSON with consistent field
 names (session id, event type, timing) before it needs to be queried or alerted on at any scale.
@@ -391,7 +402,7 @@ coverage gaps.
 **4.2.2 — Review catalog coverage systematically** (Medium · Required) *depends on 4.1.2*
 Walk through the realistic range of goals a shopper might describe against the pilot retailer's
 actual catalog, and check whether every reasonable category can be filled. The retry ladder
-guarantees a category is never *silently* empty after all four retries collapse — but a category
+guarantees a category is never *silently* empty after all five retries collapse — but a category
 that only fills via the loosest retry (dropping style/spec tags entirely) is a signal that the
 real catalog's tagging doesn't yet support the style-driven search this app is built around, not
 a success.

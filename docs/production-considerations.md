@@ -38,20 +38,41 @@ before launch, not just that a key is present: some Gateway accounts' free tier 
 but returns `403 Forbidden` for Claude specifically, encountered directly during this project's
 own development.
 
-**The debug and settings routes have no authentication.** `server.ts` exposes
-`/debug/intents`, `/debug/events`, `/debug/requests`, and `/debug/raw` with no access control of
-any kind — `/debug/intents` returns every active shopper's captured goal and constraints, in
-plain JSON, to anyone who requests the URL. `POST /api/provider` lets anyone switch the entire
-server's active LLM provider. `host/settings.html` (a provider/data-mode switcher) sits behind
-the same nothing. None of this is a problem while the server is only reachable on
-`localhost` for development — it becomes a real exposure the moment this is deployed anywhere a
-shopper's browser can also reach it, since nothing distinguishes "the developer debugging this"
-from "anyone on the internet."
+**The operator routes are gated by a flag, not by identity.** `/debug/intents`,
+`/debug/events`, `/debug/requests`, `/debug/raw` and the `POST` routes that rewrite global model
+config (`/api/provider`, `/api/chat-model`, `/api/spec-model`, `/api/curation-model`,
+`/api/catalog-stats/refresh`) are mounted only when `ENABLE_ADMIN_ROUTES` is on — which defaults
+to **on** in development and **off** when `NODE_ENV=production`, as the Docker image sets. When
+disabled they return `404` rather than `403`, so a public deployment does not advertise them.
+`host/settings.html` drives those config routes and therefore only functions while the flag is
+on. This closes the exposure — `/debug/intents` returned every active shopper's captured goal
+and constraints in plain JSON to anyone who asked — but it is a single on/off switch, not access
+control: there is still no way to grant one operator access without granting everyone with the
+flag enabled the same access. Real deployments that need debugging *and* public traffic
+simultaneously need identity-based auth or network-level restriction (see
+`docs/implementation-guide.md` 1.2.2).
 
-**`/api/chat` has no rate limiting.** It drives every LLM call the widget makes — confirmed by
-inspection of every route in `server.ts` — with no throttle in place. This is both a
-cost-exposure and an availability concern: a single abusive or malfunctioning client could drive
-unbounded LLM spend or degrade the experience for every other shopper on the same server.
+**The paid endpoints are rate limited, within real limits.** `/api/chat` and
+`/api/show-me-now` are capped at `RATE_LIMIT_MAX` requests per client per `RATE_LIMIT_WINDOW_MS`
+(20/minute by default), returning `429` with `Retry-After`. Two caveats that matter for
+production: the counter is an in-memory `Map`, so it is **per process** and does nothing across
+horizontally scaled instances — the same statelessness described under **Session Model and
+State** that makes scaling easy also makes this limiter ineffective once you do; and the client
+identity it keys on is the first `X-Forwarded-For` hop, which a direct caller can set freely. It
+is a cost guard against accidental loops and casual abuse on a single instance, not a defence
+against a determined attacker. A production deployment wants this enforced at the edge (WAF, API
+gateway, or a shared Redis-backed limiter) rather than in-process.
+
+**Session identity is server-issued, but unauthenticated.** The session id is minted server-side
+and kept in an `HttpOnly`, `SameSite=Lax` cookie; a `sessionId` in the request body is ignored
+outright, as is the `sessionId` embedded in a client-supplied intent object (which keys the
+per-session spec, budget and outfit caches). Before this, any caller who supplied another
+session's id was handed that session's stored intent and assembled categories. What this is
+*not* is authentication: a session is still anonymous, and anyone holding the cookie is that
+session. The cookie is `Secure` only when `NODE_ENV=production`, since local development over
+plain HTTP would otherwise never receive it. A cross-origin embed — a likely production topology,
+see **Widget Embedding** — needs `SameSite=None; Secure` instead, which is not currently
+configurable.
 
 **Widget iframe security has no configuration yet.** See **Widget Embedding** below — this is
 substantial enough to warrant its own section rather than a bullet here.
@@ -157,8 +178,9 @@ entirely unbuilt and is an organizational commitment, not just a one-time integr
 `/api/search` browse-page endpoint: `fallback` (the default) relaxes the style facet and
 re-queries once if a search returns zero results; anything else leaves the empty result for the
 client to render as a "no results" state. This is separate from the main widget's own
-per-category retry ladder in `assembleResults()` (four progressively looser retries culminating
-in a guarantee that no category is left permanently empty) — the two systems solve a similar
+per-category retry ladder in `assembleResults()` (five progressively looser retries, each
+adopted only if it improves on what the previous attempt found, culminating in a guarantee that
+no category is left permanently empty) — the two systems solve a similar
 problem in different places and shouldn't be conflated when reasoning about how the app behaves
 under real, imperfect catalog data.
 
@@ -203,9 +225,9 @@ source of truth — a change to the convention in one file silently breaks the o
 
 **Provider choice is a production decision the demo deliberately defers.** The LLM adapter
 supports both Claude (`LLM_PROVIDER=claude`, the default) and OpenAI, switchable at startup and
-at runtime via `POST /api/provider` (which, per **Security** above, needs to be locked down
-before this is publicly reachable — an unauthenticated runtime provider switch is not a decision
-any production deployment should leave open). Both route through Vercel AI Gateway rather than
+at runtime via `POST /api/provider` — an operator-only route, disabled by default in production
+(see **Security** above), since an open runtime provider switch is not something any production
+deployment should leave exposed. Both route through Vercel AI Gateway rather than
 either vendor directly — one credential covers both, and Gateway's own dashboard is worth
 checking as a potential source of the cost/usage visibility called out below, rather than
 building that from scratch. The real provider choice — cost, latency, output quality for this
@@ -260,12 +282,13 @@ picture when it may not.
 
 ## Observability
 
-**Logging today is unstructured stdout, confirmed by inspection.** `server.ts` contains 30
-separate `console.log`/`console.error` calls with inconsistent bracketed prefixes (`[spec]`,
-`[budget]`, `[anchor]`, and others) — no structured fields, no log levels, no aggregation. Error
-handling is entirely local too, spread across 28 individual `try`/`catch` blocks with their own
-per-call fallback behavior, with no global error-handling middleware in the Hono app. This works
-for reading logs live during development and doesn't scale to operating a real deployment.
+**Logging today is unstructured stdout, confirmed by inspection.** The server modules
+(`server.ts` plus `src/server/**`) contain 41 separate `console.log`/`console.error`/
+`console.warn` calls with inconsistent bracketed prefixes (`[spec]`, `[budget]`, `[anchor]`,
+`[rate-limit]`, and others) — no structured fields, no log levels, no aggregation. Error handling
+is entirely local too, spread across 12 individual `try`/`catch` blocks with their own per-call
+fallback behavior, with no global error-handling middleware in the Hono app. This works for
+reading logs live during development and doesn't scale to operating a real deployment.
 
 **Both live adapters fail silently.** `AlgoliaAdapter.query()` returns an empty array on any
 non-`ok` response; the pattern repeats for CMS calls. This means a real vendor outage on either
@@ -285,7 +308,7 @@ rate — today, nothing pages anyone.
 
 **Session state is in-memory only — an explicit, deliberate scope decision, not an oversight.**
 The intent model (`goal`, `constraints`, `anchorItems`) lives entirely in an in-memory `Map`,
-keyed by a client-generated session id, for the life of the Node process. A server restart or
+keyed by the server-issued session id (see **Security**), for the life of the Node process. A server restart or
 redeploy clears every active session with no recovery path —
 worth being explicit about with pilot stakeholders, since a deploy during active shopping hours
 would be experienced by every shopper mid-conversation as the widget silently forgetting
@@ -338,8 +361,8 @@ supports), which is Phase 1 infrastructure work covered in the implementation gu
 something this prototype's current setup provides.
 
 **Fixture data changes require a full restart, and that's specific to fixture mode.**
-`FixtureSearchAdapter` and `FixtureCMSAdapter` cache their JSON at process startup; a JSON
-fixture edit needs a server restart to take effect. This is irrelevant once a pilot
+`FixtureSearchAdapter` and `FixtureCMSAdapter` cache each category's JSON on first request and
+never re-read it, so a fixture edit needs a server restart to take effect. This is irrelevant once a pilot
 actually runs on `USE_FIXTURES=false` — the live adapters query Algolia/Contentstack fresh on
 every request, with no caching layer of their own to invalidate.
 
@@ -357,10 +380,12 @@ Contentstack stack, verified by nothing more than flipping `USE_FIXTURES`. This 
 the zero-credential demo experience possible in the first place, and it's the same property that
 makes a real integration additive rather than a rewrite.
 
-The result-assembly retry ladder — four progressively looser search attempts, ending in a hard
+The result-assembly retry ladder — five progressively looser search attempts, ending in a hard
 guarantee that no shopping-list category is ever left silently, permanently empty — was built in
 direct response to real failure modes discovered during this project's own development, not
-designed in the abstract. That same instinct (never let a partial failure produce a silently
+designed in the abstract. A looser query is not a superset of a tighter one, so each retry is
+adopted only when it genuinely improves the row; taking every retry unconditionally was a real
+bug that shipped an empty category while valid products were already in hand. That same instinct (never let a partial failure produce a silently
 broken experience) is exactly the posture a production deployment needs against a real, messier
 catalog.
 

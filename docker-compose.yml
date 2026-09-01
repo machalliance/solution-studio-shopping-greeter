@@ -5,3 +5,10 @@ services:
       - "${PORT:-3003}:${PORT:-3003}"
     env_file:
       - .env
+    environment:
+      # Compose is the local demo path, so the operator surfaces stay available: the /debug/*
+      # dumps and the settings page (which drives the model-config routes). The image itself
+      # sets NODE_ENV=production and therefore ships with them off, so a real deployment of the
+      # same image gets the locked-down default without needing to configure anything.
+      # Remove this line to see production behaviour locally.
+      ENABLE_ADMIN_ROUTES: "true"

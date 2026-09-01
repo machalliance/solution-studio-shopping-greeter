@@ -74,7 +74,7 @@ nothing outside `USE_FIXTURES=true` mode is required to run the demo.
 | Variable | Controls | Required? |
 |---|---|---|
 | `AI_GATEWAY_API_KEY` | Vercel AI Gateway access — routes calls to both Claude and OpenAI through one key. Get one from your [Vercel dashboard](https://vercel.com/dashboard) under the AI Gateway product (requires a Vercel account; a free tier exists, but note it may not include Claude model access on every account — see **Troubleshooting** below). | Required. |
-| `LLM_PROVIDER` | Which provider is active at startup — `claude` or `openai`. Runtime-switchable afterward via `POST /api/provider`. | Optional — defaults to `claude`. |
+| `LLM_PROVIDER` | Which provider is active at startup — `claude` or `openai`. Runtime-switchable afterward via `POST /api/provider`, which is an operator-only route — see `ENABLE_ADMIN_ROUTES` below. | Optional — defaults to `claude`. |
 | `LLM_CLAUDE_CHAT` | Model id used for the main conversation/extraction turn (quality matters more than speed here). | Optional — defaults to `claude-sonnet-4-6` in code if unset. |
 | `LLM_CLAUDE_FAST` | Model id used for everything else (rationale text, refinement chips, spec translation, budget allocation, curation) — a faster/cheaper model. | Optional — defaults to `claude-haiku-4-5-20251001` in code if unset. |
 | `LLM_OPENAI_CHAT` | Model id for the main conversation turn under the OpenAI provider. | Optional — defaults to `gpt-4o` in code if unset. |
@@ -102,7 +102,22 @@ nothing outside `USE_FIXTURES=true` mode is required to run the demo.
 |---|---|---|
 | `USE_FIXTURES` | `true` (default) serves product/content data from `catalog/fixtures/` JSON files with no external accounts. `false` switches both search and CMS to the live Algolia/Contentstack adapters. | Optional — defaults to `true`. |
 | `ZERO_RESULTS_ACTION` | Governs the `/api/search` browse-page endpoint specifically (not the main widget's result assembly, which has its own separate retry logic): `fallback` (default) relaxes the style filter and searches again if a query returns zero results; anything else leaves it empty for the client to render as a "no results" state. | Optional — defaults to `fallback`. |
+| `CHAT_TIMEOUT_MS` | Maximum wait for a single `/api/chat` model turn before it is treated as failed, so a provider hiccup surfaces as a graceful error rather than a spinner that never resolves. | Optional — defaults to `15000`. |
 | `PORT` | The port the app listens on. | Optional. |
+
+### Access control and abuse limits
+
+| Variable | Controls | Required? |
+|---|---|---|
+| `ENABLE_ADMIN_ROUTES` | Whether the operator-only routes are mounted: the `/debug/*` dumps and the `POST` routes that rewrite global model config (`/api/provider`, `/api/chat-model`, `/api/spec-model`, `/api/curation-model`, `/api/catalog-stats/refresh`). When disabled they return `404` rather than `403`, so a public deployment does not advertise them. | Optional — defaults to **on** when `NODE_ENV` is anything but `production`, and **off** when it is `production` (which the Docker image sets). Set explicitly to override. |
+| `RATE_LIMIT_MAX` | Requests allowed per client per window on the two endpoints that spend money (`/api/chat`, `/api/show-me-now`). Exceeding it returns `429` with a `Retry-After` header. | Optional — defaults to `20`. |
+| `RATE_LIMIT_WINDOW_MS` | Length of that window. | Optional — defaults to `60000`. |
+
+> The limiter is in-memory and therefore **per process** — it does nothing across multiple
+> instances, and the client address it keys on comes from `X-Forwarded-For`, which a direct
+> caller can spoof. It is a cost guard for a single-instance prototype, not a security boundary.
+> `host/settings.html` drives the model-config routes, so it only functions while
+> `ENABLE_ADMIN_ROUTES` is on.
 
 ---
 
@@ -214,9 +229,12 @@ Skip this section entirely if you're running with the default `USE_FIXTURES=true
 ## Session data
 
 Session state (`IntentModel` per shopper) lives in an in-memory `Map` inside the running Node
-process (`intentStore` in `src/server.ts`), keyed by a client-generated session id.
+process (`intentStore` in `src/server/stores.ts`), keyed by the session id the server issues as
+an `HttpOnly` cookie on first request. A `sessionId` sent by the client is ignored.
 
-**To inspect captured intent data**, query the debug endpoint directly:
+**To inspect captured intent data**, query the debug endpoint directly. This requires
+`ENABLE_ADMIN_ROUTES` to be on — the default in development, but off under
+`NODE_ENV=production`, where the route returns `404`:
 ```bash
 curl http://localhost:<PORT>/debug/intents
 ```
