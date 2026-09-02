@@ -1,11 +1,13 @@
 services:
   greeter:
     build: .
-    # Bound to loopback: the container is reachable from this machine only. Compose is the local
-    # demo path, and the published port is what makes the operator surfaces network-reachable —
-    # see the ENABLE_ADMIN_ROUTES note below.
+    # Loopback by default: the container is reachable from this machine only. Compose is the
+    # local demo path, and the published port is what makes the operator surfaces network-
+    # reachable — see the ENABLE_ADMIN_ROUTES note below. Override BIND_ADDRESS=0.0.0.0 in your
+    # own .env (gitignored, never pushed) if you need to reach it from another machine on your
+    # network during development — the default here stays the safe one.
     ports:
-      - "127.0.0.1:${PORT:-3003}:${PORT:-3003}"
+      - "${BIND_ADDRESS:-127.0.0.1}:${PORT:-3003}:${PORT:-3003}"
     env_file:
       - .env
     environment:
