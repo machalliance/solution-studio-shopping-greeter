@@ -1,6 +1,7 @@
 import type { Hono } from 'hono'
 import { getSessionId, type AppEnv } from '../session.js'
 import { rateLimit } from '../rateLimit.js'
+import { ChatBody, parseBody } from '../requestBody.js'
 import { streamSSE } from 'hono/streaming'
 import { streamText, Output } from 'ai'
 import { z } from 'zod/v3';
@@ -63,14 +64,11 @@ const TurnSchema = z.object({
 /** Registers the conversational turn endpoint. */
 export function registerChatRoute(app: Hono<AppEnv>) {
   app.post('/api/chat', rateLimit, async c => {
-    const body = await c.req.json<{
-      messages: { role: 'user' | 'assistant'; content: string }[]
-      intent: IntentModel | null
-      selections?: string[]
-      categories?: string[]
-    }>()
+    const { data: body, response } = await parseBody(c, ChatBody)
+    if (!body) return response
 
     const { messages, selections = [], categories: clientCategories } = body
+    const bodyIntent = (body.intent ?? null) as IntentModel | null
     // From the session cookie only — see session.ts. A body-supplied id is ignored.
     const sessionId = getSessionId(c)
     const logEntry = { ts: new Date().toISOString(), sessionId, msgCount: messages.length, clientCats: clientCategories?.join(',') ?? 'none' }
@@ -82,7 +80,7 @@ export function registerChatRoute(app: Hono<AppEnv>) {
     // spec, budget and outfit caches on it, and the show-me-now fast path below hands this
     // object straight to assembly, so a caller-chosen id there would reach another session's
     // cached work.
-    const carried = intentStore.get(sessionId) ?? body.intent ?? null
+    const carried = intentStore.get(sessionId) ?? bodyIntent ?? null
     const prevStored: IntentModel | null = carried ? { ...carried, sessionId } : null
 
     return streamSSE(c, async s => {

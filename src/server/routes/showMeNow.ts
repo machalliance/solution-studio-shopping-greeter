@@ -1,6 +1,7 @@
 import type { Hono } from 'hono'
 import { getSessionId, type AppEnv } from '../session.js'
 import { rateLimit } from '../rateLimit.js'
+import { ShowMeNowBody, parseBody } from '../requestBody.js'
 import type { IntentModel, CategoryResult } from '../../types/intent.js'
 import { llm } from '../config.js'
 import { intentStore, categoryStore, earlyCategories, saveCategoryStore } from '../stores.js'
@@ -18,11 +19,12 @@ import { assembleResults, buildCuratedOutfits } from '../assemble.js'
 // either real results or a clear error, never a silent dead end.
 export function registerShowMeNowRoute(app: Hono<AppEnv>) {
   app.post('/api/show-me-now', rateLimit, async c => {
-    const body = await c.req.json<{ intent: IntentModel | null; categories?: string[] }>()
+    const { data: body, response } = await parseBody(c, ShowMeNowBody)
+    if (!body) return response
     // From the session cookie only. A sessionId in the body is ignored — trusting it let any
     // caller read another session's stored intent and assembled categories.
     const sessionId = getSessionId(c)
-    const supplied = body.intent ?? intentStore.get(sessionId) ?? null
+    const supplied = (body.intent as IntentModel | null | undefined) ?? intentStore.get(sessionId) ?? null
     if (!supplied) return c.json({ error: 'No intent captured yet for this session' }, 400)
 
     // The intent object carries its own sessionId, and assembleResults keys the per-session

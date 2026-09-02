@@ -1,14 +1,18 @@
 services:
   greeter:
     build: .
+    # Bound to loopback: the container is reachable from this machine only. Compose is the local
+    # demo path, and the published port is what makes the operator surfaces network-reachable —
+    # see the ENABLE_ADMIN_ROUTES note below.
     ports:
-      - "${PORT:-3003}:${PORT:-3003}"
+      - "127.0.0.1:${PORT:-3003}:${PORT:-3003}"
     env_file:
       - .env
     environment:
-      # Compose is the local demo path, so the operator surfaces stay available: the /debug/*
-      # dumps and the settings page (which drives the model-config routes). The image itself
-      # sets NODE_ENV=production and therefore ships with them off, so a real deployment of the
-      # same image gets the locked-down default without needing to configure anything.
-      # Remove this line to see production behaviour locally.
-      ENABLE_ADMIN_ROUTES: "true"
+      # The image sets NODE_ENV=production, so the operator surfaces — the /debug/* dumps and
+      # the POST routes that rewrite global model config — ship off by default. Compose used to
+      # set ENABLE_ADMIN_ROUTES=true here to turn them back on for local convenience, which put
+      # unauthenticated access to every captured shopper intent on whatever interface the port
+      # was published on. If you need them locally, set it in .env rather than here, and keep
+      # the loopback binding above.
+      NODE_ENV: production

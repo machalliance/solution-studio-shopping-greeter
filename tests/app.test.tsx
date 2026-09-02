@@ -52,7 +52,9 @@ const categoryFixture = (name: string) => ({
 
 beforeEach(() => {
   vi.stubGlobal('ResizeObserver', FakeResizeObserver)
-  fetchMock = vi.fn()
+  // Defaults to a benign JSON response so incidental calls a test does not stub — the
+  // fire-and-forget POST /api/session/reset that "Start fresh" makes — still get a promise back.
+  fetchMock = vi.fn().mockResolvedValue(jsonResponse({ ok: true }))
   vi.stubGlobal('fetch', fetchMock)
   localStorage.clear()
   window.history.replaceState({}, '', '/')

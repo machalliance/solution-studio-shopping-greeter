@@ -16,8 +16,10 @@ import {
   activeProvider, llm, search, cms, setProvider, adminRoutesEnabled, type ProviderKey,
 } from './server/config.js'
 import { catalogStats, buildCatalogStats } from './server/catalogStats.js'
-import { intentStore, lastEvents, rawReplies, requestLog } from './server/stores.js'
-import { sessionMiddleware, type AppEnv } from './server/session.js'
+import { intentStore, lastEvents, rawReplies, requestLog, clearSessionState } from './server/stores.js'
+import { sessionMiddleware, getSessionId, type AppEnv } from './server/session.js'
+import { rateLimit } from './server/rateLimit.js'
+import { RefinementsBody, parseBody } from './server/requestBody.js'
 import { registerChatRoute } from './server/routes/chat.js'
 import { registerShowMeNowRoute } from './server/routes/showMeNow.js'
 
@@ -128,10 +130,28 @@ app.get('/api/search', async c => {
   return c.json({ hits: results, nbHits: results.length, styleRelaxed, requestedStyle: facets.style ?? null })
 })
 
-app.post('/api/refinements', async c => {
-  const { intent, categories } = await c.req.json<{ intent: IntentModel; categories?: string[] }>()
-  const refinements = await llm.generateRefinements(intent, categories ?? []).catch(() => [] as string[])
+// The third route that spends the operator's gateway credit, and the one that was missed when
+// rateLimit was applied to /api/chat and /api/show-me-now — it was reachable unthrottled with a
+// caller-controlled prompt.
+app.post('/api/refinements', rateLimit, async c => {
+  const { data: body, response } = await parseBody(c, RefinementsBody)
+  if (!body) return response
+  const intent = body.intent as IntentModel
+  const refinements = await llm.generateRefinements(intent, body.categories ?? []).catch(() => [] as string[])
   return c.json({ refinements })
+})
+
+/**
+ * Drops every server-side trace of the caller's session. "Start over" in the widget used to
+ * clear client state only, leaving intentStore and categoryStore keyed to the same cookie — and
+ * chat.ts reads the stored categories in preference to what the client sends, so the first turn
+ * of the "new" conversation was treated as a refinement of the old one and assembled against the
+ * previous shopper's categories. The cookie itself is kept: it is an opaque id, and re-issuing
+ * it would just add a round trip.
+ */
+app.post('/api/session/reset', c => {
+  clearSessionState(getSessionId(c))
+  return c.json({ ok: true })
 })
 
 app.get('/api/provider', c => c.json({ provider: activeProvider }))

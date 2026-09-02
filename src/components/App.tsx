@@ -41,12 +41,19 @@ function clearSession() {
   try {
     localStorage.removeItem(STORAGE_KEY)
   } catch {}
+  // Fire-and-forget: a failed reset leaves stale server state, which is the old behaviour, and
+  // is not worth blocking the shopper's fresh start on.
+  fetch('/api/session/reset', { method: 'POST' }).catch(() => {})
 }
 
 // The session id is issued by the server as an HttpOnly cookie and travels automatically on
 // every request — see src/server/session.ts. The client neither generates nor sends one: a
 // client-supplied id was trusted by the server, so anyone could read another session's work.
-// "Start fresh" clears the local session; the server-side one is harmless to keep.
+// "Start fresh" therefore cannot drop the id itself, and clearing local state alone was not
+// enough: the server keeps the intent and assembled categories under that same cookie, and
+// chat.ts prefers its stored categories over what the client sends, so the next conversation
+// was silently treated as a refinement of the one the shopper just abandoned. It now asks the
+// server to clear its side too — see POST /api/session/reset.
 
 export function App() {
   const params = new URLSearchParams(location.search)

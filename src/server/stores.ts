@@ -61,6 +61,24 @@ try {
   }
 } catch { /* start empty if corrupt */ }
 
+/**
+ * Removes one session from every store. Backs POST /api/session/reset — see the note there for
+ * why clearing the client alone was not enough. Debug stores are included so a reset shopper's
+ * captured turns stop showing up in /debug/*; requestLog is not, being a global ring buffer
+ * rather than per-session state.
+ */
+export function clearSessionState(sessionId: string) {
+  intentStore.delete(sessionId)
+  categoryStore.delete(sessionId)
+  earlyCategories.delete(sessionId)
+  specCache.delete(sessionId)
+  budgetCache.delete(sessionId)
+  curatedOutfitCache.delete(sessionId)
+  lastEvents.delete(sessionId)
+  rawReplies.delete(sessionId)
+  saveCategoryStore()
+}
+
 export function saveCategoryStore() {
   try {
     writeFileSync(CATEGORY_STORE_PATH, JSON.stringify(Object.fromEntries(categoryStore)))

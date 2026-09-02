@@ -61,8 +61,11 @@ bottom-right, to open the widget.
 
 > The Docker image sets `NODE_ENV=production`, which turns the operator routes **off** by
 > default: `/debug/*` returns `404`, and the settings page still loads but its controls no
-> longer do anything. `docker-compose.yml` turns them back on for local use, so both paths
-> above behave the same — a deployment of the same image does not. See `ENABLE_ADMIN_ROUTES`
+> longer do anything. Compose no longer overrides that — it used to, so that the Docker path
+> matched `npm run dev`, but those routes are unauthenticated and Compose publishes a port, so
+> the two together put every captured shopper intent on the network. Compose now also binds the
+> port to `127.0.0.1`. If you want the operator routes locally, set `ENABLE_ADMIN_ROUTES=true`
+> in `.env` and leave the loopback binding alone. See `ENABLE_ADMIN_ROUTES`
 > in [`docs/setup-instructions.md`](docs/setup-instructions.md).
 
 For the full setup guide — every environment variable explained, running against live

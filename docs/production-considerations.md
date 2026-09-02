@@ -322,6 +322,25 @@ against a session id the server has never heard of; confirming what actually hap
 specific case (a fresh empty conversation? a visible error?) is worth doing deliberately rather
 than discovering it live during a pilot.
 
+**Nothing is ever evicted, and the category store is rewritten in full on the request path.**
+Two related gaps that a prototype never runs long enough to feel. First, no store has a TTL, a
+size bound or an eviction step: `intentStore`, `categoryStore`, `earlyCategories`, and the
+`specCache` / `budgetCache` / `curatedOutfitCache` in `stores.ts` only ever grow. The session id
+comes from a cookie, so any client that does not send one — a crawler, a health checker, a
+scripted caller — mints a fresh session on every single request. The `/debug/*` stores do have a
+cap, but `pruneDebugStores()` removes one entry per call and is skipped on the Show-Me-Now fast
+path and on every error path, so it loses ground faster than it gains under exactly the
+conditions that matter. Second, `saveCategoryStore()` serialises the entire map with a
+synchronous `writeFileSync` on each assembly, so per-request event-loop stall grows with the
+number of sessions the process has ever seen, and the file is reloaded at startup, carrying the
+growth across restarts.
+
+For a pilot this is the point where the in-memory `Map`s stop being adequate on their own. The
+minimum is a bounded LRU with a TTL in front of each store; the real answer is the external store
+(Redis) that multi-instance deployment needs anyway, at which point eviction is the store's
+problem rather than the app's, and the disk write disappears with it. Whichever route, the
+`/debug/*` prune should move to a `finally` and evict in a loop rather than one entry at a time.
+
 **Statelessness is a genuine production advantage, not only a limitation.** With no database and
 no server-side session affinity requirement beyond the life of a single request, horizontal
 scaling behind a load balancer is straightforward — any instance can serve any request. The cost
