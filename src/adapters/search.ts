@@ -1,11 +1,6 @@
-import { readFileSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { SearchParams, AlgoliaHit, AlgoliaResponse } from '../types/search.js'
 import type { SearchResult } from '../types/intent.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const FIXTURES_DIR = join(__dirname, '../../catalog/fixtures')
+import { createFixtureLoader } from './fixtures.js'
 
 /**
  * Adapter interface for product search. Implementations: FixtureSearchAdapter (local dev / demo),
@@ -22,22 +17,9 @@ export interface SearchAdapter {
  * Fixtures are parsed once per adapter instance and cached — no repeated disk reads.
  */
 export class FixtureSearchAdapter implements SearchAdapter {
-  private readonly cache = new Map<string, AlgoliaHit[]>()
-
-  private loadFixture(category: string): AlgoliaHit[] {
-    const key = category.toLowerCase().replace(/\s+/g, '-')
-    if (this.cache.has(key)) return this.cache.get(key)!
-    const filename = `algolia-${key}.json`
-    try {
-      const raw = readFileSync(join(FIXTURES_DIR, filename), 'utf-8')
-      const response: AlgoliaResponse = JSON.parse(raw)
-      this.cache.set(key, response.hits)
-      return response.hits
-    } catch {
-      this.cache.set(key, [])
-      return []
-    }
-  }
+  private readonly loadFixture = createFixtureLoader<AlgoliaHit>(
+    'algolia', (parsed: AlgoliaResponse) => parsed.hits,
+  )
 
   async query(params: SearchParams): Promise<SearchResult[]> {
     const hits = this.loadFixture(params.category)

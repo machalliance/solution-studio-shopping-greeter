@@ -59,6 +59,15 @@ than a live dev loop.)
 Visit `http://localhost:<PORT>` (set in `.env`). Click the pulsing floating button,
 bottom-right, to open the widget.
 
+> The Docker image sets `NODE_ENV=production`, which turns the operator routes **off** by
+> default: `/debug/*` returns `404`, and the settings page still loads but its controls no
+> longer do anything. Compose no longer overrides that — it used to, so that the Docker path
+> matched `npm run dev`, but those routes are unauthenticated and Compose publishes a port, so
+> the two together put every captured shopper intent on the network. Compose now also binds the
+> port to `127.0.0.1`. If you want the operator routes locally, set `ENABLE_ADMIN_ROUTES=true`
+> in `.env` and leave the loopback binding alone. See `ENABLE_ADMIN_ROUTES`
+> in [`docs/setup-instructions.md`](docs/setup-instructions.md).
+
 For the full setup guide — every environment variable explained, running against live
 Algolia/Contentstack instead of fixtures, and troubleshooting — see
 [`docs/setup-instructions.md`](docs/setup-instructions.md).
@@ -92,13 +101,18 @@ greeter/
     agent/        # Prompt construction and layout/URL-building logic
     components/   # React widget UI
     types/        # Shared TypeScript types
-    server.ts     # Hono server — all routes
+    server/       # Server internals: config, session, rate limiting, stores,
+                  #   catalog stats, result assembly, and the two large route handlers
+    server.ts     # Composition root — builds the Hono app, mounts routes, starts the server
+  tests/          # Vitest suite — `npm test`
   catalog/        # Fixture data + product/CMS images (incl. the MACH Alliance logo asset)
   scripts/        # Seed and content-generation scripts for live Algolia/Contentstack
   host/           # Static mockup retailer pages the widget embeds into, + settings.html
-  docs/           # Setup instructions + images
+  docs/           # Setup, business case, implementation guide, production considerations
   Dockerfile, docker-compose.yml, .dockerignore   # optional container path — see Quick start
 ```
+
+Run the test suite with `npm test` (`npm run test:coverage` for a coverage report).
 
 ---
 
@@ -107,6 +121,12 @@ greeter/
 - **[`docs/setup-instructions.md`](docs/setup-instructions.md)** — full setup guide: every
   environment variable, running against live Algolia/Contentstack, seeding data, and
   troubleshooting.
+- **[`docs/production-considerations.md`](docs/production-considerations.md)** — what the
+  prototype does and does not address, and what a real deployment still needs to resolve.
+- **[`docs/implementation-guide.md`](docs/implementation-guide.md)** — the sequenced task
+  backlog that closes those gaps, written for the engineers doing the work.
+- **[`docs/business-case-template.md`](docs/business-case-template.md)** — a template for
+  making the investment case internally.
 
 ---
 
@@ -120,5 +140,14 @@ Explicitly out of scope for this prototype:
 - PIM, DAM, or user account integration
 - Mobile-optimised layout (desktop first)
 - A/B testing or real-time inventory
-- Authentication on the debug/admin routes (`/debug/*`, `/api/provider`) — fine on `localhost`,
-  but do not deploy this anywhere publicly reachable without adding access control first
+- Identity-based authentication — the operator surfaces (`/debug/*` and the `POST` routes that
+  rewrite model config) are gated by a single on/off flag, not per-user access control
+
+The operator surfaces default to **on** in development and **off** when `NODE_ENV=production`,
+which the Docker image sets — so the container is locked down without configuration. The two
+endpoints that spend money (`/api/chat`, `/api/show-me-now`) are rate limited, and the session
+id is issued by the server as an `HttpOnly` cookie rather than accepted from the client. See
+`ENABLE_ADMIN_ROUTES` and `RATE_LIMIT_*` in
+[`docs/setup-instructions.md`](docs/setup-instructions.md), and
+[`docs/production-considerations.md`](docs/production-considerations.md) for what this does
+*not* cover.

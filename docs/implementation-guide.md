@@ -53,30 +53,39 @@ The Greeter serves both the widget and the mockup host pages from one Hono serve
 port (`3003` by default, via `PORT`). In any real deployment this sits behind TLS termination —
 typically at a load balancer or ingress layer in front of wherever the process actually runs.
 
-**1.2.2 — Lock down the debug and admin routes** (Medium · Required)
-`server.ts` exposes `/debug/intents`, `/debug/events`, `/debug/requests`, and `/debug/raw` with
-no authentication at all. `/debug/intents` returns every active session's full `IntentModel` — goal text, captured
-constraints, anchor items — for anyone who requests the URL. `/debug/raw` returns raw LLM
-replies per session. `/api/provider` (POST) lets anyone switch the active LLM provider for the
-whole running server, also with no auth. None of these are meant for a shopper-facing
-deployment; they exist purely for development. Either remove them from any production build, or
-gate them behind the same access control as the settings page (next task) — never leave them
-open on a public host.
+**1.2.2 — Replace the admin flag with real access control** (Medium · Required)
+*Partially addressed in the prototype.* `/debug/intents`, `/debug/events`, `/debug/requests`,
+`/debug/raw` and the `POST` routes that rewrite global model config are now mounted only when
+`ENABLE_ADMIN_ROUTES` is on — default **on** in development, **off** when `NODE_ENV=production`
+(which the Docker image sets), returning `404` rather than `403` so a public deployment does not
+advertise them. That removes the outright exposure: `/debug/intents` previously returned every
+active session's full `IntentModel` — goal text, captured constraints, anchor items — to anyone
+who requested the URL.
+
+What remains is that this is one on/off switch, not access control. There is no way to let an
+operator debug a running production instance without re-exposing those routes to everyone. The
+production task is to put identity-based auth or network restriction (VPN, IP allowlist, SSO)
+in front of them, so the flag can stay on where it is genuinely needed.
 
 **1.2.3 — Restrict `/settings`** (Small · Required)
-`host/settings.html` is a provider/data-mode switcher (`/api/provider`, plus toggles described
-in its own UI) with, like the debug routes, zero authentication today. It's a reasonable
-lightweight admin surface for a pilot, but it should sit behind a VPN, IP allowlist, or basic
-auth at minimum before the widget is embedded on a real page — right now anyone who finds the
-URL can flip the active LLM provider or reconfigure runtime behavior for every shopper hitting
-the site.
+`host/settings.html` is a provider/data-mode switcher driving `/api/provider` and the model
+override routes. Those routes are now behind `ENABLE_ADMIN_ROUTES` (1.2.2), so the page stops
+functioning in production rather than reconfiguring runtime behaviour for every shopper — but
+the page itself is still served unauthenticated at `/settings`, and the underlying routes work
+for anyone whenever the flag is on. Same resolution as 1.2.2: VPN, IP allowlist, or basic auth
+in front of both, so the surface can be used where it is needed without being open.
 
-**1.2.4 — Add HTTP rate limiting** (Small · Recommended)
-There is currently no rate limiting anywhere in `server.ts` — confirmed by inspection, not
-assumed. `/api/chat` is the most exposed endpoint (it drives every LLM call), and it has no
-throttle. Rate limiting at the ingress level, generous enough not to degrade the conversation
-experience but strict enough to bound cost exposure from abuse, is worth adding before a public
-pilot.
+**1.2.4 — Move rate limiting to the edge** (Small · Recommended)
+*Partially addressed in the prototype.* `/api/chat` and `/api/show-me-now` — the two endpoints
+that drive LLM spend — are now capped at `RATE_LIMIT_MAX` per client per `RATE_LIMIT_WINDOW_MS`
+(20/minute by default), returning `429` with `Retry-After`.
+
+Two limits make this insufficient on its own. The counter is an in-memory `Map`, so it is per
+process and does nothing once the service is horizontally scaled — precisely the deployment
+shape the stateless architecture otherwise encourages. And the client identity it keys on is the
+first `X-Forwarded-For` hop, which a direct caller can set freely. Production wants this enforced
+at the ingress (WAF, API gateway) or backed by a shared store, with the in-process limiter kept
+as a backstop rather than the only control.
 
 ---
 
@@ -84,8 +93,9 @@ pilot.
 
 **1.3.1 — Decide whether `/settings` needs real identity-based auth for the pilot** (Small ·
 Recommended) *depends on 1.2.3*
-This codebase has no user/operator concept — no login, no roles, no session cookies (confirmed
-by inspection). For a single-retailer pilot, an IP allowlist or basic auth in
+This codebase has no user/operator concept — no login and no roles. There is a session cookie,
+but it is anonymous identity for continuity, not authentication: it distinguishes one browser
+from another and nothing more. For a single-retailer pilot, an IP allowlist or basic auth in
 front of `/settings` and the debug routes is likely sufficient; full SSO is probably
 over-engineering at this stage. Revisit if multiple people need distinct access levels.
 
@@ -114,6 +124,21 @@ server). If the pilot embeds the widget from a *different* origin than the retai
 re-verified — cross-origin `localStorage` isn't shared, and the whole "come back later" flow
 depends on it being readable from the host page.
 
+**1.4.2a — Make the session cookie work cross-origin** (Small · Required) *depends on 1.4.1*
+The same constraint as 1.4.2, on a different mechanism, and it fails harder. The server issues
+the session id as a cookie with `SameSite=Lax` and `Secure` only when `NODE_ENV=production`
+(`src/server/session.ts`). Both are correct for the current same-origin mockup over plain HTTP,
+and both are wrong for a cross-origin embed: a `Lax` cookie is not sent on requests from an
+iframe on another origin, so every request would mint a fresh session and the shopper's
+conversation would reset on each turn — not a degraded experience but a broken one.
+
+A cross-origin deployment needs `SameSite=None; Secure`, which then requires HTTPS end to end
+(1.2.1) and means the cookie is a third-party cookie, subject to browser partitioning and
+blocking. Neither attribute is configurable today; making them so is small. Deciding what
+happens when a browser blocks the cookie outright is the real work, and it is the same decision
+as 1.4.2 — likely a `postMessage` handoff from the host page rather than relying on either
+cookies or `localStorage` crossing the origin boundary. Worth resolving both together.
+
 **1.4.3 — Re-verify every outbound link still uses `target="_top"`** (Small · Required)
 This was a real, already-fixed bug this session, not a hypothetical: a plain `<a href>` inside
 the widget's iframe navigates only the iframe, leaving the real host page frozen. Every
@@ -126,17 +151,51 @@ with iframe navigation differently than the mockup does.
 
 ### Deployment Infrastructure
 
-**1.5.1 — Choose and build a real deployment artifact** (Extra Large · Required)
-The prototype deliberately runs as a plain Node process (`npm run build` once, then `npm run
-dev` or `npm start`) — there is no Dockerfile or container image anywhere in this repo today.
-That's the right call for local development and for handing the repo to someone else to run on
-their own machine (see `docs/production-considerations.md`'s framing on this), but a real pilot
-embedded on a live retailer page needs a proper deployment artifact — a container image, a
-platform-specific build (Vercel, Cloud Run, a managed Node buildpack), or whatever your existing
-infrastructure standardizes on. If a container image is the right choice for your platform, build
-one fresh with a multi-stage pattern (build the Vite bundle in one stage, copy only
-`node_modules`, `dist/`, `src/`, `host/`, and `package.json` into a slim runtime stage) rather
-than reintroducing dev-oriented bind mounts.
+**1.5.1 — Review and harden the container image, then choose a deployment target**
+(Extra Large · Required)
+
+**The `Dockerfile` in this repo builds a testing image. It is not suitable for production
+deployment as written, and should be treated as a starting point to review and harden, not an
+artifact to ship.** It exists so the demo runs identically on any machine with Docker. It has had
+some obvious sharp edges removed — multi-stage so the build toolchain never reaches the runtime
+layer, `npm ci --omit=dev`, a non-root `USER`, a `HEALTHCHECK`, and `NODE_ENV=production`, which
+is what turns the operator routes off by default (1.2.2). None of that makes it
+production-ready. Scan it yourself before trusting it, and re-scan on a schedule: any result
+recorded in a document is a statement about one moment, and says nothing about how the image
+behaves under real traffic, which it has never seen.
+
+Concrete gaps found by inspecting the built image, all of which need addressing before this runs
+anywhere real:
+
+- **No graceful shutdown.** Nothing in the app handles `SIGTERM`; the container exits 143,
+  killed by the signal. Every in-flight `/api/chat` SSE stream is severed mid-response, so a
+  rolling deploy truncates the conversation of every shopper currently talking to it. Needs a
+  signal handler that stops accepting connections and drains in-flight streams first.
+- **The app is not PID 1.** The entrypoint is the `tsx` wrapper, which spawns the real server as
+  a child, plus a resident `esbuild` compile service. Signals happen to reach the child today,
+  but the process tree is an accident of the dev runner, not a deliberate supervision model.
+- **TypeScript is compiled at runtime.** The image runs `src/*.ts` through `tsx` rather than
+  precompiled JavaScript, which is why a build tool is resident in the runtime container at all.
+  Production should compile ahead of time and run plain `node`.
+- **The base image is a floating tag** (`node:22-alpine`) and the runtime stage runs
+  `apk upgrade`, so two builds of the same commit can produce different images. Reproducibility
+  and patch freshness are in genuine tension here; production usually resolves it by pinning a
+  digest and rebuilding on a schedule.
+- **No SBOM, provenance, or image signing**, and no scan gating the build (see T.1).
+- **368MB of catalog imagery is baked into the image**, which is most of its 1.06GB. Those
+  belong on a CDN (2.4.1); the image should not be the delivery mechanism.
+- **No runtime hardening**: no read-only root filesystem, no dropped capabilities, no seccomp
+  profile, and no memory or CPU limits in `docker-compose.yml`.
+- **Never load-tested.** No concurrency, memory, or restart behaviour has been measured under
+  anything resembling real traffic.
+
+Beyond the image itself there is nowhere to run it: no orchestration, no registry, no deployment
+pipeline, no rollout strategy. Restarting replaces whatever was running, with a gap in
+availability while it comes back. Choosing the target (Cloud Run, ECS, Kubernetes, a managed Node
+platform) and getting a new version validated before traffic moves to it is the rest of this
+task. Two properties of the current image worth preserving when you rebuild it: it holds no
+state on disk beyond `/tmp`, and it needs `ENABLE_ADMIN_ROUTES` left unset to keep the
+locked-down default.
 
 **1.5.2 — Confirm the deployment target loads `.env` the way the app expects** (Small ·
 Required) *depends on 1.5.1*
@@ -210,7 +269,7 @@ needs to be decided based on how often the pilot retailer's catalog actually cha
 **2.1.4 — Validate search quality against the real catalog** (Small · Required) *depends on
 2.1.2*
 Run both demo scenarios (see Phase 4) against the real, seeded index and confirm every category
-returns usable results. The retry ladder in `assembleResults()` (four progressively looser
+returns usable results. The retry ladder in `assembleResults()` (five progressively looser
 retries, ending in a hard guarantee that no category stays permanently empty) was tuned against
 fixture data's tag vocabulary — a real catalog with a different tagging convention may behave
 differently and is worth observing directly rather than assuming it transfers.
@@ -308,7 +367,8 @@ whether the pilot is working.*
 ### Logging
 
 **3.1.1 — Replace plain console logging with structured JSON** (Small · Required)
-`server.ts` currently has 35 separate `console.log`/`console.error` calls, all plain text with
+The server modules (`server.ts` plus `src/server/**`) currently have 41 separate
+`console.log`/`console.error`/`console.warn` calls, all plain text with
 inconsistent prefixes (`[spec]`, `[budget]`, `[demo]`, `[anchor]`, etc.) — no structured format,
 no log levels, no consistent fields. This should move to structured JSON with consistent field
 names (session id, event type, timing) before it needs to be queried or alerted on at any scale.
@@ -391,7 +451,7 @@ coverage gaps.
 **4.2.2 — Review catalog coverage systematically** (Medium · Required) *depends on 4.1.2*
 Walk through the realistic range of goals a shopper might describe against the pilot retailer's
 actual catalog, and check whether every reasonable category can be filled. The retry ladder
-guarantees a category is never *silently* empty after all four retries collapse — but a category
+guarantees a category is never *silently* empty after all five retries collapse — but a category
 that only fills via the loosest retry (dropping style/spec tags entirely) is a signal that the
 real catalog's tagging doesn't yet support the style-driven search this app is built around, not
 a success.
@@ -418,6 +478,40 @@ hours).
 
 ---
 
+## Testing and CI
+
+**T.1 — Decide what gates a deploy** (Small · Required)
+The repo has a Vitest suite — 394 tests, roughly 90% statement coverage — run with `npm test`,
+plus `npx tsc --noEmit` for types. It covers the agent modules and adapters near-exhaustively,
+the HTTP surface including the conversational SSE contract and the intent delta-merge rules, the
+result-assembly retry ladder, the React widget's own state machine, and the access-control and
+rate-limit behaviour from Phase 1. Several of those tests exist because they caught real bugs
+while being written.
+
+What the repo deliberately does **not** have is any CI configuration — no workflow file, no
+pre-commit hook, nothing that runs the suite automatically. Today it runs only when a person
+runs it. Before a pilot, decide what gates a merge and a deploy: at minimum `npm test` and
+`npx tsc --noEmit`; reasonably also a vulnerability scan of the built image, since the image is
+what actually ships and its dependency tree changes underneath you whether or not the code does.
+Gate on the scan rather than recording its output anywhere — a result written into a document is
+stale the next time the upstream advisory database updates. This is a deliberate omission rather
+than an oversight: it is one file on most platforms, and which platform is your decision, not
+the prototype's.
+
+**T.2 — Cover the components the suite reaches only incidentally** (Small · Recommended)
+`ResultsView` (70% statements), `CollageView` (81%) and `CMSCardView` (18%) have no tests of
+their own — they are exercised only as a side effect of rendering `App`. `CMSCardView` in
+particular is close to untested. These render the shopper-facing collage and CMS cards, so a
+silent break there is highly visible and nothing currently fails when it happens.
+
+**T.3 — Note the two untested seams that need real credentials** (Small · Recommended)
+The live `AlgoliaAdapter` and `ContentstackAdapter` are covered against mocked `fetch`, which
+proves request construction and response mapping but not that either vendor actually behaves as
+assumed. Whoever first runs `USE_FIXTURES=false` against real accounts is doing that validation
+by hand; worth capturing what they find as tests rather than losing it.
+
+---
+
 ## Sequencing Summary
 
 | Phase | Focus | Key dependency | Suggested duration |
@@ -426,6 +520,7 @@ hours).
 | 2 — Data & Integration | Real catalog and CMS content live | Phase 1 substantially complete | Weeks 2–5 |
 | 3 — Observability & Operations | Structured logging, metrics, alerting | Parallel with Phase 2 | Weeks 2–4 |
 | 4 — Pilot Operations | Real embed, real traffic, coverage review | Phases 1–3 complete | Weeks 5–7 |
+| T — Testing & CI | Choose a CI platform, gate merges on the existing suite | None — do it first, it protects every phase above | Days, not weeks |
 
 A realistic path from prototype to a running pilot is five to seven weeks. The dominant variable
 is Phase 2: how much real editorial CMS content needs to be authored, and how clean the real

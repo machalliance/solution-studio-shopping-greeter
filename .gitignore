@@ -1,5 +1,6 @@
-node_modules/
+node_modules
 dist/
+coverage/
 
 # Real secrets — never commit. .env.example documents the keys with no real values.
 .env
@@ -17,3 +18,5 @@ scratch/
 # OS/editor cruft
 .DS_Store
 *.log
+# Local security-tooling workspace — not part of the app.
+.deepsec/

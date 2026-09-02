@@ -1,11 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import type { ContentParams, ContentstackEntry, ContentstackResponse } from '../types/cms.js'
 import type { ContentResult } from '../types/intent.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const FIXTURES_DIR = join(__dirname, '../../catalog/fixtures')
+import { createFixtureLoader, FIXTURES_DIR } from './fixtures.js'
 
 /**
  * Adapter interface for CMS content. Implementations: FixtureCMSAdapter (local dev / demo),
@@ -22,22 +19,9 @@ export interface CMSAdapter {
  * Fixtures are cached at construction time — no repeated disk reads per request.
  */
 export class FixtureCMSAdapter implements CMSAdapter {
-  private readonly cache = new Map<string, ContentstackEntry[]>()
-
-  private loadFixture(category: string): ContentstackEntry[] {
-    const key = category.toLowerCase().replace(/\s+/g, '-')
-    if (this.cache.has(key)) return this.cache.get(key)!
-    const filename = `contentstack-${key}.json`
-    try {
-      const raw = readFileSync(join(FIXTURES_DIR, filename), 'utf-8')
-      const response: ContentstackResponse = JSON.parse(raw)
-      this.cache.set(key, response.entries)
-      return response.entries
-    } catch {
-      this.cache.set(key, [])
-      return []
-    }
-  }
+  private readonly loadFixture = createFixtureLoader<ContentstackEntry>(
+    'contentstack', (parsed: ContentstackResponse) => parsed.entries,
+  )
 
   async getContent(params: ContentParams): Promise<ContentResult[]> {
     const entries = this.loadFixture(params.category)

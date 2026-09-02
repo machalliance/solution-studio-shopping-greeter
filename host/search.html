@@ -183,6 +183,14 @@ footer{background:var(--ink);padding:24px 48px;margin-top:auto}
 </div>
 
 <script>
+// `q`, `style` and `fit` come off the query string and reach innerHTML as display labels
+// whenever they miss CATEGORY_LABELS — which any unknown value does. Escaped at every such
+// interpolation; buildTitle() and the relaxed-style notice use textContent and need no help.
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+}
+
 const CATEGORY_LABELS = {
   vanity:'Vanity', faucet:'Faucet', tile:'Tile', mirror:'Mirror',
   lighting:'Lighting', hardware:'Hardware',
@@ -283,7 +291,7 @@ function renderActivePills() {
   if (activeStyle && !currentStyleRelaxed) pills.push({ label: styleLabel, key: 'style' });
   if (activeBudget)   pills.push({ label: `Under $${parseInt(activeBudget).toLocaleString()}`, key: 'budget' });
   document.getElementById('activeFilters').innerHTML = pills.map(p =>
-    `<span class="active-pill">${p.label} <button onclick="clearFilter('${p.key}')">×</button></span>`
+    `<span class="active-pill">${esc(p.label)} <button onclick="clearFilter('${p.key}')">×</button></span>`
   ).join('');
 }
 
@@ -329,16 +337,17 @@ function renderGrid() {
     const styleLabel = activeStyle
       ? activeStyle.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
       : '';
-    const what = [styleLabel, catLabel].filter(Boolean).join(' ');
+    const what = esc([styleLabel, catLabel].filter(Boolean).join(' '));
+    const cats = esc(catLabel.toLowerCase());
     const suggestion = activeStyle
-      ? `We don't carry <strong>${what}</strong> yet. Try removing the style filter to browse all ${catLabel.toLowerCase()}.`
-      : `No ${catLabel.toLowerCase()} match your current filters. Try broadening your search.`;
+      ? `We don't carry <strong>${what}</strong> yet. Try removing the style filter to browse all ${cats}.`
+      : `No ${cats} match your current filters. Try broadening your search.`;
     document.getElementById('resultsGrid').innerHTML = `
       <div class="no-results">
         <div class="no-results-icon">🔍</div>
         <h3>No results found</h3>
         <p>${suggestion}</p>
-        ${activeStyle ? `<button onclick="activeStyle=''; loadAndRender()" style="margin-top:14px;padding:8px 18px;background:var(--ink);color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">Show all ${catLabel.toLowerCase()}</button>` : ''}
+        ${activeStyle ? `<button onclick="activeStyle=''; loadAndRender()" style="margin-top:14px;padding:8px 18px;background:var(--ink);color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">Show all ${cats}</button>` : ''}
       </div>`;
     return;
   }

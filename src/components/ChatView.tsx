@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { IntentModel, CategoryResult } from '../types/intent'
 import type { AppState, Message } from './App'
+import { buildDisplayTags, buildHistory } from './chatHistory'
+import { chunkRefinements, postIntent } from './chatStream'
+import { useTypewriter } from './useTypewriter'
 
 interface Props {
   messages: Message[]
@@ -23,34 +26,6 @@ interface Props {
   onStartOver: () => void
   onClose: () => void
   onShowMe: () => void
-}
-
-// Preferred display order for constraint tags.
-// Keys not in this list appear last, in insertion order.
-const TAG_ORDER = ['style', 'fit', 'gender', 'warmth', 'layering', 'temperature',
-  'colourDirection', 'colorPreference', 'colourPreference', 'color', 'colour', 'colorDirection',
-  'budget', 'roomSize', 'size', 'vanityWidth', 'finish', 'venue']
-
-function buildConstraintTags(intent: IntentModel | null): string[] {
-  if (!intent?.constraints) return []
-  const c = intent.constraints
-  const ordered: string[] = []
-  const seen = new Set<string>()
-  const skip = (v: string) => /no preference|unknown/i.test(v) || /^<[^>]+>$/.test(v.trim())
-  // Add in preferred order first
-  for (const key of TAG_ORDER) {
-    const v = c[key]
-    if (typeof v === 'string' && v && !skip(v)) {
-      if (!seen.has(v)) { ordered.push(v); seen.add(v) }
-    }
-  }
-  // Append remaining string values not yet shown
-  for (const v of Object.values(c)) {
-    if (typeof v === 'string' && v && !skip(v) && !seen.has(v)) {
-      ordered.push(v); seen.add(v)
-    }
-  }
-  return ordered
 }
 
 export function ChatView({
@@ -81,29 +56,8 @@ export function ChatView({
   const [chunkIndex, setChunkIndex] = useState(0)
   const [loadingMore, setLoadingMore] = useState(false)
 
-  // Typewriter effect — only fires on genuine first load (summaryKey > 0).
-  // Refinements and session restores update the text instantly (summaryKey unchanged).
-  const [displayedSummary, setDisplayedSummary] = useState(summary)
-  const [summaryDone, setSummaryDone] = useState(true)
-  const lastSummaryKey = useRef(0)
-  useEffect(() => {
-    if (!summary) { setDisplayedSummary(''); setSummaryDone(true); return }
-    if (summaryKey > 0 && summaryKey !== lastSummaryKey.current) {
-      lastSummaryKey.current = summaryKey
-      setDisplayedSummary('')
-      setSummaryDone(false)
-      let i = 0
-      const id = setInterval(() => {
-        i = Math.min(i + 3, summary.length)
-        setDisplayedSummary(summary.slice(0, i))
-        if (i >= summary.length) { clearInterval(id); setSummaryDone(true) }
-      }, 18)
-      return () => clearInterval(id)
-    } else {
-      setDisplayedSummary(summary)
-      setSummaryDone(true)
-    }
-  }, [summary, summaryKey])
+  // Animates on genuine first results (summaryKey bumped); instant on refinements and restores.
+  const { displayed: displayedSummary, done: summaryDone } = useTypewriter(summary, summaryKey)
 
   useEffect(() => {
     if (initialRefinements.length) {
@@ -143,16 +97,10 @@ export function ChatView({
     if (!intent || loadingMore) return
     setLoadingMore(true)
     try {
-      const res = await fetch('/api/refinements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent, categories: categories.map(c => c.name) }),
-      })
+      const res = await postIntent('/api/refinements', intent, categories)
       const data = await res.json()
       if (Array.isArray(data.refinements) && data.refinements.length) {
-        const chunks: string[][] = []
-        for (let i = 0; i < data.refinements.length; i += 3) chunks.push(data.refinements.slice(i, i + 3))
-        setRefinements(chunks)
+        setRefinements(chunkRefinements(data.refinements))
         setChunkIndex(0)
       }
     } catch {}
@@ -164,12 +112,7 @@ export function ChatView({
 
   // ── Results state: shopping list nav ──
   if (appState === 'results') {
-    const constraintTags = buildConstraintTags(intent)
-    const constraintSet = new Set(constraintTags.map(t => t.toLowerCase().trim()))
-    const selectionExtras = selections.filter(s =>
-      s && !constraintSet.has(s.toLowerCase().trim()) && !/show me now|more ideas/i.test(s)
-    )
-    const displayTags = [...constraintTags, ...selectionExtras]
+    const displayTags = buildDisplayTags(intent, selections)
 
     return (
       <div className="g-chat g-chat-results">
@@ -262,42 +205,8 @@ export function ChatView({
 
   // ── Conversation state ──
 
-  // Build history pairs: all complete AI-question → user-answer exchanges except the current question.
-  // Two cases: streaming (current Q is in streamingText, all messages are past) vs
-  // settled (current Q is the last committed assistant message, rest are past).
-  const historyPairs: Array<{q: string; a: string}> = []
-  let currentQuestion = ''
-  const trunc = (s: string, n: number) => s.length > n ? s.slice(0, n - 1) + '…' : s
-
-  if (streamingText) {
-    currentQuestion = streamingText
-    // All committed messages are history
-    if (messages.length > 0 && messages[0].role === 'user') {
-      historyPairs.push({ q: 'What are you working on?', a: messages[0].content })
-    }
-    for (let i = 1; i + 1 < messages.length; i += 2) {
-      if (messages[i].role === 'assistant' && messages[i + 1].role === 'user') {
-        historyPairs.push({ q: trunc(messages[i].content, 52), a: messages[i + 1].content })
-      }
-    }
-  } else {
-    const lastAsstIdx = messages.map(m => m.role).lastIndexOf('assistant')
-    if (lastAsstIdx >= 0) {
-      currentQuestion = messages[lastAsstIdx].content
-      const prev = messages.slice(0, lastAsstIdx)
-      if (prev.length > 0 && prev[0].role === 'user') {
-        historyPairs.push({ q: 'What are you working on?', a: prev[0].content })
-      }
-      for (let i = 1; i + 1 < prev.length; i += 2) {
-        if (prev[i].role === 'assistant' && prev[i + 1].role === 'user') {
-          historyPairs.push({ q: trunc(prev[i].content, 52), a: prev[i + 1].content })
-        }
-      }
-    } else if (messages.length > 0 && messages[0].role === 'user') {
-      // User sent first message, AI hasn't responded yet
-      historyPairs.push({ q: 'What are you working on?', a: messages[0].content })
-    }
-  }
+  // All complete AI-question → user-answer exchanges, plus the question being asked now.
+  const { historyPairs, currentQuestion } = buildHistory(messages, streamingText)
 
   const isWelcome = messages.length === 0 && !loading && appState === 'chat'
 

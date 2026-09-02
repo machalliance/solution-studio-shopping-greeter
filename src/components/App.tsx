@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { IntentModel, CategoryResult, CuratedOutfit } from '../types/intent'
 import { ChatView } from './ChatView'
 import { ResultsView } from './ResultsView'
+import { nextSelections, chunkRefinements, readSSE, postIntent } from './chatStream'
 
 export type AppState = 'chat' | 'assembling' | 'results'
 
@@ -40,14 +41,19 @@ function clearSession() {
   try {
     localStorage.removeItem(STORAGE_KEY)
   } catch {}
+  // Fire-and-forget: a failed reset leaves stale server state, which is the old behaviour, and
+  // is not worth blocking the shopper's fresh start on.
+  fetch('/api/session/reset', { method: 'POST' }).catch(() => {})
 }
 
-function makeSessionId(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
-  })
-}
+// The session id is issued by the server as an HttpOnly cookie and travels automatically on
+// every request — see src/server/session.ts. The client neither generates nor sends one: a
+// client-supplied id was trusted by the server, so anyone could read another session's work.
+// "Start fresh" therefore cannot drop the id itself, and clearing local state alone was not
+// enough: the server keeps the intent and assembled categories under that same cookie, and
+// chat.ts prefers its stored categories over what the client sends, so the next conversation
+// was silently treated as a refinement of the one the shopper just abandoned. It now asks the
+// server to clear its side too — see POST /api/session/reset.
 
 export function App() {
   const params = new URLSearchParams(location.search)
@@ -83,7 +89,6 @@ export function App() {
   const selectionsRef = useRef<string[]>(loadSession()?.selections ?? [])
   const [selections, setSelections] = useState<string[]>(selectionsRef.current)
 
-  const sessionIdRef = useRef(makeSessionId())
   const [streamingText, setStreamingText] = useState('')
 
   function resetState() {
@@ -103,7 +108,6 @@ export function App() {
     setShowContinue(false)
     selectionsRef.current = []
     setSelections([])
-    sessionIdRef.current = makeSessionId()
   }
 
   const startFresh = useCallback(() => {
@@ -141,23 +145,10 @@ export function App() {
 
   const sendMessage = useCallback(async (text: string, isSelection = false) => {
     // Record chip selections immediately — before the API call so the server gets them.
-    // If the last selection was a broad style family and this is a sub-direction,
-    // replace it so the tag reads "Coastal Beach House" not "Coastal" + "Beach House".
-    const STYLE_FAMILIES = new Set(['Scandi', 'Coastal', 'Industrial', 'Modern', 'Farmhouse',
-      'Transitional', 'Japandi', 'Mediterranean', 'Minimalist', 'Preppy', 'Classic'])
-    const prev = selectionsRef.current
-    const lastSel = prev[prev.length - 1] ?? ''
-    const isSubDirection = STYLE_FAMILIES.has(lastSel)
-    const nextSelections = isSelection
-      ? (isSubDirection
-          // Replace parent — combine only if sub-direction doesn't already name the family
-          ? [...prev.slice(0, -1), text.toLowerCase().includes(lastSel.toLowerCase()) ? text : `${lastSel} ${text}`]
-          : [...prev, text])
-      : prev
-
+    const updatedSelections = nextSelections(selectionsRef.current, text, isSelection)
     if (isSelection) {
-      selectionsRef.current = nextSelections
-      setSelections(nextSelections)
+      selectionsRef.current = updatedSelections
+      setSelections(updatedSelections)
     }
 
     const newMessages: Message[] = [...messages, { role: 'user', content: text }]
@@ -176,106 +167,94 @@ export function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages,
-          sessionId: sessionIdRef.current,
           intent,
-          selections: nextSelections,
+          selections: updatedSelections,
           // Include assembled categories so the server can re-assemble after a restart
           categories: categories.map(c => c.name),
         }),
       })
 
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? `Server returned ${res.status}`)
+      }
       if (!res.body) throw new Error('No response body')
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
 
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const blocks = buffer.split('\n\n')
-        buffer = blocks.pop() ?? ''
-
-        for (const block of blocks) {
-          const dataLine = block.split('\n').find(l => l.startsWith('data: '))
-          if (!dataLine) continue
-          const raw = dataLine.slice(6).trim()
-          if (!raw || raw === '[DONE]') continue
-          try {
-            const event = JSON.parse(raw)
-            switch (event.type) {
-              case 'text-delta':
-                assistantText += event.content
-                setStreamingText(t => t + event.content)
-                break
-              case 'options':
-                if (Array.isArray(event.choices) && event.choices.length) {
-                  setPendingOptions({ choices: event.choices, kind: event.kind ?? 'options' })
-                }
-                break
-              case 'early-ready':
-                setEarlyReady(true)
-                break
-              case 'assembling':
-              case 'building':
-                // In results state, stay in results and show an inline indicator.
-                // Switching to 'assembling' would hide the results panel, which is jarring.
-                if (appState === 'results') {
-                  setRefining(true)
-                } else {
-                  setAppState('assembling')
-                }
-                break
-              case 'intent-update':
-                if (event.intent) setIntent(event.intent)
-                break
-              case 'intent-ready':
-                if (event.intent) setIntent(event.intent)
-                if (event.summary) {
-                  setSummary(event.summary)
-                  if (!summaryAnimatedRef.current) {
-                    summaryAnimatedRef.current = true
-                    setSummaryKey(k => k + 1)
-                  }
-                }
-                setRefining(false)
-                if (event.categories?.length) {
-                  setCategories(event.categories)
-                  if (event.curatedOutfits?.length) setCuratedOutfits(event.curatedOutfits)
-                  setAppState('results')
-                } else {
-                  setAppState('chat')
-                }
-                break
-              case 'error':
-                // Same rule as the 'building'/'assembling' case above: a failure during a
-                // refinement (already in results) must not pop the compact card back open over
-                // the collage — that's what this bug looked like from the outside. Stay in
-                // results, clear the "Updating results..." indicator, and surface the error as
-                // a chat message instead. Only pre-results errors (no collage to preserve yet)
-                // fall back to the compact card.
-                setRefining(false)
-                if (appState !== 'results') setAppState('chat')
-                setMessages(prev => [...prev, {
-                  role: 'assistant',
-                  content: `⚠️ ${event.message ?? 'Something went wrong — please try again.'}`,
-                }])
-                break
-              case 'refinements':
-                if (event.refinements?.length) {
-                  const chunks: string[][] = []
-                  for (let i = 0; i < event.refinements.length; i += 3) {
-                    chunks.push(event.refinements.slice(i, i + 3))
-                  }
-                  setInitialRefinements(chunks)
-                }
-                break
+      for await (const event of readSSE(res.body)) {
+        switch (event.type) {
+          case 'text-delta':
+            assistantText += event.content
+            setStreamingText(t => t + event.content)
+            break
+          case 'options':
+            if (Array.isArray(event.choices) && event.choices.length) {
+              setPendingOptions({ choices: event.choices, kind: event.kind ?? 'options' })
             }
-          } catch {}
+            break
+          case 'early-ready':
+            setEarlyReady(true)
+            break
+          case 'assembling':
+          case 'building':
+            // In results state, stay in results and show an inline indicator.
+            // Switching to 'assembling' would hide the results panel, which is jarring.
+            if (appState === 'results') {
+              setRefining(true)
+            } else {
+              setAppState('assembling')
+            }
+            break
+          case 'intent-update':
+            if (event.intent) setIntent(event.intent)
+            break
+          case 'intent-ready':
+            if (event.intent) setIntent(event.intent)
+            if (event.summary) {
+              setSummary(event.summary)
+              if (!summaryAnimatedRef.current) {
+                summaryAnimatedRef.current = true
+                setSummaryKey(k => k + 1)
+              }
+            }
+            setRefining(false)
+            if (event.categories?.length) {
+              setCategories(event.categories)
+              if (event.curatedOutfits?.length) setCuratedOutfits(event.curatedOutfits)
+              setAppState('results')
+            } else {
+              setAppState('chat')
+            }
+            break
+          case 'error':
+            // Same rule as the 'building'/'assembling' case above: a failure during a
+            // refinement (already in results) must not pop the compact card back open over
+            // the collage — that's what this bug looked like from the outside. Stay in
+            // results, clear the "Updating results..." indicator, and surface the error as
+            // a chat message instead. Only pre-results errors (no collage to preserve yet)
+            // fall back to the compact card.
+            setRefining(false)
+            if (appState !== 'results') setAppState('chat')
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `⚠️ ${event.message ?? 'Something went wrong — please try again.'}`,
+            }])
+            break
+          case 'refinements':
+            if (event.refinements?.length) {
+              setInitialRefinements(chunkRefinements(event.refinements))
+            }
+            break
         }
       }
     } catch (err) {
-      setStreamingText('Sorry, something went wrong. Please try again.')
+      // Committed as a message, not into streamingText: the unconditional setStreamingText('')
+      // below clears that before it can render, so a failed turn used to leave the shopper
+      // looking at a blank card with no error and no way to tell the request had died.
+      // Matches how the 'error' SSE event above surfaces the same class of failure.
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: '⚠️ Something went wrong — please try again.',
+      }])
       console.error(err)
     }
 
@@ -297,15 +276,7 @@ export function App() {
     setAppState('assembling')
     setPendingOptions(null)
     try {
-      const res = await fetch('/api/show-me-now', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: sessionIdRef.current,
-          intent,
-          categories: categories.map(c => c.name),
-        }),
-      })
+      const res = await postIntent('/api/show-me-now', intent, categories)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? `Server returned ${res.status}`)
 
@@ -319,11 +290,7 @@ export function App() {
           setSummaryKey(k => k + 1)
         }
       }
-      if (data.refinements?.length) {
-        const chunks: string[][] = []
-        for (let i = 0; i < data.refinements.length; i += 3) chunks.push(data.refinements.slice(i, i + 3))
-        setInitialRefinements(chunks)
-      }
+      if (data.refinements?.length) setInitialRefinements(chunkRefinements(data.refinements))
       setAppState('results')
     } catch (err) {
       console.error('[show me now]', err)

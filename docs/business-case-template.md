@@ -79,7 +79,7 @@ difference is the model's estimate of incremental revenue attributable to the Gr
 
 This section has no equivalent in a typical ecommerce feature — the Greeter's variable cost per
 shopper interaction is real and worth budgeting for. The figures below are derived directly
-from this codebase (`src/adapters/llm.ts`, `src/server.ts`), not estimated in the abstract, and
+from this codebase (`src/adapters/llm.ts`, `src/server/`), not estimated in the abstract, and
 from Anthropic's current published pricing at the time of writing.
 
 **LLM calls route through Vercel AI Gateway, not directly to Anthropic — this does not change
@@ -98,7 +98,7 @@ The conversation itself runs on the *chat* model (`LLM_CLAUDE_CHAT`, default `cl
 — one call per shopper message, each resending the full system prompt (a fixed ~1,860-token
 prompt, measured directly from `src/agent/intent.ts`'s `buildChatPrompt`) plus the growing
 conversation history, since there's no server-side conversation memory — confirmed by inspection
-of `src/server.ts`, which resends the full `messages` array from the client on every turn. A
+of the chat route (`src/server/routes/chat.ts`), which resends the full `messages` array from the client on every turn. A
 typical direct path — the three fields
 required before results can assemble (style, fit, budget) — takes 4 total exchanges: the
 shopper's opening message plus three answered clarifying questions.
@@ -119,7 +119,7 @@ prototype's own demo scenarios):
 | `generateRefinements` | once | 9 refinement-chip suggestions, generated automatically |
 
 That's **11 fast-model calls per result assembly** — every one of them, plus the reason each
-exists, verified directly against `src/server.ts`'s assembly flow, not assumed from a
+exists, verified directly against the assembly flow in `src/server/assemble.ts`, not assumed from a
 simplified sketch of what the app "probably" does. If a shopper refines their results (swaps an
 item, asks for something different), most of this assembly re-runs — but `generateStyleSpec` and
 `allocateBudget` skip re-calling the model entirely when a refinement doesn't touch the inputs
