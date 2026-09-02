@@ -121,6 +121,17 @@ describe('App — streaming a turn', () => {
 
     await waitFor(() => expect(screen.getByText(/something went wrong/i)).toBeTruthy())
   })
+
+  // A 429 or 400 from /api/chat (rate limit, bad body) comes back as plain JSON, not SSE
+  // framing — readSSE finds no "data: " lines in it and yields nothing, silently. Without a
+  // res.ok check first, the loading spinner just cleared with no error shown to the shopper.
+  it('surfaces the server error instead of silently clearing when /api/chat responds non-OK', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ error: 'Too many requests — please wait a moment and try again.' }, false))
+    render(<App />)
+    fireEvent.click(screen.getByText('Powder room refresh'))
+
+    await waitFor(() => expect(screen.getByText(/something went wrong/i)).toBeTruthy())
+  })
 })
 
 describe('App — assembly and results', () => {

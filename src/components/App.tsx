@@ -174,6 +174,10 @@ export function App() {
         }),
       })
 
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? `Server returned ${res.status}`)
+      }
       if (!res.body) throw new Error('No response body')
 
       for await (const event of readSSE(res.body)) {
