@@ -110,6 +110,11 @@ export function registerChatRoute(app: Hono<AppEnv>) {
         const smCatsInitial = isShowMeNow ? (earlyCategories.get(sessionId) ?? earlyPrevCategories) : undefined
         if (smCatsInitial?.length && prevStored) {
           let smCats = smCatsInitial
+          // Same guaranteed exclusion as the main path below — an anchor item's category is
+          // something the shopper already owns, so it must never reach the shopping list or
+          // collage here either, regardless of what the cached category list contains.
+          const smAnchorCategories = new Set((prevStored.anchorItems ?? []).map(a => a.category).filter(Boolean))
+          if (smAnchorCategories.size > 0) smCats = smCats.filter(c => !smAnchorCategories.has(c))
           const goal = prevStored.goal || 'your list'
           const goalType = prevStored.goalType ?? 'style'
           const canned = goalType === 'project'
@@ -144,7 +149,9 @@ export function registerChatRoute(app: Hono<AppEnv>) {
           }
 
           if (smResults.length > 0) {
-            categoryStore.set(sessionId, smCats)
+            // Same fix as the main path below — store what actually returned products, not the
+            // requested list, so a category that came back empty doesn't keep getting re-requested.
+            categoryStore.set(sessionId, smResults.map(r => r.name))
             saveCategoryStore()
             earlyCategories.delete(sessionId)
             const smCurated = await buildCuratedOutfits(prevStored, smResults).catch(() => [])
@@ -387,7 +394,11 @@ export function registerChatRoute(app: Hono<AppEnv>) {
           console.log(`[chat] assembleResults returned ${categoryResults.length} rows`)
 
           if (categoryResults.length > 0) {
-            categoryStore.set(sessionId, cats)
+            // What actually returned products, not what was requested — assembleResults drops
+            // categories with zero catalog matches, and this store is preferred over the
+            // client's list on later turns, so a dropped category kept getting re-requested
+            // (and re-billed through generateStyleSpec/search/CMS) on every subsequent turn.
+            categoryStore.set(sessionId, categoryResults.map(r => r.name))
             saveCategoryStore()
             const curatedOutfits = await buildCuratedOutfits(updatedIntent, categoryResults).catch(() => [])
             await write({ type: 'intent-ready', intent: updatedIntent, categories: categoryResults, summary: overallSummary, curatedOutfits })

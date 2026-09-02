@@ -30,6 +30,7 @@ vi.mock('../src/adapters/llm.js', () => {
 
 const { app } = await import('../src/server.js')
 const { resetRateLimits } = await import('../src/server/rateLimit.js')
+const { FixtureSearchAdapter } = await import('../src/adapters/search.js')
 
 const post = (path: string, body: unknown, headers: Record<string, string> = {}) =>
   app.request(path, {
@@ -223,6 +224,19 @@ describe('the session id comes from the server, not the client', () => {
     expect(body.categories.map((c: any) => c.name)).toEqual(['top'])
   })
 
+  // /api/refinements took intent.sessionId as given — unlike /api/chat and /api/show-me-now,
+  // which both override it from the cookie. A caller-claimed id there could read or poison
+  // another session's cached state the same way the body-level sessionId hole above could.
+  it('overrides an intent-embedded sessionId on /api/refinements too', async () => {
+    mocks.generateRefinements.mockClear()
+    await post('/api/refinements',
+      { intent: { ...intentOf(), sessionId: 'someone-elses-session' }, categories: ['top'] },
+      { cookie: 'gsid=my-real-session', 'x-forwarded-for': freshIp() })
+
+    const [passedIntent] = mocks.generateRefinements.mock.calls.at(-1) as [{ sessionId: string }]
+    expect(passedIntent.sessionId).toBe('my-real-session')
+  })
+
   // The per-session spec/budget/outfit caches in assemble.ts are keyed on intent.sessionId,
   // which arrives inside the client-supplied intent object. Left unnormalised, a caller who
   // sets it to someone else's id reads and poisons that session's cached work — the same class
@@ -255,5 +269,24 @@ describe('the session id comes from the server, not the client', () => {
     const body = await res.json() as any
     expect(body.categories.map((c: any) => c.name)).toEqual(['shoes'])
     expect(mocks.generateCategories).not.toHaveBeenCalled()
+  })
+
+  // categoryStore used to save the requested list, not what assembly actually returned —
+  // assembleResults drops categories with zero catalog matches, so a nonexistent category kept
+  // getting re-searched (and re-billed through generateStyleSpec) on every later turn.
+  it('stops re-requesting a category that returned no products', async () => {
+    const ip = freshIp()
+    const cookie = 'gsid=phantom-category-session'
+    await post('/api/show-me-now', { intent: intentOf(), categories: ['shoes', 'nonexistent-widget'] },
+      { cookie, 'x-forwarded-for': ip })
+
+    const querySpy = vi.spyOn(FixtureSearchAdapter.prototype, 'query')
+    querySpy.mockClear()
+    const res = await post('/api/show-me-now', { intent: intentOf() }, { cookie, 'x-forwarded-for': ip })
+
+    const body = await res.json() as any
+    expect(body.categories.map((c: any) => c.name)).toEqual(['shoes'])
+    expect(querySpy.mock.calls.some(call => call[0]?.category === 'nonexistent-widget')).toBe(false)
+    querySpy.mockRestore()
   })
 })

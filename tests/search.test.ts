@@ -44,6 +44,15 @@ describe('FixtureSearchAdapter — catalogue loading', () => {
     await expect(adapter.query(params({ category: 'spaceship' }))).resolves.toEqual([])
   })
 
+  // Category is free-form LLM output reaching a bare readFileSync(join(FIXTURES_DIR, ...)) — an
+  // unsanitised "../../../../package" would resolve outside FIXTURES_DIR and read whatever sits
+  // at that path. Path-separator and traversal characters are stripped before the file lookup,
+  // so this just misses like any other unknown category, never reaches outside the fixtures dir.
+  it('does not let a path-traversal category escape the fixtures directory', async () => {
+    const adapter = new FixtureSearchAdapter()
+    await expect(adapter.query(params({ category: '../../../../package' }))).resolves.toEqual([])
+  })
+
   it('resolves the fixture file case- and whitespace-insensitively', async () => {
     const adapter = new FixtureSearchAdapter()
     const upper = await adapter.query(params({ category: 'LIGHTING' }))

@@ -73,7 +73,10 @@ export function registerShowMeNowRoute(app: Hono<AppEnv>) {
         return c.json({ error: 'Could not assemble results — please try again' }, 500)
       }
 
-      categoryStore.set(sessionId, cats)
+      // What actually returned products, not what was requested — same fix as chat.ts's two
+      // call sites for the same pattern; assembleResults drops empty categories, and this store
+      // is preferred over the client's list on later turns.
+      categoryStore.set(sessionId, categoryResults.map(r => r.name))
       saveCategoryStore()
       earlyCategories.delete(sessionId)
 
@@ -84,8 +87,10 @@ export function registerShowMeNowRoute(app: Hono<AppEnv>) {
 
       return c.json({ intent, categories: categoryResults, summary: overallSummary, curatedOutfits, refinements })
     } catch (err) {
+      // Full detail stays server-side only — the client gets a generic message, never raw
+      // provider/billing internals. Matches chat.ts's treatment of the same failure class.
       console.error('[show-me-now error]', err)
-      return c.json({ error: String(err) }, 500)
+      return c.json({ error: 'Something went wrong assembling your results — please try again.' }, 500)
     }
   })
 }

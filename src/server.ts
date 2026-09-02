@@ -136,7 +136,10 @@ app.get('/api/search', async c => {
 app.post('/api/refinements', rateLimit, async c => {
   const { data: body, response } = await parseBody(c, RefinementsBody)
   if (!body) return response
-  const intent = body.intent as IntentModel
+  // From the session cookie only, same as chat.ts and showMeNow.ts — a caller-supplied
+  // sessionId inside intent could otherwise read or poison another session's cached state.
+  const sessionId = getSessionId(c)
+  const intent: IntentModel = { ...(body.intent as IntentModel), sessionId }
   const refinements = await llm.generateRefinements(intent, body.categories ?? []).catch(() => [] as string[])
   return c.json({ refinements })
 })

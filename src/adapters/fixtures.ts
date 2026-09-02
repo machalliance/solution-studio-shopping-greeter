@@ -9,9 +9,14 @@ export const FIXTURES_DIR = join(__dirname, '../../catalog/fixtures')
  * Category → fixture filename key. Categories arrive as free-form LLM output, so padding is
  * reachable in practice: without the trim, " mirror " normalises to "-mirror-", misses the
  * file, and the miss is then cached — a silently empty product row or guide list with no error.
+ *
+ * The final strip removes anything but a-z0-9- — notably `/` and `.`, since this key reaches
+ * join(FIXTURES_DIR, ...) below unsanitised otherwise, and a category of "../../../../package"
+ * resolves outside FIXTURES_DIR. A category that strips to empty just misses the file lookup,
+ * already handled by the try/catch below.
  */
 function fixtureKey(category: string): string {
-  return category.trim().toLowerCase().replace(/\s+/g, '-')
+  return category.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 }
 
 /**

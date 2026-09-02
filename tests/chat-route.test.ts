@@ -322,6 +322,28 @@ describe('POST /api/chat — early-ready', () => {
     expect(replyText(second)).toMatch(/Here's what I've put together/)
   })
 
+  // The main path already excludes an anchor item's category from assembly (a shopper who says
+  // "I already own this" never gets it re-recommended); the fast path skipped that same filter.
+  it('excludes an anchor item\'s category from the fast path too', async () => {
+    const sessionId = newSession()
+    modelTurn(turn({
+      isEarlyReady: true,
+      categories: ['top', 'pants'],
+      delta: delta({
+        goalType: 'style', budget: 'Under $400',
+        anchorItem: { name: 'dark jeans', description: null, category: 'pants' },
+      }),
+    }))
+    await chat({ messages: [{ role: 'user', content: 'hi' }], sessionId })
+
+    mocks.streamText.mockReset()
+    const second = await chat({ messages: [{ role: 'user', content: 'Show me now' }], sessionId })
+
+    const names = first(second, 'intent-ready')!.categories.map((c: any) => c.name)
+    expect(names).not.toContain('pants')
+    expect(names).toContain('top')
+  })
+
   // The fast path's own assembly failing used to write intent-update and return with no retry —
   // a confirmed dead-end. Only a thrown assembly reaches it: a category that matches nothing
   // still yields a row (see the empty-row test below), so the row count alone never hits zero.
