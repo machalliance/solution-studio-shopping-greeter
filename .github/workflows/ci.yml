@@ -1,0 +1,41 @@
+name: CI
+
+# The two stale assertions that left main red went unnoticed because nothing ran the suite.
+# This is the check that would have caught them.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Matches the engines.node floor in package.json.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Proves the Vite build of the React widget still produces dist/, which the server
+      # reads at runtime — a broken build is not otherwise visible to the test suite.
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
