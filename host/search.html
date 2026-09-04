@@ -183,12 +183,29 @@ footer{background:var(--ink);padding:24px 48px;margin-top:auto}
 </div>
 
 <script>
-// `q`, `style` and `fit` come off the query string and reach innerHTML as display labels
-// whenever they miss CATEGORY_LABELS — which any unknown value does. Escaped at every such
-// interpolation; buildTitle() and the relaxed-style notice use textContent and need no help.
+// Two untrusted sources reach innerHTML on this page and both must be escaped.
+//
+//   1. `q`, `style` and `fit` off the query string, which land as display labels whenever they
+//      miss CATEGORY_LABELS — any unknown value does.
+//   2. Every field of a product returned by /api/search. These were NOT escaped originally:
+//      esc() existed for case 1 only, so a catalog record carrying markup in `name`, `brand`
+//      or `description` executed it. That is reachable for real once USE_FIXTURES=false, where
+//      the records come from Algolia rather than from this repo.
+//
+// buildTitle() and the relaxed-style notice use textContent and need no help.
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, c =>
+  return String(s ?? '').replace(/[&<>"']/g, c =>
     ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+}
+
+// Escaping alone does not make a URL safe to put in href/src: it stops the attribute being
+// broken out of, but `javascript:alert(1)` needs no quotes to fire. Catalog `url` and `images`
+// values are as untrusted as the rest of the record, so only same-origin-relative paths and
+// explicit http(s) URLs are allowed through; anything else degrades to no link/image.
+function safeUrl(u) {
+  const s = String(u ?? '').trim();
+  if (/^\/(?!\/)/.test(s)) return s;
+  return /^https?:\/\//i.test(s) ? s : '';
 }
 
 const CATEGORY_LABELS = {
@@ -352,20 +369,20 @@ function renderGrid() {
     return;
   }
   document.getElementById('resultsGrid').innerHTML = currentProducts.map(p => {
-    const imgSrc = p.images?.[0] || '';
-    const url    = (p.url || '') + '?skin=' + currentSkin;
+    const imgSrc = esc(safeUrl(p.images?.[0]));
+    const url    = esc(safeUrl(p.url) + '?skin=' + currentSkin);
     return `
     <div class="result-card ${p.inStock ? '' : 'out-of-stock'}">
       <div class="result-img">
-        <img src="${imgSrc}" alt="${p.name}" loading="lazy"
+        <img src="${imgSrc}" alt="${esc(p.name)}" loading="lazy"
           style="width:100%;height:100%;object-fit:contain;display:block"
           onerror="this.style.display='none'">
       </div>
       <div class="result-body">
-        <span class="result-tag">${CATEGORY_LABELS[p.category] || p.category}</span>
-        <div class="result-name">${p.name}</div>
-        <div class="result-brand">${p.brand || ''}</div>
-        <div class="result-desc">${p.description || ''}</div>
+        <span class="result-tag">${esc(CATEGORY_LABELS[p.category] || p.category)}</span>
+        <div class="result-name">${esc(p.name)}</div>
+        <div class="result-brand">${esc(p.brand || '')}</div>
+        <div class="result-desc">${esc(p.description || '')}</div>
         <div class="result-footer">
           <span class="result-price">$${(p.price || 0).toLocaleString()}</span>
           ${p.inStock
