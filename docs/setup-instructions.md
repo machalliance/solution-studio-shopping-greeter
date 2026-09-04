@@ -169,11 +169,13 @@ Skip this section entirely if you're running with the default `USE_FIXTURES=true
 4. **Optional extra content**: `scripts/add-fashion-cms-entries.py` adds a handful of
    fashion-specific test entries (for the rooftop-dinner demo scenario) that don't exist in
    the base fixture set. Same credential pattern.
-5. **Optional thumbnail images**: `scripts/generate-cms-images.py` generates an editorial
-   photo per CMS entry via the OpenAI images API (not the product-photo pipeline — these are
-   lifestyle scenes, not product shots) and saves them to `catalog/images/guides/`. Needs
-   `OPENAI_API_KEY` (from `.env` or shell env) plus the Contentstack delivery credentials
-   already in `.env`. Idempotent — safe to re-run after adding entries; only fills gaps.
+5. **Optional thumbnail images**: not needed for the seeded entries — `catalog/images/guides/`
+   already ships a generated editorial photo for each one. The generator that produced them
+   (`scripts/generate-cms-images.py`) is deliberately not part of this repo, so if you add
+   your own CMS entries you supply their images yourself. Only the naming convention matters:
+   an entry with url `/guides/rooftop-dinner-date-outfit` is served
+   `/images/guides/rooftop-dinner-date-outfit.png`, i.e. the last path segment plus `.png`.
+   A missing file is non-fatal — the hero image hides itself and the guide still renders.
 6. **Confirm content is being served** — with `USE_FIXTURES=false` and the app running, visit
    any guide URL from your seeded entries (e.g. `http://localhost:<PORT>/how-to/find-your-jean-fit`),
    or query the API directly:
