@@ -227,7 +227,7 @@ describe('ContentstackAdapter.getContent', () => {
     })
 
     expect(JSON.parse(calls[0].url.searchParams.get('query')!)).toEqual({
-      tags: { $in: ['jeans', 'rooftop dinner outfit', 'dark wash', 'tapered'] },
+      tags: { $in: ['category:jeans', 'rooftop dinner outfit', 'dark wash', 'tapered'] },
     })
   })
 
@@ -237,7 +237,7 @@ describe('ContentstackAdapter.getContent', () => {
     await cms.getContent({ goal: '', category: 'jeans', limit: 2 })
 
     expect(JSON.parse(calls[0].url.searchParams.get('query')!)).toEqual({
-      tags: { $in: ['jeans'] },
+      tags: { $in: ['category:jeans'] },
     })
   })
 

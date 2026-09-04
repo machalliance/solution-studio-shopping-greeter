@@ -204,6 +204,23 @@ const SKIN_CONFIG = {
   }
 };
 
+// Every field of the product returned by /api/product reaches innerHTML below, and none of it
+// was escaped originally — a catalog record carrying markup in `name`, `brand`, `description`
+// or `tags` executed it. Reachable for real once USE_FIXTURES=false, where records come from
+// Algolia rather than from this repo. Kept identical to the helper in search.html and guide.html.
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+}
+
+// Escaping stops an href/src being broken out of but not `javascript:alert(1)`, which needs no
+// quotes. Only relative paths and explicit http(s) URLs pass; anything else degrades to nothing.
+function safeUrl(u) {
+  const s = String(u ?? '').trim();
+  if (/^\/(?!\/)/.test(s)) return s;
+  return /^https?:\/\//i.test(s) ? s : '';
+}
+
 const slug = location.pathname.split('/').filter(Boolean).pop() || '';
 const urlParams = new URLSearchParams(location.search);
 const urlSkin = urlParams.get('skin');
@@ -239,36 +256,36 @@ function formatPrice(p, cat) {
 
 function renderProduct(p) {
   const catLabel = p.category ? (p.category.charAt(0).toUpperCase() + p.category.slice(1)) : 'Products';
-  const searchUrl = `/search?q=${p.category}&skin=${currentSkin}`;
-  const homeUrl = `/?skin=${currentSkin}`;
+  const searchUrl = esc(`/search?q=${encodeURIComponent(p.category ?? '')}&skin=${encodeURIComponent(currentSkin)}`);
+  const homeUrl = esc(`/?skin=${encodeURIComponent(currentSkin)}`);
 
   const tagsHtml = (p.tags || []).map(t =>
-    `<span class="ptag">${t.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</span>`
+    `<span class="ptag">${esc(String(t ?? '').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()))}</span>`
   ).join('');
 
   document.getElementById('mainContent').innerHTML = `
     <div class="breadcrumb">
       <a href="${homeUrl}">Home</a>
       <span class="breadcrumb-sep">›</span>
-      <a href="${searchUrl}">${catLabel}</a>
+      <a href="${searchUrl}">${esc(catLabel)}</a>
       <span class="breadcrumb-sep">›</span>
-      <span>${p.name}</span>
+      <span>${esc(p.name)}</span>
     </div>
 
     <div class="product-hero">
       <div class="image-col">
         <div class="image-main">
-          ${p.images && p.images[0]
-            ? `<img src="${p.images[0]}" alt="${p.name}" id="mainImg">`
+          ${p.images && safeUrl(p.images[0])
+            ? `<img src="${esc(safeUrl(p.images[0]))}" alt="${esc(p.name)}" id="mainImg">`
             : `<div class="image-placeholder"></div>`}
         </div>
       </div>
 
       <div class="info-col">
-        ${p.brand ? `<div class="product-brand">${p.brand}</div>` : ''}
-        <h1 class="product-name">${p.name}</h1>
+        ${p.brand ? `<div class="product-brand">${esc(p.brand)}</div>` : ''}
+        <h1 class="product-name">${esc(p.name)}</h1>
         <div class="product-price-row">
-          <span class="product-price">${formatPrice(p.price, p.category)}</span>
+          <span class="product-price">${esc(formatPrice(p.price, p.category))}</span>
         </div>
         <div class="stock-badge ${p.inStock ? 'in' : 'out'}">
           <span class="stock-dot"></span>
@@ -278,7 +295,7 @@ function renderProduct(p) {
         ${tagsHtml ? `<div class="tags-row">${tagsHtml}</div>` : ''}
         <div class="rule"></div>
 
-        ${p.description ? `<div class="section-label">Description</div><p class="product-desc">${p.description}</p>` : ''}
+        ${p.description ? `<div class="section-label">Description</div><p class="product-desc">${esc(p.description)}</p>` : ''}
 
         <div class="actions">
           ${p.inStock
@@ -302,11 +319,11 @@ function renderProduct(p) {
 }
 
 function renderNotFound() {
-  const homeUrl = `/?skin=${currentSkin}`;
+  const homeUrl = esc(`/?skin=${encodeURIComponent(currentSkin)}`);
   document.getElementById('mainContent').innerHTML = `
     <div class="not-found">
       <h2>Product not found</h2>
-      <p>We couldn't find a product matching "${slug}".</p>
+      <p>We couldn't find a product matching "${esc(slug)}".</p>
       <a href="${homeUrl}">← Back to home</a>
     </div>`;
 }
