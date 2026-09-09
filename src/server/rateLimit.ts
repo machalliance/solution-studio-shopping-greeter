@@ -43,17 +43,27 @@ function sweepExpired(now: number) {
   for (const [key, w] of windows) if (now >= w.resetAt) windows.delete(key)
 }
 
+// Off by default: trusting a forwarded header with no actual proxy in front means any direct
+// caller sets a fresh value per request and never shares a rate-limit bucket, making the limit
+// apply only to callers who don't try to avoid it. Set true only when this really is behind a
+// reverse proxy that overwrites (not appends to) these headers on every hop.
+const TRUST_PROXY = process.env.TRUST_PROXY === 'true'
+
 /**
- * Best-effort client identity. Behind a proxy the socket address is the proxy's, so the first
- * X-Forwarded-For hop is preferred — spoofable by a direct caller, which is why this is a cost
- * guard rather than a security boundary. The session cookie is the last resort so that a client
- * with no usable address still gets counted rather than sharing one global bucket.
+ * Best-effort client identity. With TRUST_PROXY, the first X-Forwarded-For/X-Real-Ip hop is
+ * used (still spoofable by a direct caller even then — this is a cost guard, not a security
+ * boundary). Without it, the actual socket address is used, which a caller cannot rewrite —
+ * the right default for a direct/LAN deployment with nothing in front of it. The session
+ * cookie is the last resort either way, so a client with no usable address still gets counted
+ * rather than sharing one global bucket.
  */
 function clientKey(c: Context): string {
-  const forwarded = c.req.header('x-forwarded-for')
-  if (forwarded) return forwarded.split(',')[0].trim()
-  const real = c.req.header('x-real-ip')
-  if (real) return real.trim()
+  if (TRUST_PROXY) {
+    const forwarded = c.req.header('x-forwarded-for')
+    if (forwarded) return forwarded.split(',')[0].trim()
+    const real = c.req.header('x-real-ip')
+    if (real) return real.trim()
+  }
   const conn = (c.env as { incoming?: { socket?: { remoteAddress?: string } } } | undefined)
     ?.incoming?.socket?.remoteAddress
   if (conn) return conn

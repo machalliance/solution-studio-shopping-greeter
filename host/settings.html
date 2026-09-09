@@ -203,10 +203,23 @@ h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 
 </div>
 
 <script>
+// /api/env-status and the per-task model GETs below are gated behind ENABLE_ADMIN_ROUTES,
+// off by default under NODE_ENV=production (the Docker image) — a 404 there has no JSON body,
+// so this page must not let that reject the whole load(). Falls back to an empty object, which
+// reads as "not set" / "unknown" below rather than leaving every field stuck on "Loading…".
+async function fetchJsonOrEmpty(url) {
+  try {
+    const res = await fetch(url)
+    return res.ok ? await res.json() : {}
+  } catch {
+    return {}
+  }
+}
+
 async function load() {
   const [health, env] = await Promise.all([
     fetch('/health').then(r => r.json()),
-    fetch('/api/env-status').then(r => r.json()),
+    fetchJsonOrEmpty('/api/env-status'),
   ])
 
   // Provider tabs
@@ -256,9 +269,15 @@ const TASK_MODELS = [
 ]
 
 async function loadTaskModel({ task, inputId, statusId }) {
-  const { model } = await fetch(`/api/${task}-model`).then(r => r.json())
-  document.getElementById(inputId).value = model
-  document.getElementById(statusId).textContent = `Currently: ${model}`
+  // Same admin-gating as env-status above — degrade the one field rather than leave
+  // Promise.all(TASK_MODELS.map(loadTaskModel)) rejected and every field stuck on "Loading…".
+  const { model } = await fetchJsonOrEmpty(`/api/${task}-model`)
+  if (model) {
+    document.getElementById(inputId).value = model
+    document.getElementById(statusId).textContent = `Currently: ${model}`
+  } else {
+    document.getElementById(statusId).textContent = 'Unavailable — admin routes disabled'
+  }
 }
 
 async function setTaskModel(task, inputId, statusId) {

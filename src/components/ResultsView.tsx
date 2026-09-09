@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { CategoryResult, CuratedOutfit, IntentModel } from '../types/intent'
 import { CMSCardView } from './CMSCardView'
 import { CollageView } from './CollageView'
+import { safeUrl } from './safeUrl'
 
 interface Props {
   categories: CategoryResult[]
@@ -152,7 +153,7 @@ export function ResultsView({ categories, curatedOutfits, intent, loading, skin 
                     <a
                       key={cat.name}
                       className="g-collage-chip"
-                      href={`${p.url}?skin=${skin}`}
+                      href={`${safeUrl(p.url)}?skin=${skin}`}
                       target="_top"
                     >
                       {p.name}

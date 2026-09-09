@@ -1,4 +1,5 @@
 import type { CategoryResult } from '../types/intent'
+import { safeUrl } from './safeUrl'
 
 interface Props {
   categories: CategoryResult[]
@@ -63,7 +64,7 @@ export function CollageView({ categories, skin }: Props) {
                 key={cat.name}
                 className="g-collage-item"
                 style={{ flex: cat.weight }}
-                href={`${p.url}?skin=${skin}`}
+                href={`${safeUrl(p.url)}?skin=${skin}`}
                 target="_top"
               >
                 {img

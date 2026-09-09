@@ -8,6 +8,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 process.env.ENABLE_ADMIN_ROUTES = 'false'
 process.env.RATE_LIMIT_MAX = '3'
 process.env.RATE_LIMIT_WINDOW_MS = '60000'
+// These tests simulate distinct clients via X-Forwarded-For, which is exactly the
+// reverse-proxy scenario TRUST_PROXY gates — off by default so a direct, unproxied deployment
+// (rateLimit.ts's clientKey()) can't have its rate limit trivially rotated by a spoofed header.
+process.env.TRUST_PROXY = 'true'
 
 const mocks = vi.hoisted(() => ({
   getModel: vi.fn(() => 'fake-model'),
@@ -31,6 +35,7 @@ vi.mock('../src/adapters/llm.js', () => {
 const { app } = await import('../src/server.js')
 const { resetRateLimits } = await import('../src/server/rateLimit.js')
 const { FixtureSearchAdapter } = await import('../src/adapters/search.js')
+const { llm } = await import('../src/server/config.js')
 
 const post = (path: string, body: unknown, headers: Record<string, string> = {}) =>
   app.request(path, {
@@ -92,16 +97,23 @@ describe('global config cannot be rewritten by a visitor', () => {
     expect((await post(path, body)).status).toBe(404)
   })
 
+  // /api/env-status and the three model-id GETs are gated the same as their POST siblings —
+  // reading which model/gateway config is active is reconnaissance value, same reasoning as
+  // the write side. Verified against the llm singleton directly, not a GET, since that GET is
+  // exactly what's under test here (asserting via it would be circular).
   it('leaves the active model untouched after a refused write', async () => {
-    const before = await (await app.request('/api/chat-model')).json() as { model?: string }
+    const before = llm.chatModelOverride
     await post('/api/chat-model', { model: 'anything-a-stranger-types' })
-    const after = await (await app.request('/api/chat-model')).json() as { model?: string }
-    expect(after.model).toBe(before.model)
+    expect(llm.chatModelOverride).toBe(before)
   })
 
-  it('still serves the read-only status routes', async () => {
+  it.each(['/api/env-status', '/api/chat-model', '/api/spec-model', '/api/curation-model'])(
+    'refuses GET %s when admin routes are disabled', async path => {
+      expect((await app.request(path)).status).toBe(404)
+    })
+
+  it('still serves the read-only status routes that carry no config detail', async () => {
     expect((await app.request('/api/provider')).status).toBe(200)
-    expect((await app.request('/api/env-status')).status).toBe(200)
     expect((await app.request('/health')).status).toBe(200)
   })
 })

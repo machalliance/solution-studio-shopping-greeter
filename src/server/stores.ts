@@ -1,4 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { createHash } from 'node:crypto'
 import type { IntentModel } from '../types/intent.js'
 
 // Session stores — keyed by sessionId. In-memory only; cleared on server restart.
@@ -43,10 +46,19 @@ export function pruneDebugStores() {
   }
 }
 
-// categoryStore persists assembled category lists to disk (the host's real /tmp) so they
+// categoryStore persists assembled category lists to disk (the host's real tmp dir) so they
 // survive tsx watch restarts during local development. Stored categories let the server
 // re-assemble results after a restart without a fresh conversation.
-const CATEGORY_STORE_PATH = '/tmp/greeter-categoryStore.json'
+//
+// The path must stay stable ACROSS restarts of this same checkout (that's the entire point —
+// a fresh path every boot would never find its own prior save) but must not be one fixed,
+// guessable name shared by every Greeter checkout on a shared machine — a stale-but-plausible
+// past finding was that a predictable /tmp path lets another local user read every session's
+// assembled categories, or pre-create the file to control what the next startup parses. Keying
+// the suffix off process.cwd() gets both: stable per checkout, distinct per checkout/user, and
+// overridable outright via CATEGORY_STORE_PATH for anyone who wants explicit control.
+const CATEGORY_STORE_PATH = process.env.CATEGORY_STORE_PATH
+  ?? join(tmpdir(), `greeter-categoryStore-${createHash('sha256').update(process.cwd()).digest('hex').slice(0, 12)}.json`)
 export const categoryStore = new Map<string, string[]>()
 
 // earlyCategories caches the category list from isEarlyReady turns so that a
@@ -81,6 +93,6 @@ export function clearSessionState(sessionId: string) {
 
 export function saveCategoryStore() {
   try {
-    writeFileSync(CATEGORY_STORE_PATH, JSON.stringify(Object.fromEntries(categoryStore)))
+    writeFileSync(CATEGORY_STORE_PATH, JSON.stringify(Object.fromEntries(categoryStore)), { mode: 0o600 })
   } catch { /* non-fatal */ }
 }

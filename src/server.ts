@@ -6,6 +6,7 @@
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
+import { secureHeaders } from 'hono/secure-headers'
 import type { Context } from 'hono'
 import { readFileSync, readdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -13,7 +14,7 @@ import { join } from 'node:path'
 import type { IntentModel } from './types/intent.js'
 import {
   ROOT, FIXTURES_DIR, IMAGES_SERVE_ROOT, STYLE_SRC, getPanelHtml, useFixtures, zeroResultsAction,
-  activeProvider, llm, search, cms, setProvider, adminRoutesEnabled, type ProviderKey,
+  activeProvider, llm, search, cms, setProvider, adminRoutesEnabled, showBrand, type ProviderKey,
 } from './server/config.js'
 import { catalogStats, buildCatalogStats } from './server/catalogStats.js'
 import { intentStore, lastEvents, rawReplies, requestLog, clearSessionState } from './server/stores.js'
@@ -34,6 +35,37 @@ export const app = new Hono<AppEnv>()
 // Every request carries a server-issued session identity; handlers never read one from the body.
 app.use('*', sessionMiddleware)
 
+// secureHeaders() defaults would break two things this app actually needs, so both are
+// explicitly overridden rather than left at default:
+//   - xFrameOptions defaults to SAMEORIGIN, which would silently break the one thing the widget
+//     is required to do (CLAUDE.md: "must be embeddable as an iframe without modification") the
+//     moment it's embedded on a real (cross-origin) retailer site — invisible in this repo's own
+//     demo since the mockup host pages happen to be same-origin with this server.
+//   - crossOriginResourcePolicy defaults to same-origin, which would block a real retailer page
+//     from directly loading a Greeter-served image outside of the iframe.
+//   - strictTransportSecurity is off because no documented run path (Docker or plain Node)
+//     terminates TLS — HSTS from a plain-HTTP server has no benefit here, and if this host is
+//     ever reached once over HTTPS (e.g. a reverse proxy in front of it), a browser that
+//     remembered that header can start refusing later plain-HTTP LAN access to the same host.
+// The CSP's script-src/style-src need 'unsafe-inline': every host/*.html mockup page is built
+// as inline <script> blocks and onclick= handlers, not externally-hosted/bundled JS — a stricter
+// nonce-based policy would need rewriting all five pages, out of scope for this pass.
+app.use('*', secureHeaders({
+  xFrameOptions: false,
+  crossOriginResourcePolicy: false,
+  strictTransportSecurity: false,
+  contentSecurityPolicy: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
+    fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
+    imgSrc: ["'self'", 'data:'],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    baseUri: ["'self'"],
+  },
+}))
+
 /**
  * Operator-only routes 404 rather than 403 when disabled — a public deployment should not
  * advertise that they exist. See adminRoutesEnabled in config.ts for what they expose.
@@ -42,7 +74,7 @@ function adminOnly(handler: (c: Context<AppEnv>) => Response | Promise<Response>
   return (c: Context<AppEnv>) => adminRoutesEnabled ? handler(c) : c.notFound()
 }
 
-app.get('/health', c => c.json({ ok: true, fixtures: useFixtures, provider: activeProvider, intents: intentStore.size, catalogCategories: Object.keys(catalogStats).length }))
+app.get('/health', c => c.json({ ok: true, fixtures: useFixtures, provider: activeProvider, intents: intentStore.size, catalogCategories: Object.keys(catalogStats).length, showBrand }))
 app.get('/api/catalog-stats', c => c.json(catalogStats))
 app.post('/api/catalog-stats/refresh', adminOnly(async c => {
   await buildCatalogStats()
@@ -159,10 +191,13 @@ app.post('/api/session/reset', c => {
 
 app.get('/api/provider', c => c.json({ provider: activeProvider }))
 
-app.get('/api/env-status', c => c.json({
+// Gated like their POST siblings — whether a gateway key is configured is reconnaissance
+// value only (never the key itself), but there's no reason to leave it unauthenticated
+// reachable when the write side already isn't.
+app.get('/api/env-status', adminOnly(c => c.json({
   gatewayKey:  !!process.env.AI_GATEWAY_API_KEY,
   useFixtures: useFixtures,
-}))
+})))
 
 app.post('/api/provider', adminOnly(async c => {
   const { provider } = await c.req.json<{ provider: ProviderKey }>()
@@ -177,7 +212,7 @@ app.post('/api/provider', adminOnly(async c => {
 // Gateway recognizes works. Not pre-validated: a bad ID just fails naturally on the next
 // chat call, same as any other LLM error. Resets to the adapter's own default whenever the
 // provider switches (Claude/OpenAI model IDs are different namespaces).
-app.get('/api/chat-model', c => c.json({ model: llm.chatModelOverride }))
+app.get('/api/chat-model', adminOnly(c => c.json({ model: llm.chatModelOverride })))
 
 app.post('/api/chat-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
@@ -188,7 +223,7 @@ app.post('/api/chat-model', adminOnly(async c => {
 }))
 
 // Same free-text pattern as /api/chat-model, independently for 'spec' and 'curation'.
-app.get('/api/spec-model', c => c.json({ model: llm.specModelOverride }))
+app.get('/api/spec-model', adminOnly(c => c.json({ model: llm.specModelOverride })))
 
 app.post('/api/spec-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
@@ -198,7 +233,7 @@ app.post('/api/spec-model', adminOnly(async c => {
   return c.json({ model: llm.specModelOverride })
 }))
 
-app.get('/api/curation-model', c => c.json({ model: llm.curationModelOverride }))
+app.get('/api/curation-model', adminOnly(c => c.json({ model: llm.curationModelOverride })))
 
 app.post('/api/curation-model', adminOnly(async c => {
   const { model } = await c.req.json<{ model: string }>()
