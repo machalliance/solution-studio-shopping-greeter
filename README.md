@@ -114,6 +114,12 @@ greeter/
 
 Run the test suite with `npm test` (`npm run test:coverage` for a coverage report).
 
+The sample catalog under `catalog/fixtures/` is fictional demo data — invented products and
+AI-generated photography, no `brand` values by default. See
+**[`catalog/README.md`](catalog/README.md)** and `NOTICE` for what that covers and doesn't.
+`SHOW_BRAND=true` re-enables brand display/curation-input if you populate your own catalog
+with real brand data.
+
 ---
 
 ## Documentation

@@ -13,8 +13,7 @@
   "hits": [
     {
       "objectID": "dress-001",
-      "name": "Wrap Midi Dress — Terracotta",
-      "brand": "Reformation",
+      "name": "Wrap Midi Dress \u2014 Terracotta",
       "price": 248,
       "currency": "USD",
       "category": "dress",
@@ -41,8 +40,7 @@
     },
     {
       "objectID": "dress-002",
-      "name": "Slip Dress — Champagne",
-      "brand": "Vince",
+      "name": "Slip Dress \u2014 Champagne",
       "price": 295,
       "currency": "USD",
       "category": "dress",
@@ -69,8 +67,7 @@
     },
     {
       "objectID": "dress-003",
-      "name": "Linen Shirt Dress — Stone",
-      "brand": "Arket",
+      "name": "Linen Shirt Dress \u2014 Stone",
       "price": 145,
       "currency": "USD",
       "category": "dress",
@@ -91,14 +88,13 @@
       "url": "/products/linen-shirt-dress-stone",
       "inStock": true,
       "colourHex": "#C4B89A",
-      "description": "Linen shirt dress in stone. Belted or loose — relaxed smart casual.",
+      "description": "Linen shirt dress in stone. Belted or loose \u2014 relaxed smart casual.",
       "imagePrompt": "Oversized linen shirt dress in stone, relaxed fit, lightweight natural fabric, dropped shoulders, long sleeves.",
       "colourFamily": "stone"
     },
     {
       "objectID": "dress-004",
-      "name": "Knit Midi Dress — Camel",
-      "brand": "Anine Bing",
+      "name": "Knit Midi Dress \u2014 Camel",
       "price": 320,
       "currency": "USD",
       "category": "dress",
@@ -125,8 +121,7 @@
     },
     {
       "objectID": "dress-005",
-      "name": "Satin Midi Dress — Sage",
-      "brand": "Vince",
+      "name": "Satin Midi Dress \u2014 Sage",
       "price": 285,
       "currency": "USD",
       "category": "dress",
@@ -149,13 +144,12 @@
       "url": "/products/satin-midi-dress-sage",
       "inStock": true,
       "colourHex": "#8A9E88",
-      "description": "Satin midi dress in sage. Fluid and earthy — works warm or with a light jacket.",
+      "description": "Satin midi dress in sage. Fluid and earthy \u2014 works warm or with a light jacket.",
       "imagePrompt": "Sage satin midi dress for women, thin adjustable straps, bias-cut fluid drape, subtle sheen, midi length, flat lay."
     },
     {
       "objectID": "dress-006",
-      "name": "Midi Skirt — Camel",
-      "brand": "Max Mara",
+      "name": "Midi Skirt \u2014 Camel",
       "price": 295,
       "currency": "USD",
       "category": "dress",
@@ -177,13 +171,12 @@
       "url": "/products/midi-skirt-camel",
       "inStock": true,
       "colourHex": "#C4935A",
-      "description": "Tailored midi skirt in camel. Straight cut, below knee — pairs with a cami or fitted knit.",
+      "description": "Tailored midi skirt in camel. Straight cut, below knee \u2014 pairs with a cami or fitted knit.",
       "imagePrompt": "Camel tailored straight midi skirt for women, below-knee length, structured woven fabric, back slit, clean flat-front waistband, flat lay."
     },
     {
       "objectID": "dress-007",
-      "name": "Satin Midi Skirt — Midnight",
-      "brand": "Raey",
+      "name": "Satin Midi Skirt \u2014 Midnight",
       "price": 175,
       "currency": "USD",
       "category": "dress",
@@ -206,13 +199,12 @@
       "url": "/products/satin-midi-skirt-midnight",
       "inStock": true,
       "colourHex": "#1A1A2E",
-      "description": "Satin midi skirt in midnight. Lustrous and evening-ready — pairs with a silk cami or fine knit.",
+      "description": "Satin midi skirt in midnight. Lustrous and evening-ready \u2014 pairs with a silk cami or fine knit.",
       "imagePrompt": "Midnight navy satin midi skirt for women, fluid drape, subtle sheen, elasticated waist, mid-calf length, flat lay."
     },
     {
       "objectID": "dress-008",
-      "name": "Pleated Midi Skirt — Ivory",
-      "brand": "Ganni",
+      "name": "Pleated Midi Skirt \u2014 Ivory",
       "price": 195,
       "currency": "USD",
       "category": "dress",
@@ -235,13 +227,12 @@
       "url": "/products/pleated-midi-skirt-ivory",
       "inStock": true,
       "colourHex": "#F5F0E6",
-      "description": "Pleated midi skirt in ivory. Lightweight and feminine — ideal for a warm evening.",
+      "description": "Pleated midi skirt in ivory. Lightweight and feminine \u2014 ideal for a warm evening.",
       "imagePrompt": "Ivory pleated midi skirt for women, fine accordion pleats, lightweight flowing fabric, elasticated waist, below-knee length, flat lay."
     },
     {
       "objectID": "dress-009",
       "name": "Floral Print Maxi Dress",
-      "brand": "Everlane",
       "price": 98,
       "currency": "USD",
       "category": "dress",
@@ -268,7 +259,6 @@
     {
       "objectID": "dress-010",
       "name": "Geometric Stripe Maxi Dress",
-      "brand": "Gap",
       "price": 89,
       "currency": "USD",
       "category": "dress",
@@ -294,7 +284,6 @@
     {
       "objectID": "dress-011",
       "name": "Abstract Print Maxi Dress",
-      "brand": "Uniqlo",
       "price": 79,
       "currency": "USD",
       "category": "dress",

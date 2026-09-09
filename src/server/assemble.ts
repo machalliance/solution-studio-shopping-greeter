@@ -1,4 +1,4 @@
-import { llm, search, cms, zeroResultsAction } from './config.js'
+import { llm, search, cms, zeroResultsAction, showBrand } from './config.js'
 import { catalogStats } from './catalogStats.js'
 import { specCache, budgetCache, curatedOutfitCache, type CachedSpec } from './stores.js'
 import { categoryDisplayName } from '../agent/intent.js'
@@ -295,13 +295,16 @@ export async function buildCuratedOutfits(
 ): Promise<CuratedOutfit[]> {
   const budget = parseBudgetUpperBound(intent.constraints.budget)
 
-  // Slim product lists for the LLM prompt (no images, no rationale text)
+  // Slim product lists for the LLM prompt (no images, no rationale text). brand is omitted
+  // unless showBrand is on — see catalog/README.md — so the curation model's choices can't
+  // be steered by a real-world brand's style/prestige associations that a fictional or absent
+  // brand wouldn't carry.
   const categoryProducts = categoryResults.map(cat => ({
     category: cat.name,
     products: [...cat.products, ...cat.scrollProducts].map(p => ({
       id: p.id,
       name: p.name,
-      brand: p.brand,
+      brand: showBrand ? p.brand : undefined,
       tags: p.tags,
       price: p.price,
       currency: p.currency,

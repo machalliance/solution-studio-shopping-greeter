@@ -1,0 +1,9 @@
+The MIT license in LICENSE covers the source code in this repository.
+
+It does not extend to:
+
+- The "MACH Alliance" name and logo (catalog/images/mach-alliance-logo.svg, and its use in
+  the demo/settings UI). These remain the property of MACH Alliance, Inc. and are not licensed
+  for reuse, redistribution, or sale under the MIT grant above.
+- Third-party brand names that appear in the sample catalog data (catalog/fixtures/). See
+  catalog/README.md for what that data is and is not.

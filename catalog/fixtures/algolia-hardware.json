@@ -5,13 +5,12 @@
       "scandi",
       "coastal"
     ],
-    "description": "Bathroom hardware — towel bars, hooks, toilet paper holders, cabinet pulls."
+    "description": "Bathroom hardware \u2014 towel bars, hooks, toilet paper holders, cabinet pulls."
   },
   "hits": [
     {
       "objectID": "hardware-001",
       "name": "Curve Cabinet Pull Set (6pk)",
-      "brand": "Häfele",
       "price": 39,
       "currency": "USD",
       "category": "hardware",
@@ -35,7 +34,6 @@
     {
       "objectID": "hardware-002",
       "name": "Minimal Towel Bar 18\"",
-      "brand": "Vola",
       "price": 59,
       "currency": "USD",
       "category": "hardware",
@@ -59,7 +57,6 @@
     {
       "objectID": "hardware-003",
       "name": "Robe Hook (2pk)",
-      "brand": "Skagerak",
       "price": 29,
       "currency": "USD",
       "category": "hardware",
@@ -83,7 +80,6 @@
     {
       "objectID": "hardware-004",
       "name": "Shore Cabinet Pull Set (6pk)",
-      "brand": "Liberty",
       "price": 44,
       "currency": "USD",
       "category": "hardware",
@@ -107,7 +103,6 @@
     {
       "objectID": "hardware-005",
       "name": "Coastal Towel Hook Set (3pk)",
-      "brand": "Moen",
       "price": 29,
       "currency": "USD",
       "category": "hardware",
@@ -131,7 +126,6 @@
     {
       "objectID": "hardware-006",
       "name": "Rope Toilet Paper Holder",
-      "brand": "Pottery Barn",
       "price": 34,
       "currency": "USD",
       "category": "hardware",
@@ -155,7 +149,6 @@
     {
       "objectID": "hardware-007",
       "name": "Linear Towel Bar Set",
-      "brand": "Restoration Hardware",
       "price": 285,
       "currency": "USD",
       "category": "hardware",
@@ -176,13 +169,12 @@
       ],
       "url": "/products/linear-towel-bar-set",
       "inStock": true,
-      "description": "This silver towel bar set from Restoration Hardware features a polished chrome finish and clean linear design perfect for modern bathrooms. Wall-mounted installation provides sturdy, space-saving storage for your towels and linens.",
+      "description": "This silver towel bar set features a polished chrome finish and clean linear design perfect for modern bathrooms. Wall-mounted installation provides sturdy, space-saving storage for your towels and linens.",
       "imagePrompt": "Modern minimalist silver chrome wall-mounted linear towel bar set for bathroom, sleek contemporary design, polished metallic finish"
     },
     {
       "objectID": "hardware-008",
       "name": "Matte Black Towel Bar Ensemble",
-      "brand": "Waterworks",
       "price": 320,
       "currency": "USD",
       "category": "hardware",
@@ -203,13 +195,12 @@
       ],
       "url": "/products/matte-black-towel-bar-ensemble",
       "inStock": true,
-      "description": "This matte black towel bar ensemble from Waterworks features clean, contemporary lines perfect for modern bathroom designs. The wall-mounted hardware combines sleek style with durable functionality.",
+      "description": "This matte black towel bar ensemble features clean, contemporary lines perfect for modern bathroom designs. The wall-mounted hardware combines sleek style with durable functionality.",
       "imagePrompt": "Contemporary wall-mounted matte black towel bar with clean lines, modern bathroom hardware fixture, minimalist design aesthetic."
     },
     {
       "objectID": "hardware-009",
       "name": "Brushed Nickel Towel Bar Collection",
-      "brand": "Kohler",
       "price": 245,
       "currency": "USD",
       "category": "hardware",
@@ -230,13 +221,12 @@
       ],
       "url": "/products/brushed-nickel-towel-bar-collection",
       "inStock": true,
-      "description": "This brushed nickel towel bar features a timeless gray finish that complements any modern or traditional bathroom design. A durable wall-mounted hardware piece from Kohler, it combines elegant style with reliable everyday functionality.",
+      "description": "This brushed nickel towel bar features a timeless gray finish that complements any modern or traditional bathroom design. A durable wall-mounted hardware piece, it combines elegant style with reliable everyday functionality.",
       "imagePrompt": "Classic brushed nickel wall-mounted towel bar in gray finish, timeless bathroom hardware design, elegant minimalist style"
     },
     {
       "objectID": "hardware-010",
       "name": "Polished Brass Towel Bar Set",
-      "brand": "Rejuvenation",
       "price": 380,
       "currency": "USD",
       "category": "hardware",
@@ -263,7 +253,6 @@
     {
       "objectID": "hardware-011",
       "name": "Oil Rubbed Bronze Towel Bar Suite",
-      "brand": "Rohl",
       "price": 295,
       "currency": "USD",
       "category": "hardware",
@@ -284,7 +273,7 @@
       ],
       "url": "/products/oil-rubbed-bronze-towel-bar-suite",
       "inStock": true,
-      "description": "This oil rubbed bronze towel bar suite from Rohl features a rich, dark finish that complements transitional bathroom designs. The wall-mounted hardware set delivers timeless elegance and durability for everyday use.",
+      "description": "This oil rubbed bronze towel bar suite features a rich, dark finish that complements transitional bathroom designs. The wall-mounted hardware set delivers timeless elegance and durability for everyday use.",
       "imagePrompt": "Wall-mounted transitional oil rubbed bronze towel bar suite, elegant bathroom hardware fixture, polished bronze finish, modern minimalist design."
     }
   ],

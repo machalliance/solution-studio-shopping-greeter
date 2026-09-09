@@ -16,7 +16,6 @@
     {
       "objectID": "belt-001",
       "name": "Tan Leather Belt",
-      "brand": "Anderson's",
       "price": 85,
       "currency": "USD",
       "category": "belt",
@@ -42,7 +41,6 @@
     {
       "objectID": "belt-002",
       "name": "Cognac Suede Belt",
-      "brand": "Magnanni",
       "price": 110,
       "currency": "USD",
       "category": "belt",
@@ -68,7 +66,6 @@
     {
       "objectID": "belt-003",
       "name": "Braided Leather Belt",
-      "brand": "Orciani",
       "price": 95,
       "currency": "USD",
       "category": "belt",
@@ -93,8 +90,7 @@
     },
     {
       "objectID": "belt-004",
-      "name": "Thin Leather Belt — Cognac",
-      "brand": "Clare V.",
+      "name": "Thin Leather Belt \u2014 Cognac",
       "price": 98,
       "currency": "USD",
       "category": "belt",
@@ -120,8 +116,7 @@
     },
     {
       "objectID": "belt-005",
-      "name": "Woven Fabric Belt — Sand",
-      "brand": "Loro Piana",
+      "name": "Woven Fabric Belt \u2014 Sand",
       "price": 145,
       "currency": "USD",
       "category": "belt",
@@ -143,13 +138,12 @@
       "url": "/products/woven-fabric-belt-sand",
       "inStock": true,
       "colourHex": "#D4C4A8",
-      "description": "Woven fabric belt in sand. Relaxed and earthy — pairs with linen trousers.",
+      "description": "Woven fabric belt in sand. Relaxed and earthy \u2014 pairs with linen trousers.",
       "imagePrompt": "Woven fabric belt in sand beige, lightweight construction, structured woven texture, adjustable fit, earthy neutral tone."
     },
     {
       "objectID": "belt-006",
       "name": "Dark Brown Leather Belt",
-      "brand": "Anderson's",
       "price": 90,
       "currency": "USD",
       "category": "belt",
@@ -175,7 +169,6 @@
     {
       "objectID": "belt-007",
       "name": "Black Leather Belt",
-      "brand": "Magnanni",
       "price": 95,
       "currency": "USD",
       "category": "belt",

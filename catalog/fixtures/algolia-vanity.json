@@ -11,7 +11,6 @@
     {
       "objectID": "vanity-001",
       "name": "Fjord 22\" Wall-Mount Vanity",
-      "brand": "Moebe",
       "price": 449,
       "currency": "USD",
       "category": "vanity",
@@ -37,7 +36,6 @@
     {
       "objectID": "vanity-002",
       "name": "Boda Freestanding Vanity 20\"",
-      "brand": "Normann",
       "price": 329,
       "currency": "USD",
       "category": "vanity",
@@ -61,7 +59,6 @@
     {
       "objectID": "vanity-003",
       "name": "Lund Floating Vanity 24\"",
-      "brand": "Kvik",
       "price": 579,
       "currency": "USD",
       "category": "vanity",
@@ -85,8 +82,7 @@
     },
     {
       "objectID": "vanity-004",
-      "name": "Nørre Open Shelf Vanity 18\"",
-      "brand": "Skagerak",
+      "name": "N\u00f8rre Open Shelf Vanity 18\"",
       "price": 289,
       "currency": "USD",
       "category": "vanity",
@@ -110,7 +106,6 @@
     {
       "objectID": "vanity-005",
       "name": "Strand Minimal Vanity 22\"",
-      "brand": "Vipp",
       "price": 699,
       "currency": "USD",
       "category": "vanity",
@@ -134,7 +129,6 @@
     {
       "objectID": "vanity-006",
       "name": "Nantucket 24\" Shaker Vanity",
-      "brand": "Kohler",
       "price": 479,
       "currency": "USD",
       "category": "vanity",
@@ -159,7 +153,6 @@
     {
       "objectID": "vanity-007",
       "name": "Driftwood 22\" Floating Vanity",
-      "brand": "Wyndham",
       "price": 549,
       "currency": "USD",
       "category": "vanity",
@@ -185,7 +178,6 @@
     {
       "objectID": "vanity-008",
       "name": "Harbour 20\" Wall-Mount Vanity",
-      "brand": "Native Trails",
       "price": 389,
       "currency": "USD",
       "category": "vanity",
@@ -210,7 +202,6 @@
     {
       "objectID": "vanity-009",
       "name": "Breakwater 24\" Freestanding Vanity",
-      "brand": "James Martin",
       "price": 619,
       "currency": "USD",
       "category": "vanity",

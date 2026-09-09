@@ -13,8 +13,7 @@
   "hits": [
     {
       "objectID": "socks-001",
-      "name": "Merino Ankle Socks — Stone",
-      "brand": "Falke",
+      "name": "Merino Ankle Socks \u2014 Stone",
       "price": 24,
       "currency": "USD",
       "category": "socks",
@@ -40,8 +39,7 @@
     },
     {
       "objectID": "socks-002",
-      "name": "Cotton Rib Socks — Sage",
-      "brand": "Pantherella",
+      "name": "Cotton Rib Socks \u2014 Sage",
       "price": 18,
       "currency": "USD",
       "category": "socks",
@@ -68,7 +66,6 @@
     {
       "objectID": "socks-003",
       "name": "No-Show Liner Socks (3pk)",
-      "brand": "Bombas",
       "price": 29,
       "currency": "USD",
       "category": "socks",
@@ -87,13 +84,12 @@
       "url": "/products/no-show-liner-socks",
       "inStock": true,
       "colourHex": "#E0D8CC",
-      "description": "No-show liners — for when the look says no sock but comfort disagrees.",
+      "description": "No-show liners \u2014 for when the look says no sock but comfort disagrees.",
       "imagePrompt": "Three lightweight no-show liner socks in neutral tones, ultra-thin cotton blend, minimal arch support, loafer-friendly cut with shallow heel pocket."
     },
     {
       "objectID": "socks-004",
-      "name": "Sheer Ankle Sock — Ivory",
-      "brand": "Falke",
+      "name": "Sheer Ankle Sock \u2014 Ivory",
       "price": 19,
       "currency": "USD",
       "category": "socks",
@@ -121,7 +117,6 @@
     {
       "objectID": "socks-005",
       "name": "Organic Cotton Argyle Socks - Navy & Cream",
-      "brand": "Smartwool",
       "price": 35,
       "currency": "USD",
       "category": "socks",
@@ -141,13 +136,12 @@
       ],
       "url": "/products/organic-cotton-argyle-socks-navy-cream",
       "inStock": true,
-      "description": "Smartwool Organic Cotton Argyle Socks in navy with cream accents feature a classic diamond pattern that works for both the office and weekend. Made from organic cotton, they're breathable enough for everyday wear without sacrificing durability.",
+      "description": "Organic cotton argyle socks in navy with cream accents feature a classic diamond pattern that works for both the office and weekend. Made from organic cotton, they're breathable enough for everyday wear without sacrificing durability.",
       "imagePrompt": "Crew-cut men's socks in navy organic cotton, classic argyle pattern with cream accents, comfortable everyday wear."
     },
     {
       "objectID": "socks-006",
       "name": "Organic Cotton Argyle Socks - Charcoal & Gray",
-      "brand": "Darn Tough",
       "price": 35,
       "currency": "USD",
       "category": "socks",
@@ -173,7 +167,6 @@
     {
       "objectID": "socks-007",
       "name": "Organic Cotton Argyle Socks - Burgundy & Tan",
-      "brand": "Bombas",
       "price": 35,
       "currency": "USD",
       "category": "socks",
@@ -199,7 +192,6 @@
     {
       "objectID": "socks-008",
       "name": "Organic Cotton Argyle Socks - Forest Green & Cream",
-      "brand": "Patagonia",
       "price": 35,
       "currency": "USD",
       "category": "socks",
@@ -225,7 +217,6 @@
     {
       "objectID": "socks-009",
       "name": "Organic Cotton Argyle Socks - Black & White",
-      "brand": "Allbirds",
       "price": 35,
       "currency": "USD",
       "category": "socks",

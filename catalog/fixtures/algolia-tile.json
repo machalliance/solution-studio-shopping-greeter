@@ -10,8 +10,7 @@
   "hits": [
     {
       "objectID": "tile-001",
-      "name": "Bone White Subway Tile 3×6\"",
-      "brand": "Fireclay",
+      "name": "Bone White Subway Tile 3\u00d76\"",
       "price": 4.99,
       "currency": "USD",
       "category": "tile",
@@ -30,14 +29,13 @@
       "url": "/products/bone-white-subway-tile",
       "inStock": true,
       "colourHex": "#F2EFEA",
-      "description": "Handcrafted matte white subway tile 3×6\". Each tile has slight variation — very Scandi.",
+      "description": "Handcrafted matte white subway tile 3\u00d76\". Each tile has slight variation \u2014 very Scandi.",
       "imagePrompt": "Bone white matte subway tile, 3x6 inches, rectangular glazed ceramic with subtle surface texture and clean grout lines.",
       "colourFamily": "white"
     },
     {
       "objectID": "tile-002",
-      "name": "Light Grey Large Format 12×24\"",
-      "brand": "Porcelain Plus",
+      "name": "Light Grey Large Format 12\u00d724\"",
       "price": 6.49,
       "currency": "USD",
       "category": "tile",
@@ -56,14 +54,13 @@
       "url": "/products/light-grey-large-format",
       "inStock": true,
       "colourHex": "#DCDCD8",
-      "description": "Light grey porcelain tile 12×24\". Minimal grout lines create a clean, expansive floor.",
+      "description": "Light grey porcelain tile 12\u00d724\". Minimal grout lines create a clean, expansive floor.",
       "imagePrompt": "Light grey porcelain floor tile, matte finish, rectangular 12x24 inch format, clean edges, uniform surface texture",
       "colourFamily": "grey"
     },
     {
       "objectID": "tile-003",
       "name": "White Hexagon Mosaic",
-      "brand": "Ann Sacks",
       "price": 9.99,
       "currency": "USD",
       "category": "tile",
@@ -88,8 +85,7 @@
     },
     {
       "objectID": "tile-004",
-      "name": "Zellige Gloss White 4×4\"",
-      "brand": "Mosaic House",
+      "name": "Zellige Gloss White 4\u00d74\"",
       "price": 14.99,
       "currency": "USD",
       "category": "tile",
@@ -114,8 +110,7 @@
     },
     {
       "objectID": "tile-005",
-      "name": "Seafoam Gloss Subway 3×6\"",
-      "brand": "Fireclay",
+      "name": "Seafoam Gloss Subway 3\u00d76\"",
       "price": 5.49,
       "currency": "USD",
       "category": "tile",
@@ -135,14 +130,13 @@
       "url": "/products/seafoam-gloss-subway",
       "inStock": true,
       "colourHex": "#A8C8C0",
-      "description": "Gloss subway tile in soft seafoam. A classic coastal colour — works with white vanities and brass.",
+      "description": "Gloss subway tile in soft seafoam. A classic coastal colour \u2014 works with white vanities and brass.",
       "imagePrompt": "Seafoam glossy subway tile, 3x6 inches, smooth polished surface, bright aqua-green ceramic finish, rectangular beveled edges, clean modernist aesthetic.",
       "colourFamily": "seafoam"
     },
     {
       "objectID": "tile-006",
       "name": "Pebble Shore Mosaic",
-      "brand": "Tile Bar",
       "price": 12.99,
       "currency": "USD",
       "category": "tile",
@@ -167,8 +161,7 @@
     },
     {
       "objectID": "tile-007",
-      "name": "Sandy Beige Limestone 12×12\"",
-      "brand": "Stone Source",
+      "name": "Sandy Beige Limestone 12\u00d712\"",
       "price": 8.99,
       "currency": "USD",
       "category": "tile",
@@ -187,14 +180,13 @@
       "url": "/products/sandy-beige-limestone",
       "inStock": true,
       "colourHex": "#D4C4A8",
-      "description": "Honed limestone tile in sandy beige. Warm and natural — classic Beach House floor.",
+      "description": "Honed limestone tile in sandy beige. Warm and natural \u2014 classic Beach House floor.",
       "imagePrompt": "Honed beige limestone floor tile, 12x12 inch square, matte finish, natural stone texture with subtle veining.",
       "colourFamily": "natural stone"
     },
     {
       "objectID": "tile-008",
-      "name": "Driftwood Plank Tile 4×24\"",
-      "brand": "Marazzi",
+      "name": "Driftwood Plank Tile 4\u00d724\"",
       "price": 3.99,
       "currency": "USD",
       "category": "tile",

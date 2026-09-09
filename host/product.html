@@ -225,6 +225,10 @@ const slug = location.pathname.split('/').filter(Boolean).pop() || '';
 const urlParams = new URLSearchParams(location.search);
 const urlSkin = urlParams.get('skin');
 let currentSkin = urlSkin || 'project';
+// Off by default — see catalog/README.md. Independent of whether a product record actually
+// carries a brand value, so a future fixture that re-adds one still doesn't render unless this
+// is explicitly turned on too.
+let showBrand = false;
 
 // Same-origin with the Greeter's own /panel route, so this can read its saved-session
 // key directly — no postMessage round-trip needed to know whether one exists.
@@ -282,7 +286,7 @@ function renderProduct(p) {
       </div>
 
       <div class="info-col">
-        ${p.brand ? `<div class="product-brand">${esc(p.brand)}</div>` : ''}
+        ${showBrand && p.brand ? `<div class="product-brand">${esc(p.brand)}</div>` : ''}
         <h1 class="product-name">${esc(p.name)}</h1>
         <div class="product-price-row">
           <span class="product-price">${esc(formatPrice(p.price, p.category))}</span>
@@ -315,7 +319,7 @@ function renderProduct(p) {
     </div>
   `;
 
-  document.getElementById('pageTitle').textContent = `${p.name}${p.brand ? ' — ' + p.brand : ''}`;
+  document.getElementById('pageTitle').textContent = `${p.name}${showBrand && p.brand ? ' — ' + p.brand : ''}`;
 }
 
 function renderNotFound() {
@@ -331,9 +335,11 @@ function renderNotFound() {
 setSkin(currentSkin);
 
 // Fetch product from API — works for all fixture products
-fetch('/api/product/' + encodeURIComponent(slug))
-  .then(r => r.ok ? r.json() : null)
-  .then(product => {
+Promise.all([
+  fetch('/api/product/' + encodeURIComponent(slug)).then(r => r.ok ? r.json() : null),
+  fetch('/health').then(r => r.json()).then(h => { showBrand = !!h.showBrand; }).catch(() => {}),
+])
+  .then(([product]) => {
     if (product && !product.error) {
       // Infer skin from category if not set by URL param
       if (!urlSkin) {

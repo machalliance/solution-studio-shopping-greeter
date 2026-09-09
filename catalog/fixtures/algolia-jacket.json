@@ -16,7 +16,6 @@
     {
       "objectID": "jacket-001",
       "name": "Linen Blazer",
-      "brand": "Sandro",
       "price": 285,
       "currency": "USD",
       "category": "jacket",
@@ -43,7 +42,6 @@
     {
       "objectID": "jacket-002",
       "name": "Cotton Harrington Jacket",
-      "brand": "A.P.C.",
       "price": 230,
       "currency": "USD",
       "category": "jacket",
@@ -70,7 +68,6 @@
     {
       "objectID": "jacket-003",
       "name": "Merino Sport Coat",
-      "brand": "Theory",
       "price": 395,
       "currency": "USD",
       "category": "jacket",
@@ -97,7 +94,6 @@
     {
       "objectID": "jacket-004",
       "name": "Terracotta Bomber",
-      "brand": "Norse Projects",
       "price": 310,
       "currency": "USD",
       "category": "jacket",
@@ -122,8 +118,7 @@
     },
     {
       "objectID": "jacket-005",
-      "name": "Structured Blazer — Cream",
-      "brand": "Theory",
+      "name": "Structured Blazer \u2014 Cream",
       "price": 395,
       "currency": "USD",
       "category": "jacket",
@@ -150,7 +145,6 @@
     {
       "objectID": "jacket-006",
       "name": "Longline Linen Jacket",
-      "brand": "Vince",
       "price": 345,
       "currency": "USD",
       "category": "jacket",
@@ -178,7 +172,6 @@
     {
       "objectID": "jacket-007",
       "name": "Cropped Leather Jacket",
-      "brand": "Deadwood",
       "price": 420,
       "currency": "USD",
       "category": "jacket",
@@ -204,8 +197,7 @@
     },
     {
       "objectID": "jacket-008",
-      "name": "Wrap Blazer — Camel",
-      "brand": "Totême",
+      "name": "Wrap Blazer \u2014 Camel",
       "price": 465,
       "currency": "USD",
       "category": "jacket",
@@ -233,7 +225,6 @@
     {
       "objectID": "jacket-009",
       "name": "Navy Wool Blazer",
-      "brand": "Reiss",
       "price": 365,
       "currency": "USD",
       "category": "jacket",
@@ -260,7 +251,6 @@
     {
       "objectID": "jacket-010",
       "name": "Charcoal Sport Coat",
-      "brand": "Club Monaco",
       "price": 340,
       "currency": "USD",
       "category": "jacket",
@@ -286,7 +276,6 @@
     {
       "objectID": "jacket-011",
       "name": "Forest Green Field Jacket",
-      "brand": "Corridor",
       "price": 295,
       "currency": "USD",
       "category": "jacket",
@@ -307,13 +296,12 @@
       "url": "/products/forest-green-field-jacket",
       "inStock": true,
       "colourHex": "#2D4A2D",
-      "description": "Deep forest green cotton field jacket. Four-pocket utility silhouette — elevated enough for dinner.",
+      "description": "Deep forest green cotton field jacket. Four-pocket utility silhouette \u2014 elevated enough for dinner.",
       "imagePrompt": "Forest green cotton field jacket, relaxed fit, structured shoulders, multiple utility pockets, worn-in canvas weave."
     },
     {
       "objectID": "jacket-012",
       "name": "Midnight Blue Overshirt Jacket",
-      "brand": "Oliver Spencer",
       "price": 280,
       "currency": "USD",
       "category": "jacket",
@@ -340,7 +328,6 @@
     {
       "objectID": "jacket-013",
       "name": "Burgundy Corduroy Blazer",
-      "brand": "Drake's",
       "price": 420,
       "currency": "USD",
       "category": "jacket",
@@ -362,13 +349,12 @@
       "url": "/products/burgundy-corduroy-blazer",
       "inStock": true,
       "colourHex": "#6B2737",
-      "description": "Burgundy corduroy blazer with patch pockets. A rich, textured alternative to navy — confident without trying.",
+      "description": "Burgundy corduroy blazer with patch pockets. A rich, textured alternative to navy \u2014 confident without trying.",
       "imagePrompt": "Burgundy corduroy blazer, tailored single-breasted cut, structured shoulders, ribbed fabric texture, notched lapels, button closure."
     },
     {
       "objectID": "jacket-014",
       "name": "Structured Flannel Field Jacket",
-      "brand": "Pill",
       "price": 185,
       "currency": "USD",
       "category": "jacket",
@@ -395,7 +381,6 @@
     {
       "objectID": "jacket-015",
       "name": "Canvas-Lined Flannel Field Jacket",
-      "brand": "Filson",
       "price": 310,
       "currency": "USD",
       "category": "jacket",
@@ -416,13 +401,12 @@
       ],
       "url": "/products/canvas-lined-flannel-field-jacket",
       "inStock": true,
-      "description": "Filson's olive canvas-lined flannel field jacket pairs a rugged wool-cotton shell with reinforced canvas for the kind of durability that improves with wear. Built for serious outdoor work but structured enough for everyday casual wear.",
+      "description": "This olive canvas-lined flannel field jacket pairs a rugged wool-cotton shell with reinforced canvas for the kind of durability that improves with wear. Built for serious outdoor work but structured enough for everyday casual wear.",
       "imagePrompt": "Structured men's flannel field jacket in olive canvas, rugged outdoor design, durable construction, reinforced seams."
     },
     {
       "objectID": "jacket-016",
       "name": "Heavy-Weight Flannel Field Jacket",
-      "brand": "L.L.Bean",
       "price": 195,
       "currency": "USD",
       "category": "jacket",
@@ -444,13 +428,12 @@
       ],
       "url": "/products/heavy-weight-flannel-field-jacket",
       "inStock": true,
-      "description": "Heavy-weight red flannel field jacket from L.L.Bean with a structured cotton twill lining that holds its shape through seasons of wear. Durable snap closures and deep patch pockets make it ready for weekend hikes or backyard work.",
+      "description": "Heavy-weight red flannel field jacket with a structured cotton twill lining that holds its shape through seasons of wear. Durable snap closures and deep patch pockets make it ready for weekend hikes or backyard work.",
       "imagePrompt": "Structured men's field jacket in red flannel, heritage outdoor styling, robust workwear construction, weathered finish."
     },
     {
       "objectID": "jacket-017",
       "name": "Performance Flannel Field Jacket",
-      "brand": "Patagonia",
       "price": 225,
       "currency": "USD",
       "category": "jacket",
@@ -471,13 +454,12 @@
       ],
       "url": "/products/performance-flannel-field-jacket",
       "inStock": true,
-      "description": "Charcoal performance flannel with a structured cut that moves between job sites and mountain trails without wrinkling or sagging. Patagonia's tough weave resists snags while breathable enough for active days.",
+      "description": "Charcoal performance flannel with a structured cut that moves between job sites and mountain trails without wrinkling or sagging. The tough weave resists snags while breathable enough for active days.",
       "imagePrompt": "Structured men's field jacket in charcoal flannel, outdoor-ready with reinforced seams and utility pocket detailing."
     },
     {
       "objectID": "jacket-019",
       "name": "Patchwork Utility Jacket",
-      "brand": "SDT",
       "price": 399,
       "currency": "USD",
       "category": "jacket",
@@ -502,7 +484,6 @@
     {
       "objectID": "jacket-020",
       "name": "Alpine Peak Waterproof Jacket",
-      "brand": "Mountain Gear Co",
       "price": 189.99,
       "currency": "USD",
       "category": "jacket",
@@ -528,7 +509,6 @@
     {
       "objectID": "jacket-021",
       "name": "Trail Breeze Lightweight Shell",
-      "brand": "Summit Sport",
       "price": 149.99,
       "currency": "USD",
       "category": "jacket",
@@ -548,13 +528,12 @@
       ],
       "url": "/products/trail-breeze-lightweight-shell",
       "inStock": true,
-      "description": "Rust lightweight shell jacket designed for outdoor adventures with breathable fabric that keeps you comfortable during active pursuits. Perfect for hiking and casual wear, this Summit Sport style combines protection with a sleek, functional design.",
+      "description": "Rust lightweight shell jacket designed for outdoor adventures with breathable fabric that keeps you comfortable during active pursuits. Perfect for hiking and casual wear, this style combines protection with a sleek, functional design.",
       "imagePrompt": "women's lightweight shell jacket in rust, breathable technical fabric, hiking trail active wear, side profile outdoor adventure gear"
     },
     {
       "objectID": "jacket-022",
       "name": "Nordic Fleece Lined Parka",
-      "brand": "Frostline",
       "price": 219.99,
       "currency": "USD",
       "category": "jacket",
@@ -574,13 +553,12 @@
       ],
       "url": "/products/nordic-fleece-lined-parka",
       "inStock": true,
-      "description": "The forest green Nordic Fleece Lined Parka from Frostline combines cozy warmth with casual style for your weekend adventures. Designed with a soft fleece lining and durable outer shell, this women's parka keeps you comfortable during cold-weather outings.",
+      "description": "The forest green Nordic Fleece Lined Parka combines cozy warmth with casual style for your weekend adventures. Designed with a soft fleece lining and durable outer shell, this women's parka keeps you comfortable during cold-weather outings.",
       "imagePrompt": "Women's forest green Nordic fleece-lined parka, heavy insulation, oversized fit, winter outdoor gear, professional product photography studio lighting"
     },
     {
       "objectID": "jacket-023",
       "name": "Venture Wind Resistant Jacket",
-      "brand": "Active Routes",
       "price": 159.99,
       "currency": "USD",
       "category": "jacket",
@@ -606,7 +584,6 @@
     {
       "objectID": "jacket-024",
       "name": "Evergreen Insulated Quilted Jacket",
-      "brand": "Nature's Edge",
       "price": 199.99,
       "currency": "USD",
       "category": "jacket",
@@ -626,13 +603,12 @@
       ],
       "url": "/products/evergreen-insulated-quilted-jacket",
       "inStock": true,
-      "description": "The brown Evergreen Insulated Quilted Jacket from Nature's Edge keeps you warm and comfortable during cold-weather adventures with its reliable insulation and durable quilted construction. Perfect for weekend getaways and casual outdoor activities, this versatile womens jacket pairs easily with your favorite winter outfits.",
+      "description": "The brown Evergreen Insulated Quilted Jacket keeps you warm and comfortable during cold-weather adventures with its reliable insulation and durable quilted construction. Perfect for weekend getaways and casual outdoor activities, this versatile womens jacket pairs easily with your favorite winter outfits.",
       "imagePrompt": "Brown quilted insulated women's winter jacket with a fitted silhouette, featuring vertical stitching patterns and outdoor functionality details."
     },
     {
       "objectID": "jacket-025",
       "name": "Vintage Corduroy Blazer",
-      "brand": "Ralph Lauren Polo",
       "price": 129.99,
       "currency": "USD",
       "category": "jacket",
@@ -651,13 +627,12 @@
       ],
       "url": "/products/vintage-corduroy-blazer",
       "inStock": true,
-      "description": "This brown corduroy blazer from Ralph Lauren Polo delivers timeless vintage style with its classic button-up design and textured fabric. Perfect for layering over casual or business-casual outfits, this men's piece combines retro charm with enduring versatility.",
+      "description": "This brown corduroy blazer delivers timeless vintage style with its classic button-up design and textured fabric. Perfect for layering over casual or business-casual outfits, this men's piece combines retro charm with enduring versatility.",
       "imagePrompt": "Brown corduroy men's blazer vintage button-up, rich chocolate textured fabric with classic notch lapels and worn patina details."
     },
     {
       "objectID": "jacket-026",
       "name": "Vintage Plaid Blazer",
-      "brand": "Ralph Lauren Polo",
       "price": 139.99,
       "currency": "USD",
       "category": "jacket",
@@ -676,13 +651,12 @@
       ],
       "url": "/products/vintage-plaid-blazer",
       "inStock": true,
-      "description": "This vintage red plaid blazer from Ralph Lauren Polo features a classic button-up style perfect for adding timeless preppy style to any wardrobe. An authentic piece that works equally well dressed up or down.",
+      "description": "This vintage red plaid blazer features a classic button-up style perfect for adding timeless preppy style to any wardrobe. A versatile piece that works equally well dressed up or down.",
       "imagePrompt": "men's vintage plaid blazer in red wool, classic button-up design with traditional checked pattern and tailored fit"
     },
     {
       "objectID": "jacket-027",
       "name": "Vintage Polo Blazer",
-      "brand": "Ralph Lauren",
       "price": 185,
       "currency": "USD",
       "category": "jacket",
@@ -702,13 +676,12 @@
       ],
       "url": "/products/vintage-polo-blazer",
       "inStock": true,
-      "description": "This navy blazer from Ralph Lauren's vintage collection features the brand's iconic Polo styling with a relaxed, preppy fit that's perfect for layering or dressing up. A timeless piece that brings effortless sophistication to any wardrobe.",
+      "description": "This navy blazer channels a vintage collegiate aesthetic with classic polo styling and a relaxed, preppy fit that's perfect for layering or dressing up. A timeless piece that brings effortless sophistication to any wardrobe.",
       "imagePrompt": "polo women's blazer in navy cotton, vintage preppy style with relaxed fit and classic detailing"
     },
     {
       "objectID": "jacket-028",
-      "name": "Vintage Polo Sport Blazer",
-      "brand": "Ralph Lauren",
+      "name": "Vintage Sport Blazer",
       "price": 175,
       "currency": "USD",
       "category": "jacket",
@@ -728,7 +701,7 @@
       ],
       "url": "/products/vintage-polo-sport-blazer",
       "inStock": true,
-      "description": "Vintage Polo Sport Blazer in brown with a classic oversized silhouette, featuring the iconic Polo Sport branding and heritage construction. Perfect for layering or wearing as a statement piece, this timeless Ralph Lauren blazer captures the essence of 90s luxury sportswear.",
+      "description": "Vintage sport blazer in brown with a classic oversized silhouette and heritage construction. Perfect for layering or wearing as a statement piece, this timeless blazer captures the essence of 90s luxury sportswear.",
       "imagePrompt": "Smart clean women's blazer in rich brown wool, vintage polo heritage style with classic tailoring and timeless elegance."
     }
   ],

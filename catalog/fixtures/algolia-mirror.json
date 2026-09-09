@@ -11,7 +11,6 @@
     {
       "objectID": "mirror-001",
       "name": "Alvhem Round Mirror 24\"",
-      "brand": "Audo",
       "price": 129,
       "currency": "USD",
       "category": "mirror",
@@ -35,7 +34,6 @@
     {
       "objectID": "mirror-002",
       "name": "Bolin Oak Frame Mirror",
-      "brand": "Skagerak",
       "price": 179,
       "currency": "USD",
       "category": "mirror",
@@ -53,14 +51,13 @@
       "url": "/products/bolin-oak-frame-mirror",
       "inStock": true,
       "colourHex": "#C9B896",
-      "description": "Solid oak frame mirror. 20\"×28\". Pairs with oak vanities for a cohesive look.",
+      "description": "Solid oak frame mirror. 20\"\u00d728\". Pairs with oak vanities for a cohesive look.",
       "imagePrompt": "Rectangular oak-framed mirror with natural wood grain, clean modernist lines, solid construction, transparent background and save an PNG.",
       "colourFamily": "natural wood"
     },
     {
       "objectID": "mirror-003",
       "name": "Recessed Medicine Cabinet 20\"",
-      "brand": "Robern",
       "price": 349,
       "currency": "USD",
       "category": "mirror",
@@ -79,13 +76,12 @@
       "url": "/products/recessed-medicine-cabinet-20",
       "inStock": true,
       "colourHex": "#D8D8D8",
-      "description": "Recessed medicine cabinet with mirrored door. Frameless design. 20\"×26\".",
+      "description": "Recessed medicine cabinet with mirrored door. Frameless design. 20\"\u00d726\".",
       "imagePrompt": "Recessed medicine cabinet, 20 inches wide, frameless stainless steel, white interior shelves, flush-mounted wall installation."
     },
     {
       "objectID": "mirror-004",
       "name": "Dune Arch Mirror 24\"",
-      "brand": "Serena & Lily",
       "price": 149,
       "currency": "USD",
       "category": "mirror",
@@ -104,14 +100,13 @@
       "url": "/products/dune-arch-mirror",
       "inStock": true,
       "colourHex": "#C9A96E",
-      "description": "Arched mirror with natural rattan frame. 24\"×36\". Instantly coastal.",
+      "description": "Arched mirror with natural rattan frame. 24\"\u00d736\". Instantly coastal.",
       "imagePrompt": "Arched rattan frame mirror, natural woven texture, 24-inch diameter, coastal bohemian style, clean white backdrop.  Make sure there is a mirror in the frame.",
       "colourFamily": "natural"
     },
     {
       "objectID": "mirror-005",
       "name": "Shore Round Mirror 22\"",
-      "brand": "West Elm",
       "price": 119,
       "currency": "USD",
       "category": "mirror",
@@ -135,7 +130,6 @@
     {
       "objectID": "mirror-006",
       "name": "Nautical Porthole Mirror",
-      "brand": "Pottery Barn",
       "price": 189,
       "currency": "USD",
       "category": "mirror",

@@ -248,6 +248,10 @@ let activeFit      = urlParams.get('fit') || '';
 let currentSkin    = urlParams.get('skin') || 'project';
 let currentProducts = [];
 let currentStyleRelaxed = false;
+// Off by default — see catalog/README.md. Independent of whether a product record actually
+// carries a brand value, so a future fixture that re-adds one still doesn't render unless this
+// is explicitly turned on too.
+let showBrand = false;
 
 async function loadAndRender() {
   document.getElementById('resultsGrid').innerHTML =
@@ -261,11 +265,12 @@ async function loadAndRender() {
 
   let requestedStyle = null;
   try {
-    const res = await fetch(url);
+    const [res, health] = await Promise.all([fetch(url), fetch('/health').then(r => r.json())]);
     const data = await res.json();
     currentProducts = data.hits || [];
     currentStyleRelaxed = data.styleRelaxed || false;
     requestedStyle = data.requestedStyle || null;
+    showBrand = !!health.showBrand;
   } catch {
     currentProducts = [];
     currentStyleRelaxed = false;
@@ -381,7 +386,7 @@ function renderGrid() {
       <div class="result-body">
         <span class="result-tag">${esc(CATEGORY_LABELS[p.category] || p.category)}</span>
         <div class="result-name">${esc(p.name)}</div>
-        <div class="result-brand">${esc(p.brand || '')}</div>
+        ${showBrand && p.brand ? `<div class="result-brand">${esc(p.brand)}</div>` : ''}
         <div class="result-desc">${esc(p.description || '')}</div>
         <div class="result-footer">
           <span class="result-price">$${(p.price || 0).toLocaleString()}</span>

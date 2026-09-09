@@ -11,7 +11,6 @@
     {
       "objectID": "faucet-001",
       "name": "Strand Single-Hole Faucet",
-      "brand": "Vola",
       "price": 189,
       "currency": "USD",
       "category": "faucet",
@@ -34,7 +33,6 @@
     {
       "objectID": "faucet-002",
       "name": "Norm Single-Hole Faucet",
-      "brand": "Arne Jacobsen",
       "price": 249,
       "currency": "USD",
       "category": "faucet",
@@ -59,7 +57,6 @@
     {
       "objectID": "faucet-003",
       "name": "Kili Wall-Mount Faucet",
-      "brand": "Grohe",
       "price": 319,
       "currency": "USD",
       "category": "faucet",
@@ -82,7 +79,6 @@
     {
       "objectID": "faucet-004",
       "name": "Arc Widespread Faucet",
-      "brand": "Hansgrohe",
       "price": 289,
       "currency": "USD",
       "category": "faucet",
@@ -105,7 +101,6 @@
     {
       "objectID": "faucet-005",
       "name": "Harbour Single-Hole Faucet",
-      "brand": "Delta",
       "price": 219,
       "currency": "USD",
       "category": "faucet",
@@ -128,7 +123,6 @@
     {
       "objectID": "faucet-006",
       "name": "Shoreline Widespread Faucet",
-      "brand": "Moen",
       "price": 289,
       "currency": "USD",
       "category": "faucet",
@@ -151,7 +145,6 @@
     {
       "objectID": "faucet-007",
       "name": "Cove Cross-Handle Faucet",
-      "brand": "Pfister",
       "price": 169,
       "currency": "USD",
       "category": "faucet",
@@ -175,7 +168,6 @@
     {
       "objectID": "faucet-008",
       "name": "brushed brass lavatory single faucet",
-      "brand": "",
       "price": 159,
       "currency": "USD",
       "category": "faucet",

@@ -9,13 +9,12 @@
       "unisex",
       "womens"
     ],
-    "description": "Scarves — seasonal. LLM includes this category only when the occasion or weather clearly warrants it."
+    "description": "Scarves \u2014 seasonal. LLM includes this category only when the occasion or weather clearly warrants it."
   },
   "hits": [
     {
       "objectID": "scarf-001",
-      "name": "Merino Scarf — Oat",
-      "brand": "Acne Studios",
+      "name": "Merino Scarf \u2014 Oat",
       "price": 180,
       "currency": "USD",
       "category": "scarf",
@@ -41,8 +40,7 @@
     },
     {
       "objectID": "scarf-002",
-      "name": "Cashmere Wrap — Camel",
-      "brand": "Loro Piana",
+      "name": "Cashmere Wrap \u2014 Camel",
       "price": 395,
       "currency": "USD",
       "category": "scarf",
@@ -68,8 +66,7 @@
     },
     {
       "objectID": "scarf-003",
-      "name": "Linen Scarf — Sage",
-      "brand": "Arket",
+      "name": "Linen Scarf \u2014 Sage",
       "price": 55,
       "currency": "USD",
       "category": "scarf",
@@ -94,8 +91,7 @@
     },
     {
       "objectID": "scarf-004",
-      "name": "Silk Neck Scarf — Terracotta",
-      "brand": "Hermès",
+      "name": "Silk Neck Scarf \u2014 Terracotta",
       "price": 280,
       "currency": "USD",
       "category": "scarf",

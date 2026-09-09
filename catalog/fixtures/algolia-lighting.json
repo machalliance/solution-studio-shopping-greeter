@@ -5,13 +5,12 @@
       "scandi",
       "coastal"
     ],
-    "description": "Bathroom lighting — sconces, vanity bars, flush mounts."
+    "description": "Bathroom lighting \u2014 sconces, vanity bars, flush mounts."
   },
   "hits": [
     {
       "objectID": "lighting-001",
       "name": "Brera Sconce Pair",
-      "brand": "Ferm Living",
       "price": 189,
       "currency": "USD",
       "category": "lighting",
@@ -35,7 +34,6 @@
     {
       "objectID": "lighting-002",
       "name": "Arc Vanity Bar 24\"",
-      "brand": "Normann",
       "price": 149,
       "currency": "USD",
       "category": "lighting",
@@ -60,7 +58,6 @@
     {
       "objectID": "lighting-003",
       "name": "Nord Flush Mount",
-      "brand": "Muuto",
       "price": 129,
       "currency": "USD",
       "category": "lighting",
@@ -85,7 +82,6 @@
     {
       "objectID": "lighting-004",
       "name": "Cove Sconce Pair",
-      "brand": "Feiss",
       "price": 159,
       "currency": "USD",
       "category": "lighting",
@@ -109,7 +105,6 @@
     {
       "objectID": "lighting-005",
       "name": "Nautical Vanity Bar 24\"",
-      "brand": "Sea Gull Lighting",
       "price": 139,
       "currency": "USD",
       "category": "lighting",
@@ -133,7 +128,6 @@
     {
       "objectID": "lighting-006",
       "name": "Rattan Flush Mount",
-      "brand": "Serena & Lily",
       "price": 179,
       "currency": "USD",
       "category": "lighting",

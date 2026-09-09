@@ -37,6 +37,14 @@ export const adminRoutesEnabled = process.env.ENABLE_ADMIN_ROUTES != null
 
 export const useFixtures = process.env.USE_FIXTURES !== 'false'
 export const zeroResultsAction = (process.env.ZERO_RESULTS_ACTION ?? 'fallback') as 'fallback' | 'notice'
+
+/**
+ * Off by default. The shipped catalog data has no `brand` values (see catalog/README.md for
+ * why) — this only matters if you populate your own catalog with real brand/supplier data and
+ * want it to render. Gates every place `brand` reaches: host/search.html, host/product.html
+ * (card + page title), and the curateOutfits() prompt in llm.ts.
+ */
+export const showBrand = process.env.SHOW_BRAND === 'true'
 // Max wait for a single /api/chat LLM turn before it's treated as failed — see the streamText
 // timeout guard in routes/chat.ts for why this exists.
 export const CHAT_TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 15_000

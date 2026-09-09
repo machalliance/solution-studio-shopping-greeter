@@ -88,7 +88,7 @@ describe('FixtureSearchAdapter — result shaping', () => {
     expect(first).toEqual({
       id: 'top-001',
       name: 'Linen Shirt — Cream',
-      brand: 'Loro Piana',
+      brand: undefined, // catalog data has no brand values — see catalog/README.md
       price: 195,
       currency: 'USD',
       category: 'top',
@@ -285,7 +285,7 @@ describe('AlgoliaAdapter', () => {
       hits: [{
         objectID: 'live-1',
         name: 'Linen Shirt — Cream',
-        brand: 'Loro Piana',
+        brand: 'Test Brand',
         price: 195,
         currency: 'USD',
         category: 'top',
@@ -306,7 +306,7 @@ describe('AlgoliaAdapter', () => {
     expect(rows).toEqual([{
       id: 'live-1',
       name: 'Linen Shirt — Cream',
-      brand: 'Loro Piana',
+      brand: 'Test Brand',
       price: 195,
       currency: 'USD',
       category: 'top',

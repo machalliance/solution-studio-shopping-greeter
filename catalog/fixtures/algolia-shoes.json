@@ -16,7 +16,6 @@
     {
       "objectID": "shoes-001",
       "name": "Tan Leather Derby",
-      "brand": "Grenson",
       "price": 295,
       "currency": "USD",
       "category": "shoes",
@@ -42,7 +41,6 @@
     {
       "objectID": "shoes-002",
       "name": "Tan Suede Penny Loafer",
-      "brand": "Tod's",
       "price": 420,
       "currency": "USD",
       "category": "shoes",
@@ -69,7 +67,6 @@
     {
       "objectID": "shoes-003",
       "name": "Tan Leather Chelsea Boot",
-      "brand": "R.M. Williams",
       "price": 380,
       "currency": "USD",
       "category": "shoes",
@@ -96,7 +93,6 @@
     {
       "objectID": "shoes-004",
       "name": "Tan Block-Heel Sandal",
-      "brand": "Sam Edelman",
       "price": 145,
       "currency": "USD",
       "category": "shoes",
@@ -125,7 +121,6 @@
     {
       "objectID": "shoes-005",
       "name": "Ivory Kitten-Heel Slingback",
-      "brand": "Reformation",
       "price": 218,
       "currency": "USD",
       "category": "shoes",
@@ -152,7 +147,6 @@
     {
       "objectID": "shoes-006",
       "name": "Cognac Pointed-Toe Flat",
-      "brand": "Gianvito Rossi",
       "price": 495,
       "currency": "USD",
       "category": "shoes",
@@ -179,7 +173,6 @@
     {
       "objectID": "shoes-007",
       "name": "Caramel Cap-Toe Oxford",
-      "brand": "Bode",
       "price": 340,
       "currency": "USD",
       "category": "shoes",
@@ -206,7 +199,6 @@
     {
       "objectID": "shoes-008",
       "name": "Dark Brown Leather Chelsea Boot",
-      "brand": "Grenson",
       "price": 345,
       "currency": "USD",
       "category": "shoes",
@@ -227,13 +219,12 @@
       "url": "/products/dark-brown-leather-chelsea-boot",
       "inStock": true,
       "colourHex": "#3A2214",
-      "description": "Dark brown leather Chelsea boot. Richer and more evening-ready than tan — pairs with charcoal, navy or forest.",
+      "description": "Dark brown leather Chelsea boot. Richer and more evening-ready than tan \u2014 pairs with charcoal, navy or forest.",
       "imagePrompt": "Dark brown leather Chelsea boot with elastic side gussets, stacked heel, sleek silhouette, polished finish."
     },
     {
       "objectID": "shoes-009",
       "name": "Black Suede Tassel Loafer",
-      "brand": "Loake",
       "price": 310,
       "currency": "USD",
       "category": "shoes",
@@ -254,13 +245,12 @@
       "url": "/products/black-suede-tassel-loafer",
       "inStock": true,
       "colourHex": "#1A1A1A",
-      "description": "Black suede tassel loafer. A classic evening shoe — works with charcoal or dark navy trousers.",
+      "description": "Black suede tassel loafer. A classic evening shoe \u2014 works with charcoal or dark navy trousers.",
       "imagePrompt": "Black suede loafer with brass tassel detail, structured leather sole, relaxed slip-on silhouette."
     },
     {
       "objectID": "shoes-010",
       "name": "Espresso Leather Derby",
-      "brand": "Tricker's",
       "price": 390,
       "currency": "USD",
       "category": "shoes",
@@ -281,13 +271,12 @@
       "url": "/products/espresso-leather-derby",
       "inStock": true,
       "colourHex": "#2A1A0E",
-      "description": "Full-brogue derby in espresso leather. Deep, rich brown — versatile across dark palettes.",
+      "description": "Full-brogue derby in espresso leather. Deep, rich brown \u2014 versatile across dark palettes.",
       "imagePrompt": "Dark brown leather derby shoe with burnished finish, structured toe box, visible stitching detail, glossy patina."
     },
     {
       "objectID": "shoes-011",
-      "name": "Strappy Heeled Sandal — Nude",
-      "brand": "Stuart Weitzman",
+      "name": "Strappy Heeled Sandal \u2014 Nude",
       "price": 398,
       "currency": "USD",
       "category": "shoes",
@@ -310,13 +299,12 @@
       "url": "/products/strappy-heeled-sandal-nude",
       "inStock": true,
       "colourHex": "#D4AA85",
-      "description": "Strappy heeled sandal in nude. Thin ankle strap with a slender mid-heel — the warm evening shoe.",
+      "description": "Strappy heeled sandal in nude. Thin ankle strap with a slender mid-heel \u2014 the warm evening shoe.",
       "imagePrompt": "Nude leather strappy heeled sandal for women, thin ankle strap, slender 7cm heel, minimalist open-toe silhouette, flat lay."
     },
     {
       "objectID": "shoes-012",
-      "name": "Ankle Boot — Black Suede",
-      "brand": "Ganni",
+      "name": "Ankle Boot \u2014 Black Suede",
       "price": 280,
       "currency": "USD",
       "category": "shoes",
@@ -338,13 +326,12 @@
       "url": "/products/ankle-boot-black-suede",
       "inStock": true,
       "colourHex": "#1A1A1A",
-      "description": "Black suede ankle boot with a low block heel. Goes with wide-leg trousers or slim jeans — great for a cooler evening.",
+      "description": "Black suede ankle boot with a low block heel. Goes with wide-leg trousers or slim jeans \u2014 great for a cooler evening.",
       "imagePrompt": "Black suede ankle boot for women, low block heel, round toe, side zip, slightly slouchy upper, flat lay."
     },
     {
       "objectID": "shoes-013",
-      "name": "Pointed Mule — Camel",
-      "brand": "Mansur Gavriel",
+      "name": "Pointed Mule \u2014 Camel",
       "price": 345,
       "currency": "USD",
       "category": "shoes",
@@ -366,13 +353,12 @@
       "url": "/products/pointed-mule-camel",
       "inStock": true,
       "colourHex": "#C4935A",
-      "description": "Pointed-toe mule in camel leather. Minimal slip-on silhouette — pairs with trousers or wide-leg jeans.",
+      "description": "Pointed-toe mule in camel leather. Minimal slip-on silhouette \u2014 pairs with trousers or wide-leg jeans.",
       "imagePrompt": "Camel leather pointed-toe mule, open back, low kitten heel, structured smooth leather upper, clean minimal silhouette."
     },
     {
       "objectID": "shoes-014",
       "name": "Classic Canvas Low-Top Sneaker",
-      "brand": "Vans",
       "price": 65,
       "currency": "USD",
       "category": "shoes",
@@ -399,7 +385,6 @@
     {
       "objectID": "shoes-015",
       "name": "Leather Retro Court Sneaker",
-      "brand": "Adidas",
       "price": 95,
       "currency": "USD",
       "category": "shoes",
@@ -420,13 +405,12 @@
       ],
       "url": "/products/leather-retro-court-sneaker",
       "inStock": true,
-      "description": "Adidas Leather Retro Court Sneaker in white features a classic court-style silhouette with a premium leather upper that works for both casual wear and dressed-up occasions. Clean lines and a timeless design make this a versatile staple that pairs with everything from jeans to chinos.",
+      "description": "Leather Retro Court Sneaker in white features a classic court-style silhouette with a premium leather upper that works for both casual wear and dressed-up occasions. Clean lines and a timeless design make this a versatile staple that pairs with everything from jeans to chinos.",
       "imagePrompt": "Court-style men's leather sneaker in white, refined retro silhouette, timeless date night aesthetic, polished upper."
     },
     {
       "objectID": "shoes-016",
       "name": "Suede High-Top Sneaker",
-      "brand": "Converse",
       "price": 85,
       "currency": "USD",
       "category": "shoes",
@@ -447,13 +431,12 @@
       ],
       "url": "/products/suede-high-top-sneaker",
       "inStock": true,
-      "description": "Navy suede high-top sneaker from Converse with a soft, velvety finish that elevates casual wear into date-night territory. The structured ankle support and premium material make it a sophisticated alternative to standard canvas.",
+      "description": "Navy suede high-top sneaker with a soft, velvety finish that elevates casual wear into date-night territory. The structured ankle support and premium material make it a sophisticated alternative to standard canvas.",
       "imagePrompt": "High-top men's sneaker in navy suede, sophisticated silhouette, date night ready, premium craftsmanship, sleek ankle collar."
     },
     {
       "objectID": "shoes-017",
-      "name": "Converse Low Top White",
-      "brand": "Converse All-Star",
+      "name": "Classic Low Top White",
       "price": 60,
       "currency": "USD",
       "category": "shoes",
@@ -471,7 +454,7 @@
       ],
       "url": "/products/converse-low-top-white",
       "inStock": true,
-      "description": "The Converse All-Star Low Top in White is a timeless canvas sneaker with a reinforced toe cap that outlasts everyday wear. Lightweight and versatile, it pairs with virtually any casual outfit.",
+      "description": "This classic low top in white is a timeless canvas sneaker with a reinforced toe cap that outlasts everyday wear. Lightweight and versatile, it pairs with virtually any casual outfit.",
       "imagePrompt": "Low-top canvas sneaker in white cotton, classic rubber toe cap, clean minimalist design, iconic ankle patch detail."
     }
   ],

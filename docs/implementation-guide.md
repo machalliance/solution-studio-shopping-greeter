@@ -274,6 +274,20 @@ retries, ending in a hard guarantee that no category stays permanently empty) wa
 fixture data's tag vocabulary — a real catalog with a different tagging convention may behave
 differently and is worth observing directly rather than assuming it transfers.
 
+**2.1.5 — Decide on brand data before populating it** (Small · Required)
+The fixture catalog ships with no `brand` values, deliberately — the original fixtures had 191
+real, currently-trading third-party brand names attached to invented products, prices, and
+AI-generated photography, published under this org's own name with no disclaimer. `brand` is
+optional in `SearchResult`, and rendering/curation-input is gated behind `SHOW_BRAND` (off by
+default — see `src/server/config.ts`, `host/search.html`, `host/product.html`,
+`assemble.ts`'s `categoryProducts` mapping). A real pilot has a real answer here — your own
+retailer's actual product brands, sourced from your PIM — so this isn't a gap to leave open the
+way the placeholder was; either populate real brand data (your own products, your own rights)
+and set `SHOW_BRAND=true`, or confirm the retailer's catalog genuinely has none. Note `brand`
+also reaches the curation LLM's prompt (`llm.ts`'s `curateOutfits()`), not just display — a
+brand's real-world style associations can influence which pieces the model groups together, so
+this isn't purely a rendering choice.
+
 ---
 
 ### CMS Content (Contentstack)
