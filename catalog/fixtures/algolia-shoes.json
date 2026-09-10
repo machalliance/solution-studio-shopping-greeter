@@ -452,10 +452,10 @@
       "images": [
         "/images/shoes-017.jpg"
       ],
-      "url": "/products/converse-low-top-white",
+      "url": "/products/classic-low-top-white",
       "inStock": true,
       "description": "This classic low top in white is a timeless canvas sneaker with a reinforced toe cap that outlasts everyday wear. Lightweight and versatile, it pairs with virtually any casual outfit.",
-      "imagePrompt": "Low-top canvas sneaker in white cotton, classic rubber toe cap, clean minimalist design, iconic ankle patch detail."
+      "imagePrompt": "Low-top canvas sneaker in white cotton, classic rubber toe cap, clean minimalist design, simple woven side label."
     }
   ],
   "nbHits": 17,
