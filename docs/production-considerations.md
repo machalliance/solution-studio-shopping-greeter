@@ -58,10 +58,18 @@ simultaneously need identity-based auth or network-level restriction (see
 production: the counter is an in-memory `Map`, so it is **per process** and does nothing across
 horizontally scaled instances — the same statelessness described under **Session Model and
 State** that makes scaling easy also makes this limiter ineffective once you do; and the client
-identity it keys on is the first `X-Forwarded-For` hop, which a direct caller can set freely. It
-is a cost guard against accidental loops and casual abuse on a single instance, not a defence
-against a determined attacker. A production deployment wants this enforced at the edge (WAF, API
-gateway, or a shared Redis-backed limiter) rather than in-process.
+identity it keys on depends on `TRUST_PROXY`.
+
+By default (`TRUST_PROXY` unset) it keys on the socket address, which a direct caller cannot
+rewrite, so the cap genuinely binds per address. Set `TRUST_PROXY=true` and the first
+`X-Forwarded-For` hop is used instead — necessary behind a reverse proxy, where every request
+otherwise arrives from the proxy's own address and the whole deployment shares one bucket, but
+it re-opens the spoofing hole for anyone who can reach the app directly. Only set it when a
+proxy in front of the app *overwrites* that header rather than appending to it, and when the app
+is not otherwise reachable. Either way this is a cost guard against accidental loops and casual
+abuse on a single instance, not a defence against a determined attacker with a pool of
+addresses. A production deployment wants this enforced at the edge (WAF, API gateway, or a
+shared Redis-backed limiter) rather than in-process.
 
 **Session identity is server-issued, but unauthenticated.** The session id is minted server-side
 and kept in an `HttpOnly`, `SameSite=Lax` cookie; a `sessionId` in the request body is ignored

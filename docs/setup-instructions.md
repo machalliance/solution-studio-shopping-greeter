@@ -104,18 +104,21 @@ nothing outside `USE_FIXTURES=true` mode is required to run the demo.
 | `ZERO_RESULTS_ACTION` | Governs the `/api/search` browse-page endpoint specifically (not the main widget's result assembly, which has its own separate retry logic): `fallback` (default) relaxes the style filter and searches again if a query returns zero results; anything else leaves it empty for the client to render as a "no results" state. | Optional — defaults to `fallback`. |
 | `CHAT_TIMEOUT_MS` | Maximum wait for a single `/api/chat` model turn before it is treated as failed, so a provider hiccup surfaces as a graceful error rather than a spinner that never resolves. | Optional — defaults to `15000`. |
 | `PORT` | The port the app listens on. | Optional. |
+| `SHOW_BRAND` | Whether a product's `brand` is displayed and fed to the curation model. Off by default, and the bundled fixtures carry no brand values either way — see [`catalog/README.md`](../catalog/README.md). Turn it on when pointing the app at your own catalog, which may legitimately have brands of its own. | Optional — defaults to off. |
+| `CATEGORY_STORE_PATH` | Where the assembled-category store is written. Defaults to a per-checkout filename inside the system temp directory, created mode `0600`; the path stays stable across restarts of the same checkout so it can find its own prior save, without being one shared name every checkout on the machine would collide on. Set it to take explicit control. | Optional. |
 
 ### Access control and abuse limits
 
 | Variable | Controls | Required? |
 |---|---|---|
 | `ENABLE_ADMIN_ROUTES` | Whether the operator-only routes are mounted: the `/debug/*` dumps and the `POST` routes that rewrite global model config (`/api/provider`, `/api/chat-model`, `/api/spec-model`, `/api/curation-model`, `/api/catalog-stats/refresh`). When disabled they return `404` rather than `403`, so a public deployment does not advertise them. | Optional — defaults to **on** when `NODE_ENV` is anything but `production`, and **off** when it is `production` (which the Docker image sets). Set explicitly to override. |
-| `RATE_LIMIT_MAX` | Requests allowed per client per window on the two endpoints that spend money (`/api/chat`, `/api/show-me-now`). Exceeding it returns `429` with a `Retry-After` header. | Optional — defaults to `20`. |
+| `RATE_LIMIT_MAX` | Requests allowed per client per window on the three endpoints that spend money (`/api/chat`, `/api/show-me-now`, `/api/refinements`). Exceeding it returns `429` with a `Retry-After` header. Set to `0` as a deliberate hard kill-switch during an incident. | Optional — defaults to `20`. |
 | `RATE_LIMIT_WINDOW_MS` | Length of that window. | Optional — defaults to `60000`. |
+| `TRUST_PROXY` | Which address the limiter counts against. Unset, it uses the connection's socket address, which a direct caller cannot rewrite. Set to `true`, it uses the first `X-Forwarded-For` hop instead — **required behind a reverse proxy**, where every request otherwise arrives from the proxy's own address and all callers share a single bucket. Only set it when the proxy overwrites that header rather than appending to it, and when the app is not reachable directly: a caller who can reach it directly can then set the header freely. | Optional — defaults to off. |
 
 > The limiter is in-memory and therefore **per process** — it does nothing across multiple
-> instances, and the client address it keys on comes from `X-Forwarded-For`, which a direct
-> caller can spoof. It is a cost guard for a single-instance prototype, not a security boundary.
+> instances. It is a cost guard for a single-instance prototype, not a security boundary: even
+> with the default socket-address key, an attacker with a pool of addresses is not stopped.
 > `host/settings.html` drives the model-config routes, so it only functions while
 > `ENABLE_ADMIN_ROUTES` is on.
 

@@ -82,10 +82,12 @@ that drive LLM spend — are now capped at `RATE_LIMIT_MAX` per client per `RATE
 
 Two limits make this insufficient on its own. The counter is an in-memory `Map`, so it is per
 process and does nothing once the service is horizontally scaled — precisely the deployment
-shape the stateless architecture otherwise encourages. And the client identity it keys on is the
-first `X-Forwarded-For` hop, which a direct caller can set freely. Production wants this enforced
-at the ingress (WAF, API gateway) or backed by a shared store, with the in-process limiter kept
-as a backstop rather than the only control.
+shape the stateless architecture otherwise encourages. And the client identity it keys on is a
+trade-off set by `TRUST_PROXY`: unset, it uses the socket address, which a direct caller cannot
+rewrite; set to `true`, it uses the first `X-Forwarded-For` hop, which is what a reverse-proxied
+deployment needs and is again spoofable by anyone who can reach the app directly. Production
+wants this enforced at the ingress (WAF, API gateway) or backed by a shared store, with the
+in-process limiter kept as a backstop rather than the only control.
 
 ---
 

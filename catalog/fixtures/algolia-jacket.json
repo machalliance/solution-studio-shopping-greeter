@@ -689,7 +689,6 @@
       "fit": "womens",
       "tags": [
         "vintage",
-        "polo",
         "blazer",
         "oversized",
         "heritage"
@@ -699,10 +698,10 @@
       "images": [
         "/images/jacket-028.jpg"
       ],
-      "url": "/products/vintage-polo-sport-blazer",
+      "url": "/products/vintage-sport-blazer",
       "inStock": true,
       "description": "Vintage sport blazer in brown with a classic oversized silhouette and heritage construction. Perfect for layering or wearing as a statement piece, this timeless blazer captures the essence of 90s luxury sportswear.",
-      "imagePrompt": "Smart clean women's blazer in rich brown wool, vintage polo heritage style with classic tailoring and timeless elegance."
+      "imagePrompt": "Smart clean women's blazer in rich brown wool, vintage heritage style with classic tailoring and timeless elegance."
     }
   ],
   "nbHits": 27,
