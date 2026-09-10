@@ -150,10 +150,12 @@ Explicitly out of scope for this prototype:
   rewrite model config) are gated by a single on/off flag, not per-user access control
 
 The operator surfaces default to **on** in development and **off** when `NODE_ENV=production`,
-which the Docker image sets — so the container is locked down without configuration. The two
-endpoints that spend money (`/api/chat`, `/api/show-me-now`) are rate limited, and the session
-id is issued by the server as an `HttpOnly` cookie rather than accepted from the client. See
-`ENABLE_ADMIN_ROUTES` and `RATE_LIMIT_*` in
+which the Docker image sets — so the container is locked down without configuration. The three
+endpoints that spend money (`/api/chat`, `/api/show-me-now`, `/api/refinements`) are rate
+limited per client address, and the session id is issued by the server as an `HttpOnly` cookie
+rather than accepted from the client. Behind a reverse proxy, set `TRUST_PROXY=true` or all
+callers share one rate-limit bucket. See `ENABLE_ADMIN_ROUTES`, `RATE_LIMIT_*` and
+`TRUST_PROXY` in
 [`docs/setup-instructions.md`](docs/setup-instructions.md), and
 [`docs/production-considerations.md`](docs/production-considerations.md) for what this does
 *not* cover.

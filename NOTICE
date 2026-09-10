@@ -5,5 +5,7 @@ It does not extend to:
 - The "MACH Alliance" name and logo (catalog/images/mach-alliance-logo.svg, and its use in
   the demo/settings UI). These remain the property of MACH Alliance, Inc. and are not licensed
   for reuse, redistribution, or sale under the MIT grant above.
-- Third-party brand names that appear in the sample catalog data (catalog/fixtures/). See
-  catalog/README.md for what that data is and is not.
+- Any third-party trademark. The MIT grant licenses this code; it grants no rights in anyone
+  else's marks. The sample catalog ships with no third-party brand names in it — see
+  catalog/README.md for what that data is and is not — and nothing in this repository should be
+  read as a licence to attach a real company's name to it.
