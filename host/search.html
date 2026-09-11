@@ -265,7 +265,14 @@ async function loadAndRender() {
 
   let requestedStyle = null;
   try {
-    const [res, health] = await Promise.all([fetch(url), fetch('/health').then(r => r.json())]);
+    // The health fetch carries its own .catch — a /health hiccup must not blank a search
+    // result that already loaded fine. product.html's equivalent fetch already does this;
+    // this one didn't, and a health failure fell through into the catch below that resets
+    // currentProducts, wiping an unrelated, successfully-loaded grid.
+    const [res, health] = await Promise.all([
+      fetch(url),
+      fetch('/health').then(r => r.json()).catch(() => ({})),
+    ]);
     const data = await res.json();
     currentProducts = data.hits || [];
     currentStyleRelaxed = data.styleRelaxed || false;

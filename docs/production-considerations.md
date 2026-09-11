@@ -349,6 +349,17 @@ minimum is a bounded LRU with a TTL in front of each store; the real answer is t
 problem rather than the app's, and the disk write disappears with it. Whichever route, the
 `/debug/*` prune should move to a `finally` and evict in a loop rather than one entry at a time.
 
+**The category-store file's permissions only take effect on first creation.** `saveCategoryStore()`
+writes it with `{ mode: 0o600 }`, but Node only applies `mode` when a file is actually created —
+it does not re-permission a file that already exists, and `writeFileSync` follows symlinks. On a
+box shared with untrusted local users, someone who already knows or can guess the checkout path
+(the filename itself is a hash of `process.cwd()` specifically so it isn't a single guessable
+name shared by every checkout — see the comment above `CATEGORY_STORE_PATH` in `stores.ts`) could
+still pre-create that file, or plant a symlink at that path, before this process's first write.
+Moot for the documented container deployment, whose `/tmp` isn't shared with other tenants the
+way a bare-metal box's would be. If this ever runs directly on a shared host, close it by opening
+with `wx` + `O_NOFOLLOW` on first write, or moving the file under an `fs.mkdtempSync()` directory.
+
 **Statelessness is a genuine production advantage, not only a limitation.** With no database and
 no server-side session affinity requirement beyond the life of a single request, horizontal
 scaling behind a load balancer is straightforward — any instance can serve any request. The cost
