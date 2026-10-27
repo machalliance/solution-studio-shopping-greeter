@@ -1,7 +1,7 @@
 # ── Build stage ────────────────────────────────────────────────────────────────
 # Full dependency tree, used only to produce dist/. None of it reaches the runtime
 # image, so vite/vitest/typescript and their transitive CVEs stay out of what ships.
-FROM node:22-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build
 # a Go toolchain that added 46 findings of its own — 2 critical, 20 high — strictly
 # worse than the npm the base image already carries. With --omit=dev below, npm's
 # vendored tree is barely present in the final image anyway.
-FROM node:22-alpine
+FROM node:26-alpine
 
 # Pull the current apk package set. The base image lags on openssl, which is where
 # essentially every remaining CVE in this image lives.
